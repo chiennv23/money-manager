@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Facebook App Infor -->
+    <string name="fb_app_name">Hanwa Life Demo</string>
+    <string name="fb_app_id">1062718394480641</string>
+    <string name="fb_login_protocol_scheme">fb1062718394480641</string>
+
+    <!-- Zalo App Infor -->
+    <string name="zalo_app_name">Hanwa Life Demo</string>
+    <string name="zalo_app_id">2586924346508802755</string>
+    <string name="zalosdk_app_id">2586924346508802755</string>
+    <string name="zalosdk_login_protocol_scheme">zalo-2586924346508802755</string>
+</resources>

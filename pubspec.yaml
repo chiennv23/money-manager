@@ -1,0 +1,54 @@
+name: coresystem
+description: mPro project.
+
+publish_to: 'none'
+version: 0.0.2+10
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  bot_toast: ^4.0.1
+  clipboard: any
+  connectivity: ^3.0.4
+  cupertino_icons: ^1.0.3
+  data_connection_checker: any
+  dotted_border: ^2.0.0
+  equatable: ^2.0.2
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.0.1
+  flutter_secure_storage: ^5.0.2
+  flutter_spinkit: ^5.0.0
+  flutter_svg: ^0.22.0
+  http:
+  image_cropper: any
+  image_picker: any
+  intl: ^0.17.0
+  modal_bottom_sheet: ^2.0.0
+  shared_preferences: ^2.0.5
+  lottie: ^1.2.1
+  flutter_automation: ^2.0.0
+  package_info_plus: ^1.4.2
+  tuple: ^2.0.0
+  encrypt: ^5.0.1
+  path_provider: ^2.0.9
+  webview_flutter: ^3.0.2
+  qr_flutter: ^4.0.0
+
+
+dev_dependencies:
+  build_runner: ^1.5.1
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  generate: true
+  uses-material-design: true
+  assets:
+    - lib/Assets/IconApp/
+    - lib/Assets/Images/
+    - lib/Assets/Svg/
+
+flutter_intl:
+  enabled: true

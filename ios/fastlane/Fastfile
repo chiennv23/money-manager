@@ -1,0 +1,135 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Description of what the lane does"
+  lane :build_ios do |options|
+    build_env = options.fetch(:build_env, 'dev')
+    build_name = options.fetch(:build_name, '1.0.0')
+    build_number =options.fetch(:build_number, '1')
+
+    # # Versioning
+    # # Set a version number
+    increment_version_number_in_plist(
+      version_number: "#{build_name}",
+      # build_number: "#{build_number}",
+      # scheme: "#{build_env}"
+    )
+    # # Set a build number
+    increment_build_number_in_plist(
+      build_number: "#{build_number}",
+      # scheme: "#{build_env}"
+    )
+
+    if build_env == 'dev' || build_env == 'UAT'
+      # Run gym build & archive ipa
+      gym(
+        scheme: "Runner",
+        configuration: "Release-InHouse",
+        sdk: "iphoneos",
+        clean: true,
+        silent: true,
+        output_directory: "./build",
+        output_name: "Invoice_InHouse",
+        export_options: {
+          compileBitcode: false,
+          method: "enterprise",
+          provisioningProfiles: {
+            "vn.com.fis.vnpost-dev": "vnpost-dev-v2"
+          },
+          signingCertificate: "iPhone Distribution",
+          signingStyle: "manual",
+          stripSwiftSymbols: true,
+          teamID: "537V83MWQH",
+          thinning: "<thin-for-all-variants>"
+        }
+      )
+    end
+    if build_env == 'AppStore'
+      # Run gym build & archive ipa
+      gym(
+        scheme: "Runner",
+        configuration: "Release",
+        sdk: "iphoneos",
+        clean: true,
+        silent: true,
+        output_directory: "./build",
+        output_name: "AppStore",
+        export_options: {
+          compileBitcode: false,
+          method: "app-store",
+          provisioningProfiles: {
+            "com.fis.mpro": "mrpo-appstore"
+          },
+          signingCertificate: "Apple Distribution",
+          signingStyle: "manual",
+          stripSwiftSymbols: true,
+          teamID: "LVDS8Y23R5",
+          thinning: "<thin-for-all-variants>"
+        }
+      )
+    end
+    
+    # next
+    
+  end
+  lane :deploy_ios do |options|
+    build_env = options.fetch(:build_env, 'InHouse')
+    if build_env == 'dev' 
+      # Upload to app center
+      appcenter_upload(
+        api_token: "8488b27132d829af0043743c62d7f3507b38dd4d",
+        owner_name: "FIS.VNPOST",
+        owner_type: "organization", # Default is user - set to organization for appcenter organizations
+        app_name: "VNPOST_IOS_DEV",
+        app_os: "iOS",
+        file: "build/Invoice_InHouse.ipa",
+        destinations: "public",
+        notify_testers: true # Set to false if you don't want to notify testers of your new release (default: `false`)
+      )
+    end 
+    if build_env == 'UAT' 
+      # Upload to app center
+      appcenter_upload(
+        api_token: "d347534a800b3c3e99643b5634d45aa738dfd2e2",
+        owner_name: "FIS.VNPOST",
+        owner_type: "organization", # Default is user - set to organization for appcenter organizations
+        app_name: "Mpro_ios_UAT-1",
+        app_os: "iOS",
+        file: "build/Invoice_InHouse.ipa",
+        destinations: "public",
+        notify_testers: true # Set to false if you don't want to notify testers of your new release (default: `false`)
+      )
+    end 
+
+    if build_env == 'AppStore' 
+      # Upload to app center
+      appcenter_upload(
+        api_token: "e00f55217934bd921b851adc36b6bd6397301431",
+        owner_name: "FIS.VNPOST",
+        owner_type: "organization", # Default is user - set to organization for appcenter organizations
+        app_name: "Mpro_Store",
+        app_os: "iOS",
+        file: "build/AppStore.ipa",
+        destination_type: "store", 
+        destinations: "App Store Connect Users",
+        notify_testers: false # Set to false if you don't want to notify testers of your new release (default: `false`)
+      )
+    end
+    # crashlytics
+  end
+end
