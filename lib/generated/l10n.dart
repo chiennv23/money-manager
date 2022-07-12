@@ -44,6 +44,16 @@ class S {
       args: [],
     );
   }
+
+  /// `hello2232232`
+  String get hello_world2 {
+    return Intl.message(
+      'hello2232232',
+      name: 'hello_world2',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

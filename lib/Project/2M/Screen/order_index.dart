@@ -108,7 +108,7 @@ class _OrderIndexState extends State<OrderIndex> {
                       ],
                     ),
                     title: Text(
-                      lg.hello_world,
+                      lg.hello_world2,
                       style: FTypoSkin.subtitle3.copyWith(
                         color: FColorSkin.grey1_background,
                       ),

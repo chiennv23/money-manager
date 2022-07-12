@@ -9,8 +9,11 @@ import 'package:coresystem/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'Config/AppConfig.dart';
+import 'Project/2M/LocalDatabase/Models/user_info.dart';
 import 'generated/l10n.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -28,7 +31,10 @@ Future<void> main() async {
 
   await SharedPreferencesHelper.instance.init();
   HttpOverrides.global = MyHttpOverrides();
-
+  final appDocDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDocDir.path);
+  Hive.registerAdapter(UserItemAdapter());
+  Hive.registerAdapter(CareerItemAdapter());
   runZoned(() {
     runApp(
       MyApp(),
