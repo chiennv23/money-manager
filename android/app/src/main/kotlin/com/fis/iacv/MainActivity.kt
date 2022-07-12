@@ -1,4 +1,4 @@
-package com.fis.mpro
+package com.wini.moneynote
 
 import io.flutter.embedding.android.FlutterActivity
 

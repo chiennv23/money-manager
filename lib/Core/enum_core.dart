@@ -1,9 +1,14 @@
 import 'dart:ui';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:coresystem/Project/VNPost/Contains/skin/color_skin.dart';
+import 'package:coresystem/Components/base_component.dart';
+import 'package:coresystem/Core/storageKeys_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import '../Components/widgets/SnackBar.dart';
+import '../Config/AppConfig.dart';
+import '../main.dart';
 
 class EnumCore {
   static CancelFunc loadingCustom(Future a) => BotToast.showCustomLoading(
@@ -15,6 +20,33 @@ class EnumCore {
       });
 }
 
+
+Future loadingEN(BuildContext context) async {
+  if (SharedPreferencesHelper.instance.getString(key: 'languageApp') == 'en') {
+    await SnackBarCore.info(title: 'You are already in english?!');
+  } else {
+    await MyApp.setLocale(context, Locale('en'));
+    await SharedPreferencesHelper.instance
+        .setString(key: 'languageApp', val: 'en');
+    ConfigApp.langApp = 'en';
+
+    // RestartWidget.restartApp(context);
+    await Future.delayed(Duration(milliseconds: 500));
+  }
+}
+
+Future loadingVI(BuildContext context) async {
+  if (SharedPreferencesHelper.instance.getString(key: 'languageApp') == 'vi') {
+    await SnackBarCore.info(title: 'Bạn đang ở ngôn ngữ tiếng việt?!');
+  } else {
+    await MyApp.setLocale(context, Locale('vi'));
+    await SharedPreferencesHelper.instance
+        .setString(key: 'languageApp', val: 'vi');
+    ConfigApp.langApp = 'vi';
+    // RestartWidget.restartApp(context);
+    await Future.delayed(Duration(milliseconds: 500));
+  }
+}
 class LoadingCustom extends StatefulWidget {
   const LoadingCustom({Key key}) : super(key: key);
 
@@ -62,24 +94,9 @@ class _LoadingCustomState extends State<LoadingCustom>
                 alignment: Alignment.center,
                 children: [
                   SpinKitRipple(
-                    color: FColorSkin.grey1_background,
+                    color: FColors.grey1,
                     size: x,
                     borderWidth: 20.0,
-                  ),
-                  Opacity(
-                    opacity: 1,
-                    child: Container(
-                      height: y,
-                      width: y,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: FColorSkin.transparent,
-                      ),
-                      child: SpinKitDoubleBounce(
-                        size: y,
-                        color: FColorSkin.primaryColor,
-                      ),
-                    ),
                   ),
                 ],
               ),

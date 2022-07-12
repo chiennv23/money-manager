@@ -10,9 +10,13 @@ class ImagePickerHandler {
   AnimationController _controller;
   ImagePickerListener _listener;
   bool chooseMutil = false;
+  bool isCrop = true;
+  CropStyle cropStyle;
 
   ImagePickerHandler(this._listener, this._controller,
-      {this.chooseMutil = false});
+      {this.chooseMutil = false,
+        this.isCrop = true,
+        this.cropStyle = CropStyle.circle});
 
   final ImagePicker _picker = ImagePicker();
 
@@ -21,13 +25,18 @@ class ImagePickerHandler {
   openCamera() async {
     imagePicker.dismissDialog();
     final image =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 100);
+    await _picker.pickImage(source: ImageSource.camera, imageQuality: 100);
 
     if (chooseMutil) {
       _imagesFile.add(File(image.path));
       _listener.userImageList(_imagesFile);
     } else {
-      await cropImage(image.path);
+      if (isCrop) {
+        await cropImage(image.path);
+      } else {
+        _imagesFile.add(File(image.path));
+        _listener.userImageList(_imagesFile);
+      }
     }
   }
 
@@ -48,7 +57,14 @@ class ImagePickerHandler {
         imageQuality: 100,
         source: ImageSource.gallery,
       );
-      await cropImage(image.path);
+      if (image.path != null) {
+        if (isCrop) {
+          await cropImage(image.path);
+        } else {
+          _imagesFile.add(File(image.path));
+          _listener.userImageList(_imagesFile);
+        }
+      }
     }
   }
 
@@ -65,7 +81,7 @@ class ImagePickerHandler {
     final croppedFile = await imageCropper.cropImage(
         sourcePath: image,
         aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
-        cropStyle: CropStyle.circle,
+        cropStyle: cropStyle,
         maxWidth: 512,
         maxHeight: 512,
         compressQuality: 75,
@@ -74,21 +90,21 @@ class ImagePickerHandler {
     if (croppedFile != null) {
       _imagesFileCrop.add(croppedFile);
       _listener.userImageList(_imagesFileCrop);
-        print('upload-avatar');
-        // var user = await AccountDA.uploadAvatar(
-        //   croppedFile.path,
-        // );
-        // if (user.code == 200) {
-        //   _listener.userImageList(_imagesFileCrop);
-        //   AccountDA.user.UrlAvatar = user.string;
-        //   UserService.setUser(userItem: AccountDA.user);
-        //   await SharedPreferencesHelper.instance
-        //       .setString(key: 'avatarCustomer', val: croppedFile.path);
-        //   await SnackBarCore.success(
-        //       title: 'Cập nhật thành công', isBottom: true);
-        // } else {
-        //   await SnackBarCore.fail(isBottom: true);
-        // }
+      print('upload-avatar');
+      // var user = await AccountDA.uploadAvatar(
+      //   croppedFile.path,
+      // );
+      // if (user.code == 200) {
+      //   _listener.userImageList(_imagesFileCrop);
+      //   AccountDA.user.UrlAvatar = user.string;
+      //   UserService.setUser(userItem: AccountDA.user);
+      //   await SharedPreferencesHelper.instance
+      //       .setString(key: 'avatarCustomer', val: croppedFile.path);
+      //   await SnackBarCore.success(
+      //       title: 'Cập nhật thành công', isBottom: true);
+      // } else {
+      //   await SnackBarCore.fail(isBottom: true);
+      // }
       _imagesFileCrop.clear();
     }
   }

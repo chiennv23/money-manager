@@ -1,9 +1,8 @@
 import 'package:coresystem/Core/routes.dart';
-import 'package:coresystem/Project/VNPost/Module/TabIndex/Index.dart';
-import 'package:coresystem/Project/VNPost/Module/User/Views/account_info.dart';
-import 'package:coresystem/Project/VNPost/Module/User/Views/login.dart';
-import 'package:coresystem/Project/VNPost/Module/User/Views/sign_up.dart';
-import 'package:coresystem/Project/VNPost/splash.dart';
+import 'package:coresystem/Project/2M/Module/TabIndex/Index.dart';
+import 'package:coresystem/Project/2M/Module/User/Views/account_info.dart';
+import 'package:coresystem/Project/2M/Module/User/Views/sign_up.dart';
+import 'package:coresystem/Project/2M/splash.dart';
 import 'package:flutter/material.dart';
 
 class Routes extends CoreRoutes {
@@ -20,10 +19,10 @@ class Routes extends CoreRoutes {
         return MaterialPageRoute(
           builder: (context) => Splash(),
         );
-      case CoreRouteNames.LOGIN:
-        return MaterialPageRoute(
-          builder: (context) => Login(),
-        );
+      // case CoreRouteNames.LOGIN:
+      //   return MaterialPageRoute(
+      //     builder: (context) => Login(),
+      //   );
       case CoreRouteNames.REGISTER_INFO_FORM:
         return MaterialPageRoute(
           builder: (context) => SignUp(),

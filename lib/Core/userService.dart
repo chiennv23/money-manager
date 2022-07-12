@@ -1,26 +1,8 @@
-import 'package:coresystem/Constant/Enum.dart';
 import 'package:coresystem/Core/routes.dart';
 import 'package:coresystem/Core/storageKeys_helper.dart';
-import 'package:coresystem/Project/VNPost/Module/User/Model/user_info.dart';
 import 'package:coresystem/Utils/ConvertUtils.dart';
 
 class UserService {
-  // static void getwelcome() {
-  //   userInfo.token =
-  //       SharedPreferencesHelper.instance.getString(key: 'userInfo.token');
-  //   userInfo.session =
-  //       SharedPreferencesHelper.instance.getString(key: 'userInfo.session');
-  //   userInfo.userName =
-  //       SharedPreferencesHelper.instance.getString(key: 'userInfo.userName');
-  //   userInfo.remember =
-  //       SharedPreferencesHelper.instance.getBool(key: 'userInfo.remember');
-
-  //   userInfo.remember = userInfo.remember ?? false;
-  //   userInfo.avatar =
-  //       SharedPreferencesHelper.instance.getString(key: 'userInfo.avatar');
-  // }
-
-  static UserInfo userInfo = UserInfo();
 
   static void setUserToken(
     String token,
@@ -39,39 +21,12 @@ class UserService {
   //   );
   // }
 
-  static void setUser(UserInfo user, String username) {
-    SharedPreferencesHelper.instance.setString(
-      key: 'userInfo.token',
-      val: user.token,
-    );
-
-    SharedPreferencesHelper.instance.setString(
-      key: 'userInfo.userName',
-      val: username,
-    );
-    userInfo = user;
-    userInfo.username = username;
+  static String get getAvtUsername {
+    return SharedPreferencesHelper.instance.getString(key: 'userInfo.avatar');
   }
 
-  static void setAvatar(String urlAvatar) {
-    SharedPreferencesHelper.instance.setString(
-      key: 'userInfo.avatar',
-      val: urlAvatar,
-    );
-    userInfo.avatar = urlAvatar;
-  }
-
-  static void removeUser() {
-    SharedPreferencesHelper.instance.removeKey(key: 'userInfo.token');
-    userInfo.token = null;
-    userInfo.uid = null;
-    CoreRoutes.instance.navigateAndRemove(CoreRouteNames.LOGIN);
-    // userInfo.session = null;
-    // userInfo.avatar = null;
-  }
-
-  static String getUserName() {
-    return SharedPreferencesHelper.instance.getString(key: 'userInfo.userName');
+ static Future<void> setAvtUsername(String value) {
+    return SharedPreferencesHelper.instance.setString(key: 'userInfo.avatar',val: value);
   }
 
   // static AccountItem getUser() {
@@ -159,18 +114,6 @@ class UserService {
 
   static String getRefreshToken() {
     return SharedPreferencesHelper.instance.getString(key: 'refreshToken');
-  }
-
-  // đăng nhập bằng email/phone?
-  static void setTypeLogin(String type) {
-    SharedPreferencesHelper.instance.setString(
-      key: 'KeyStore',
-      val: '${type == TypeLogin.phone ? getPhone() : getEmail()}',
-    );
-    SharedPreferencesHelper.instance.setString(
-      key: 'typeLogin',
-      val: type,
-    );
   }
 
   static String getKeyStore() {

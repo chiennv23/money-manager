@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:coresystem/Constant/Enum.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
@@ -49,30 +48,6 @@ class WConvert {
     final timeZone = dateProcessReceive.toInt().dateTime();
     final timeRemaining = timeZone.difference(now).inMinutes;
     return timeRemaining;
-  }
-
-  static String airlineName(String code) {
-    switch (code) {
-      case 'VN':
-        return ArilinesName.VN;
-      case 'HQ':
-        return ArilinesName.HQ;
-      case 'VJ':
-        return ArilinesName.VJ;
-      default:
-        return ArilinesName.VN;
-    }
-  }
-
-  static String cityName(String code) {
-    switch (code) {
-      case 'HAN':
-        return CityCode.HAN;
-      case 'SGN':
-        return CityCode.SGN;
-      default:
-        return CityCode.HAN;
-    }
   }
 
   // ignore: missing_return

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:coresystem/Components/widgets/SnackBar.dart';
-import 'package:coresystem/Project/VNPost/Module/User/Model/user_info.dart';
+import 'package:coresystem/Project/2M/Module/User/Model/user_info.dart';
 
 Future<UserInfo> parseJwt(String token) async {
   try {

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:clipboard/clipboard.dart';
-import 'package:coresystem/Project/VNPost/Contains/skin/color_skin.dart';
 import 'package:flutter/material.dart';
 
 import '../base_component.dart';
@@ -218,7 +217,7 @@ class SnackBarCore {
       {String title = 'Thất bại',
       VoidCallback onTap,
       String iconSnackBar = FFilled.close_circle,
-      Color colorSnackBar = FColorSkin.errorPrimary,
+      Color colorSnackBar = FColors.red6,
       bool isBottom = false,
       Widget action}) {
     return wCustomSnackBar(

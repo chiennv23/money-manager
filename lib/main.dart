@@ -8,7 +8,10 @@ import 'package:coresystem/Core/userService.dart';
 import 'package:coresystem/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'Config/AppConfig.dart';
+import 'generated/l10n.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -34,12 +37,32 @@ Future<void> main() async {
 }
 
 class MyApp extends StatefulWidget {
+  static Future<void> setLocale(BuildContext context, Locale newLocale) async {
+    final state = context.findAncestorStateOfType<_MyAppState>();
+    await state.changeLanguage(newLocale);
+  }
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  final token = UserService.getToken();
+
+  Locale defaultLanguage;
+
+  void takeLanguage() {
+    final localeCode =
+    SharedPreferencesHelper.instance.getString(key: 'languageApp');
+    ConfigApp.langApp = localeCode ?? 'vi';
+    defaultLanguage = Locale(localeCode ?? 'vi');
+  }
+
+  Future<void> changeLanguage(Locale locale) async {
+    setState(() {
+      S.load(locale);
+      defaultLanguage = locale;
+    });
+    return;
+  }
 
   void deleteAllDataFirstInstall() {
     if (SharedPreferencesHelper.instance.getBool(key: 'first_run') ?? true) {
@@ -54,13 +77,11 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    // deleteAllDataFirstInstall();
+    deleteAllDataFirstInstall();
+    takeLanguage();
     super.initState();
   }
 
-  // final user = UserService.getToken();
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -69,7 +90,15 @@ class _MyAppState extends State<MyApp> {
       navigatorKey: CoreRoutes.instance.navigatorKey,
       onGenerateRoute: Routes.generateRoute,
       initialRoute:
-          token == null ? CoreRouteNames.SPLASH : CoreRouteNames.PAGE_INDEX,
+         CoreRouteNames.SPLASH,
+      locale: defaultLanguage,
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
       theme: ThemeData(
         brightness: Brightness.dark,
         visualDensity: VisualDensity.adaptivePlatformDensity,

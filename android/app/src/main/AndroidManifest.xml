@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.fis.mpro">
+        package="com.wini.moneynote">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
@@ -17,7 +17,7 @@
     </queries>
 
     <application
-            android:label="VNPost"
+            android:label="MoneyNote++"
             android:usesCleartextTraffic="true"
             android:icon="@mipmap/ic_launcher"
             android:requestLegacyExternalStorage="true">
