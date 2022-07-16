@@ -8,8 +8,8 @@ import 'package:coresystem/Project/2M/Contains/textform_with_example.dart';
 import 'package:coresystem/Project/2M/Contains/constants.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Contains/skin/skin_route.dart';
-import 'package:coresystem/Project/2M/Module/User/Model/LocationItem.dart';
-import 'package:coresystem/Project/2M/Module/User/Model/registerItem.dart';
+import 'package:coresystem/Project/2M/LocalDatabase/Models/user_info.dart';
+import 'package:coresystem/Project/2M/Module/User/DA/UserDA.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,12 +32,9 @@ class _SignUpState extends State<SignUp> {
   final districtController = TextEditingController();
   final provinceController = TextEditingController();
   final passwordController = TextEditingController();
-  final rePasswordController = TextEditingController();
 
   final formKey = GlobalKey<FFormState>();
-  // LocationItem agenData = LocationItem();
-  // LocationItem placeOfIssueData = LocationItem();
-  List<LocationItem> unit = [];
+
   String wardscode;
   String districtcode;
   String citycode;
@@ -48,10 +45,8 @@ class _SignUpState extends State<SignUp> {
 
   @override
   void initState() {
-    // agenData.value = agencyTypeList.first.value;
     super.initState();
   }
-
 
   void _ConfirmCancel() {
     popupWithStatus(
@@ -70,8 +65,7 @@ class _SignUpState extends State<SignUp> {
       },
       backGroundAction: FColorSkin.warningPrimary,
       textAction: 'Hủy đăng ký',
-      action: () {
-      },
+      action: () {},
     );
   }
 
@@ -247,137 +241,6 @@ class _SignUpState extends State<SignUp> {
                     example: 'Vd: nguyenvanthuan@gmail.com',
                     // fTextFieldStatus: _EmailValidate,
                   ),
-                  TextFormWithExample(
-                    titleTextForm: 'Địa chỉ chi tiết',
-                    important: false,
-                    controller: addressController,
-
-                    onChange: (vl) {
-                      // setState(() {});
-                    },
-                    example: 'Vd: Hà nội',
-                    fTextFieldStatus: (value) {
-                      if (value.trim().length > 300) {
-                        return FTextFieldStatus(
-                            status: TFStatus.error,
-                            message: 'Độ dài địa chỉ phải nhỏ hơn 300 ký tự');
-                      } else {
-                        return FTextFieldStatus(
-                            status: TFStatus.normal, message: null);
-                      }
-                    },
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 20),
-                    child: FTextFormField(
-                      borderColor: FColorSkin.grey3_background,
-                      focusColor: FColorSkin.infoPrimary,
-                      labelText: 'Tỉnh/Thành phố',
-                      readOnly: true,
-                      size: FInputSize.size64,
-                      textCapitalization: TextCapitalization.none,
-                      clearIcon: FIcon(
-                        icon: FOutlined.down,
-                        size: 16,
-                        color: FColorSkin.subtitle,
-                      ),
-                      onChanged: (vl) {
-                        setState(() {});
-                      },
-                      controller: cityController,
-                      maxLine: 1,
-                      onTap: () {
-                        showAgencyType(
-                            citycode,
-                            unit
-                                .where((element) => element.unitType == '1')
-                                .toList(),
-                            cityController,
-                            'Chọn Tỉnh - Thành phố', (data) {
-                          citycode = data.code;
-                          cityController.text = data.name;
-                        });
-                      },
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 20),
-                    child: FTextFormField(
-                      borderColor: FColorSkin.grey3_background,
-                      focusColor: FColorSkin.infoPrimary,
-                      labelText: 'Quận/Huyện',
-                      readOnly: true,
-                      size: FInputSize.size64,
-                      textCapitalization: TextCapitalization.none,
-                      clearIcon: FIcon(
-                        icon: FOutlined.down,
-                        size: 16,
-                        color: FColorSkin.subtitle,
-                      ),
-                      onChanged: (vl) {
-                        setState(() {});
-                      },
-                      controller: districtController,
-                      maxLine: 1,
-                      onTap: () {
-                        // showAgencyType(placeOfIssueData, placeOfIssues,
-                        //     districtController, 'Chọn Quận - Huyện', (data) {
-                        //   placeOfIssueData = data;
-                        // });
-                        showAgencyType(
-                            districtcode,
-                            unit
-                                .where((element) =>
-                                    element.unitType == '2' &&
-                                    element.parentCode == citycode)
-                                .toList(),
-                            districtController,
-                            'Chọn Quận - Huyện', (data) {
-                          districtcode = data.code;
-                          // cityController.text = data.name;
-                        });
-                      },
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 20),
-                    child: FTextFormField(
-                      borderColor: FColorSkin.grey3_background,
-                      focusColor: FColorSkin.infoPrimary,
-                      labelText: 'Phường/Xã',
-                      readOnly: true,
-                      size: FInputSize.size64,
-                      textCapitalization: TextCapitalization.none,
-                      clearIcon: FIcon(
-                        icon: FOutlined.down,
-                        size: 16,
-                        color: FColorSkin.subtitle,
-                      ),
-                      onChanged: (vl) {
-                        setState(() {});
-                      },
-                      controller: provinceController,
-                      maxLine: 1,
-                      onTap: () {
-                        // showAgencyType(placeOfIssueData, placeOfIssues,
-                        //     provinceController, 'Chọn Phường - Xã', (data) {
-                        //   placeOfIssueData = data;
-                        // });
-                        showAgencyType(
-                            wardscode,
-                            unit
-                                .where((element) =>
-                                    element.unitType == '3' &&
-                                    element.parentCode == districtcode)
-                                .toList(),
-                            provinceController,
-                            'Chọn Quận - Huyện', (data) {
-                          wardscode = data.code;
-                          // cityController.text = data.name;
-                        });
-                      },
-                    ),
-                  ),
                   Container(
                     margin: EdgeInsets.only(top: 20),
                     child: FTextFormField(
@@ -423,51 +286,6 @@ class _SignUpState extends State<SignUp> {
                       maxLine: 1,
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 20),
-                    child: FTextFormField(
-                      borderColor: FColorSkin.grey3_background,
-                      labelText: 'Nhập lại mật khẩu',
-                      labelImportant: true,
-                      focusColor: FColorSkin.infoPrimary,
-                      size: FInputSize.size64,
-                      obscureText: hasVisible2,
-                      onChanged: (vl) {
-                        setState(() {});
-                      },
-                      onSubmitted: (vl) {},
-                      controller: rePasswordController,
-                      clearIcon: rePasswordController.text.isEmpty
-                          ? Container()
-                          : FFilledButton.icon(
-                              size: FButtonSize.size24,
-                              backgroundColor: FColorSkin.transparent,
-                              child: FIcon(
-                                icon: FFilled.close_circle,
-                                size: 16,
-                                color: FColorSkin.subtitle,
-                              ),
-                              onPressed: () {
-                                setState(rePasswordController.clear);
-                              }),
-                      suffixIcon: FFilledButton.icon(
-                          backgroundColor: FColorSkin.transparent,
-                          onPressed: () {
-                            setState(() {
-                              hasVisible2 = !hasVisible2;
-                            });
-                          },
-                          child: FIcon(
-                            icon: hasVisible2
-                                ? FFilled.eye_invisible
-                                : FFilled.eye,
-                            size: 16,
-                            color: FColorSkin.subtitle,
-                          )),
-                      validator: _RePassValidate,
-                      maxLine: 1,
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -483,7 +301,22 @@ class _SignUpState extends State<SignUp> {
             children: [
               FFilledButton(
                 size: FButtonSize.size40,
-                onPressed: _signup,
+                onPressed: () async {
+                  UserControl userController = UserControl();
+                 //
+                 //   var userItem = UserItem(
+                 //      iD: 1231,
+                 //      address: 'hanoi',
+                 //      age: 12,
+                 //      avgIncomeMonth: 1212,
+                 //      careers: null,
+                 //      dateTime: DateTime.now(),
+                 //      fullName: 'Nguyen Van Chien');
+                 // await userController.addOrEdit(userItem).whenComplete(SnackBarCore.success);
+
+                 var user = await userController.getUserInfo(1231);
+                 print(user);
+                },
                 isLoading: isLoading,
                 backgroundColor: FColorSkin.primaryColor,
                 child: Container(
@@ -506,8 +339,7 @@ class _SignUpState extends State<SignUp> {
     return NameController.text.isEmpty ||
         phoneNumberController.text.isEmpty ||
         emailController.text.isEmpty ||
-        passwordController.text.isEmpty ||
-        rePasswordController.text.isEmpty;
+        passwordController.text.isEmpty;
   }
 
   Future<void> _signup() async {
@@ -527,159 +359,10 @@ class _SignUpState extends State<SignUp> {
     setState(() {
       isLoading = true;
     });
-    final obj = registerItem(
-      fullname: NameController.text,
-      phoneNumber: phoneNumberController.text,
-      email: emailController.text,
-      address: addressController.text,
-      password: passwordController.text,
-      communeCode: wardscode,
-      provinceCode: citycode,
-      districtCode: districtcode,
-    );
 
     setState(() {
       isLoading = false;
     });
-  }
-
-  Future showAgencyType(
-      String code,
-      List<LocationItem> datas,
-      TextEditingController controller,
-      String title,
-      Function(LocationItem) callback) async {
-    var moneyTemp = code == null || code == ''
-        ? LocationItem()
-        : datas.firstWhere((element) => element.code == (code ?? ''));
-
-    return showModalBottomSheet(
-      elevation: 0,
-      enableDrag: true,
-      isDismissible: true,
-      isScrollControlled: true,
-      context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
-        ),
-      ),
-      builder: (context) => Container(
-        height: 56.0 * 5 + 68 + 32.0,
-        child: StatefulBuilder(
-          builder: (context, setStatefulBuilder) {
-            return Scaffold(
-              backgroundColor: FColors.transparent,
-              appBar: PreferredSize(
-                preferredSize: Size.fromHeight(68.0 + 16),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
-                    ),
-                    color: FColorSkin.grey1_background,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 32,
-                        height: 4,
-                        margin: EdgeInsets.only(top: 8),
-                        decoration: BoxDecoration(
-                            color: FColorSkin.grey4_background,
-                            borderRadius: BorderRadius.circular(8.0)),
-                      ),
-                      AppBar(
-                        backgroundColor: FColors.grey1,
-                        centerTitle: true,
-                        elevation: 0.2,
-                        leading: Container(
-                          child: FFilledButton.icon(
-                            size: FButtonSize.size48,
-                            backgroundColor: FColors.transparent,
-                            child: FIcon(icon: FOutlined.close),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ),
-                        title: Text(
-                          '$title',
-                          style: FTextStyle.semibold16_24
-                              .copyWith(color: FColors.grey10),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              bottomNavigationBar: Container(
-                padding: EdgeInsets.fromLTRB(16, 6, 16, 0),
-                alignment: Alignment.topCenter,
-                color: FColorSkin.grey1_background,
-                height: 80,
-                child: FFilledButton(
-                  size: FButtonSize.size40,
-                  onPressed: () {
-                    CoreRoutes.instance.pop();
-                    callback(moneyTemp);
-                    controller.text = moneyTemp?.name;
-                  },
-                  backgroundColor: FColorSkin.primaryColor,
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Xác nhận',
-                      style: FTextStyle.regular14_22
-                          .copyWith(color: FColorSkin.grey1_background),
-                    ),
-                  ),
-                ),
-              ),
-              body: Container(
-                color: FColorSkin.grey1_background,
-                child: ListView.separated(
-                  itemCount: datas.length,
-                  itemBuilder: (context, i) {
-                    final moneyItem = datas[i];
-                    return FListTile(
-                      onTap: () {
-                        setStatefulBuilder(() {
-                          moneyTemp = moneyItem;
-                        });
-                      },
-                      size: FListTileSize.size56,
-                      title: Text(
-                        '${moneyItem.name}',
-                        style: FTextStyle.regular16_24
-                            .copyWith(color: FColorSkin.title),
-                      ),
-                      action: moneyTemp?.code == moneyItem.code
-                          ? FIcon(
-                              icon: FOutlined.check,
-                              size: 20,
-                              color: FColorSkin.primaryColor,
-                            )
-                          : Container(),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return Divider(
-                      height: 1.0,
-                      thickness: 1.0,
-                      color: FColorSkin.grey3_background,
-                    );
-                  },
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
   }
 
   FTextFieldStatus _UserValidate(
@@ -741,5 +424,4 @@ class _SignUpState extends State<SignUp> {
   }
 }
 
-final agencyTypeList = [
-];
+final agencyTypeList = [];

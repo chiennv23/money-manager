@@ -1,50 +1,47 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_info.dart';
+part of 'money_item.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UserItemAdapter extends TypeAdapter<UserItem> {
+class MoneyItemAdapter extends TypeAdapter<MoneyItem> {
   @override
-  final int typeId = 0;
+  final int typeId = 3;
 
   @override
-  UserItem read(BinaryReader reader) {
+  MoneyItem read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return UserItem(
-      fullName: fields[0] as String,
-      age: fields[1] as int,
-      iD: fields[6] as String,
-      dateTime: fields[2] as DateTime,
-      careers: (fields[3] as List)?.cast<CareerItem>(),
-      address: fields[4] as String,
-      avgIncomeMonth: fields[5] as double,
+    return MoneyItem(
+      iD: fields[0] as String,
+      creMoneyDate: fields[4] as DateTime,
+      moneyCateType: fields[3] as CategoryItem,
+      moneyType: fields[1] as String,
+      noteMoney: fields[5] as NoteItem,
+      moneyValue: fields[2] as double,
     );
   }
 
   @override
-  void write(BinaryWriter writer, UserItem obj) {
+  void write(BinaryWriter writer, MoneyItem obj) {
     writer
-      ..writeByte(7)
-      ..writeByte(0)
-      ..write(obj.fullName)
       ..writeByte(6)
+      ..writeByte(0)
       ..write(obj.iD)
       ..writeByte(1)
-      ..write(obj.age)
+      ..write(obj.moneyType)
       ..writeByte(2)
-      ..write(obj.dateTime)
+      ..write(obj.moneyValue)
       ..writeByte(3)
-      ..write(obj.careers)
+      ..write(obj.moneyCateType)
       ..writeByte(4)
-      ..write(obj.address)
+      ..write(obj.creMoneyDate)
       ..writeByte(5)
-      ..write(obj.avgIncomeMonth);
+      ..write(obj.noteMoney);
   }
 
   @override
@@ -53,35 +50,38 @@ class UserItemAdapter extends TypeAdapter<UserItem> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserItemAdapter &&
+      other is MoneyItemAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
 
-class CareerItemAdapter extends TypeAdapter<CareerItem> {
+class NoteItemAdapter extends TypeAdapter<NoteItem> {
   @override
-  final int typeId = 1;
+  final int typeId = 4;
 
   @override
-  CareerItem read(BinaryReader reader) {
+  NoteItem read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return CareerItem(
-      careerId: fields[1] as String,
-      careerName: fields[0] as String,
+    return NoteItem(
+      iD: fields[0] as String,
+      noteImg: fields[2] as String,
+      noteValue: fields[1] as String,
     );
   }
 
   @override
-  void write(BinaryWriter writer, CareerItem obj) {
+  void write(BinaryWriter writer, NoteItem obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
-      ..write(obj.careerName)
+      ..write(obj.iD)
       ..writeByte(1)
-      ..write(obj.careerId);
+      ..write(obj.noteValue)
+      ..writeByte(2)
+      ..write(obj.noteImg);
   }
 
   @override
@@ -90,7 +90,7 @@ class CareerItemAdapter extends TypeAdapter<CareerItem> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CareerItemAdapter &&
+      other is NoteItemAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

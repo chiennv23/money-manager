@@ -4,16 +4,15 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:coresystem/Core/routes.dart';
 import 'package:coresystem/Core/storageKeys_helper.dart';
-import 'package:coresystem/Core/userService.dart';
+import 'package:coresystem/Project/2M/LocalDatabase/model_lib.dart';
 import 'package:coresystem/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'Config/AppConfig.dart';
-import 'Project/2M/LocalDatabase/Models/user_info.dart';
 import 'generated/l10n.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -32,9 +31,10 @@ Future<void> main() async {
   await SharedPreferencesHelper.instance.init();
   HttpOverrides.global = MyHttpOverrides();
   final appDocDir = await getApplicationDocumentsDirectory();
-  Hive.init(appDocDir.path);
+  await Hive.initFlutter(appDocDir.path);
   Hive.registerAdapter(UserItemAdapter());
   Hive.registerAdapter(CareerItemAdapter());
+  Hive.registerAdapter(CategoryItemAdapter());
   runZoned(() {
     runApp(
       MyApp(),
@@ -86,6 +86,12 @@ class _MyAppState extends State<MyApp> {
     deleteAllDataFirstInstall();
     takeLanguage();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    Hive.close();
+    super.dispose();
   }
 
   @override

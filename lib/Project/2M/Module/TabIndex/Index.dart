@@ -1,7 +1,9 @@
 import 'package:coresystem/Components/base_component.dart';
+import 'package:coresystem/Core/routes.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Contains/skin/typo_skin.dart';
 import 'package:coresystem/Project/2M/Module/TabIndex/NavigationTabItem.dart';
+import 'package:coresystem/Project/2M/Module/User/Views/sign_up.dart';
 import 'package:coresystem/Utils/Ocr_scan/ocr_scan.dart';
 import 'package:flutter/material.dart';
 
@@ -105,7 +107,7 @@ class _PageIndexState extends State<PageIndex>
                             bottom:
                                 BorderSide(color: FColorSkin.grey3_background)),
                         onTap: () async {
-                          OcrScan ocr = OcrScan();
+                          final OcrScan ocr = OcrScan();
                           await ocr.TakeImgAndOCR();
                         },
                         size: FListTileSize.size56,
@@ -115,7 +117,9 @@ class _PageIndexState extends State<PageIndex>
                               .copyWith(color: FColorSkin.primaryText),
                         )),
                     FListTile(
-                        onTap: () {},
+                        onTap: () {
+                          CoreRoutes.instance.navigatorPushRoutes(SignUp());
+                        },
                         size: FListTileSize.size56,
                         title: Text(
                           'Tạo đơn hàng',

@@ -19,14 +19,10 @@ class Routes extends CoreRoutes {
         return MaterialPageRoute(
           builder: (context) => Splash(),
         );
-      // case CoreRouteNames.LOGIN:
+      // case CoreRouteNames.REGISTER_INFO_FORM:
       //   return MaterialPageRoute(
-      //     builder: (context) => Login(),
+      //     builder: (context) => SignUp(),
       //   );
-      case CoreRouteNames.REGISTER_INFO_FORM:
-        return MaterialPageRoute(
-          builder: (context) => SignUp(),
-        );
       case CoreRouteNames.ACCOUNT_INFO:
         return MaterialPageRoute(
           builder: (context) => AccountInfo(),

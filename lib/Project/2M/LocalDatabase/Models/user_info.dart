@@ -1,10 +1,14 @@
 import 'package:hive_flutter/hive_flutter.dart';
+
 part 'user_info.g.dart';
 
 @HiveType(typeId: 0)
 class UserItem {
   @HiveField(0)
   String fullName;
+
+  @HiveField(6)
+  String iD;
 
   @HiveField(1)
   int age;
@@ -24,8 +28,9 @@ class UserItem {
   UserItem(
       {this.fullName,
       this.age,
+      this.iD,
       this.dateTime,
-      // this.careers,
+      this.careers,
       this.address,
       this.avgIncomeMonth});
 }
@@ -36,7 +41,7 @@ class CareerItem {
   String careerName;
 
   @HiveField(1)
-  int careerId;
+  String careerId;
 
   CareerItem({this.careerId, this.careerName});
 }

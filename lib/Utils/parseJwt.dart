@@ -1,23 +1,22 @@
 import 'dart:convert';
 
 import 'package:coresystem/Components/widgets/SnackBar.dart';
-import 'package:coresystem/Project/2M/Module/User/Model/user_info.dart';
-
-Future<UserInfo> parseJwt(String token) async {
-  try {
-    final parts = token.split('.');
-    if (parts.length != 3) {
-      throw Exception('invalid token');
-    }
-    final payload = _decodeBase64(parts[1]);
-    final payloadMap = UserInfo.fromJson(json.decode(payload));
-    return payloadMap;
-  } catch (e) {
-    await SnackBarCore.fail(title: e.toString(), isBottom: true);
-
-    return null;
-  }
-}
+//
+// Future<UserInfo> parseJwt(String token) async {
+//   try {
+//     final parts = token.split('.');
+//     if (parts.length != 3) {
+//       throw Exception('invalid token');
+//     }
+//     final payload = _decodeBase64(parts[1]);
+//     final payloadMap = UserInfo.fromJson(json.decode(payload));
+//     return payloadMap;
+//   } catch (e) {
+//     await SnackBarCore.fail(title: e.toString(), isBottom: true);
+//
+//     return null;
+//   }
+// }
 
 String _decodeBase64(String str) {
   String output = str.replaceAll('-', '+').replaceAll('_', '/');
