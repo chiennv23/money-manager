@@ -67,7 +67,7 @@ class NoteItemAdapter extends TypeAdapter<NoteItem> {
     };
     return NoteItem(
       iD: fields[0] as String,
-      noteImg: fields[2] as String,
+      noteImg: fields[2] as Uint8List,
       noteValue: fields[1] as String,
     );
   }

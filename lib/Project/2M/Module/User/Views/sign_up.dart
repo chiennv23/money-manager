@@ -9,10 +9,13 @@ import 'package:coresystem/Project/2M/Contains/constants.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Contains/skin/skin_route.dart';
 import 'package:coresystem/Project/2M/LocalDatabase/Models/user_info.dart';
-import 'package:coresystem/Project/2M/Module/User/DA/UserDA.dart';
+import 'package:coresystem/Project/2M/LocalDatabase/model_lib.dart';
+import 'package:coresystem/Project/2M/Module/Money/DA/money_controller.dart';
+import 'package:coresystem/Project/2M/Module/User/DA/user_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../../Utils/Validate.dart';
 
@@ -167,34 +170,11 @@ class _SignUpState extends State<SignUp> {
                     child: Column(
                       children: [
                         Text(
-                          'Đăng ký',
+                          'Create money note',
                           style: FTypoSkin.title2
                               .copyWith(color: FColorSkin.title),
                         ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              child: Text(
-                                'Bạn đã có tài khoản?',
-                                style: FTypoSkin.bodyText2
-                                    .copyWith(color: FColorSkin.title),
-                              ),
-                            ),
-                            FTextButton(
-                              size: FButtonSize.size24,
-                              child: Text(
-                                'Đăng nhập',
-                                style: FTextStyle.regular14_22
-                                    .copyWith(color: FColorSkin.infoPrimary),
-                              ),
-                              onPressed: () {
-                                _ConfirmCancel();
-                              },
-                            )
-                          ],
-                        ),
+
                       ],
                     ),
                   ),
@@ -302,20 +282,18 @@ class _SignUpState extends State<SignUp> {
               FFilledButton(
                 size: FButtonSize.size40,
                 onPressed: () async {
-                  UserControl userController = UserControl();
-                 //
-                 //   var userItem = UserItem(
-                 //      iD: 1231,
-                 //      address: 'hanoi',
-                 //      age: 12,
-                 //      avgIncomeMonth: 1212,
-                 //      careers: null,
-                 //      dateTime: DateTime.now(),
-                 //      fullName: 'Nguyen Van Chien');
-                 // await userController.addOrEdit(userItem).whenComplete(SnackBarCore.success);
+                  MoneyController userController = MoneyController();
 
-                 var user = await userController.getUserInfo(1231);
-                 print(user);
+                   var moneyItem = MoneyItem(
+                      iD: Uuid().v1(),
+                     creMoneyDate:  DateTime.now(),moneyCateType: CategoryItem(iD: Uuid().v1(),cateIcon: 'a',cateName: 'b',cateType: 'c'),
+                     );
+                   print(Uuid().v1());
+                 await userController.addMoneyNote(moneyItem).whenComplete(SnackBarCore.success);
+
+                  print(Uuid().v1());
+                  var getAllMoneyNotes = await userController.getAllMoneyNotes();
+                 print(getAllMoneyNotes);
                 },
                 isLoading: isLoading,
                 backgroundColor: FColorSkin.primaryColor,

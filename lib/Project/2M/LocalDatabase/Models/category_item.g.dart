@@ -17,7 +17,7 @@ class CategoryItemAdapter extends TypeAdapter<CategoryItem> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return CategoryItem(
-      iD: fields[0] as int,
+      iD: fields[0] as String,
       cateIcon: fields[2] as String,
       cateName: fields[1] as String,
       cateType: fields[3] as String,

@@ -4,7 +4,7 @@ part 'category_item.g.dart';
 @HiveType(typeId: 2)
 class CategoryItem {
   @HiveField(0)
-  int iD;
+  String iD;
 
   @HiveField(1)
   String cateName;

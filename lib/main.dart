@@ -34,6 +34,8 @@ Future<void> main() async {
   await Hive.initFlutter(appDocDir.path);
   Hive.registerAdapter(UserItemAdapter());
   Hive.registerAdapter(CareerItemAdapter());
+  Hive.registerAdapter(MoneyItemAdapter());
+  Hive.registerAdapter(NoteItemAdapter());
   Hive.registerAdapter(CategoryItemAdapter());
   runZoned(() {
     runApp(

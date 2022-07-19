@@ -33,8 +33,6 @@ class UserItemAdapter extends TypeAdapter<UserItem> {
       ..writeByte(7)
       ..writeByte(0)
       ..write(obj.fullName)
-      ..writeByte(6)
-      ..write(obj.iD)
       ..writeByte(1)
       ..write(obj.age)
       ..writeByte(2)
@@ -44,7 +42,9 @@ class UserItemAdapter extends TypeAdapter<UserItem> {
       ..writeByte(4)
       ..write(obj.address)
       ..writeByte(5)
-      ..write(obj.avgIncomeMonth);
+      ..write(obj.avgIncomeMonth)
+      ..writeByte(6)
+      ..write(obj.iD);
   }
 
   @override

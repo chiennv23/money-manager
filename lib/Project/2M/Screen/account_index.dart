@@ -10,6 +10,7 @@ import '../../../Core/routes.dart';
 import '../../../Core/userService.dart';
 import '../../../Utils/PickImage/imagePickerHandler.dart';
 import '../Contains/skin/typo_skin.dart';
+import '../Module/User/DA/user_controller.dart';
 import '../Module/User/Logout/handle_log_out.dart';
 import 'order_index.dart';
 
@@ -22,6 +23,8 @@ class AccountIndex extends StatefulWidget {
 
 class _AccountIndexState extends State<AccountIndex>
     with TickerProviderStateMixin, ImagePickerListener {
+  UserControl userController = UserControl();
+
   final _mainMenu = [
     {
       'title': 'Thông tin tài khoản',
@@ -231,6 +234,7 @@ class _AccountIndexState extends State<AccountIndex>
       ),
     );
   }
+
   @override
   userImageList(List<File> _image) {
     setState(() {

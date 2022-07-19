@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:coresystem/Components/base_component.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Contains/skin/typo_skin.dart';
-import 'package:coresystem/Project/2M/Module/User/DA/UserDA.dart';
+import 'package:coresystem/Project/2M/Module/User/DA/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

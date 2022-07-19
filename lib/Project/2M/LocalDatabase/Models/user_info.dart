@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:hive_flutter/hive_flutter.dart';
 
 part 'user_info.g.dart';
@@ -6,9 +8,6 @@ part 'user_info.g.dart';
 class UserItem {
   @HiveField(0)
   String fullName;
-
-  @HiveField(6)
-  String iD;
 
   @HiveField(1)
   int age;
@@ -24,6 +23,9 @@ class UserItem {
 
   @HiveField(5)
   double avgIncomeMonth;
+
+  @HiveField(6)
+  String iD;
 
   UserItem(
       {this.fullName,

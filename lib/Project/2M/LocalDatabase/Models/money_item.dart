@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:hive_flutter/hive_flutter.dart';
 import 'category_item.dart';
 
@@ -42,7 +44,7 @@ class NoteItem {
   String noteValue;
 
   @HiveField(2)
-  String noteImg;
+  Uint8List noteImg;
 
   NoteItem({this.iD, this.noteImg, this.noteValue});
 }
