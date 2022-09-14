@@ -23,13 +23,14 @@ class MoneyItemAdapter extends TypeAdapter<MoneyItem> {
       moneyType: fields[1] as String,
       noteMoney: fields[5] as NoteItem,
       moneyValue: fields[2] as double,
+      wallet: fields[6] as WalletItem,
     );
   }
 
   @override
   void write(BinaryWriter writer, MoneyItem obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.iD)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class MoneyItemAdapter extends TypeAdapter<MoneyItem> {
       ..writeByte(4)
       ..write(obj.creMoneyDate)
       ..writeByte(5)
-      ..write(obj.noteMoney);
+      ..write(obj.noteMoney)
+      ..writeByte(6)
+      ..write(obj.wallet);
   }
 
   @override
@@ -67,7 +70,7 @@ class NoteItemAdapter extends TypeAdapter<NoteItem> {
     };
     return NoteItem(
       iD: fields[0] as String,
-      noteImg: fields[2] as Uint8List,
+      noteImg: (fields[2] as List)?.cast<File>(),
       noteValue: fields[1] as String,
     );
   }

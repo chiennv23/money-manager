@@ -1,7 +1,7 @@
 import 'package:coresystem/Core/routes.dart';
 import 'package:coresystem/Project/2M/Module/TabIndex/Index.dart';
 import 'package:coresystem/Project/2M/Module/User/Views/account_info.dart';
-import 'package:coresystem/Project/2M/Module/User/Views/sign_up.dart';
+import 'package:coresystem/Project/2M/Module/Money/Views/input_money.dart';
 import 'package:coresystem/Project/2M/splash.dart';
 import 'package:flutter/material.dart';
 

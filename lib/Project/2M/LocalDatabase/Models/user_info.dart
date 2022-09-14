@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 part 'user_info.g.dart';
 
@@ -34,7 +35,7 @@ class UserItem {
       this.dateTime,
       this.careers,
       this.address,
-      this.avgIncomeMonth});
+      this.avgIncomeMonth}) ;
 }
 
 @HiveType(typeId: 1)

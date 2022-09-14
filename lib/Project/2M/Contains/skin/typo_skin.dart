@@ -7,6 +7,9 @@ class FTypoSkin {
   /// [38-48-Medium-Title-Medium7]
   static const TextStyle largeTitle = FTextStyle.medium7;
 
+  /// [32-42-Medium-Title-Medium5]
+  static const TextStyle title = FTextStyle.semibold32_42;
+
   /// [24-32-Medium-Title-Medium5]
   static const TextStyle title1 = FTextStyle.medium5;
 

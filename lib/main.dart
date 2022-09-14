@@ -4,15 +4,22 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:coresystem/Core/routes.dart';
 import 'package:coresystem/Core/storageKeys_helper.dart';
+import 'package:coresystem/Project/2M/LocalDatabase/Models/wallet_item.dart';
 import 'package:coresystem/Project/2M/LocalDatabase/model_lib.dart';
+import 'package:coresystem/Project/2M/Module/Category/DA/category_controller.dart';
 import 'package:coresystem/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get/get.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get_navigation/src/routes/observers/route_observer.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'Config/AppConfig.dart';
+import 'Project/2M/Module/Money/DA/money_controller.dart';
+import 'Project/2M/Module/Wallet/DA/wallet_controller.dart';
 import 'generated/l10n.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -32,11 +39,17 @@ Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
   final appDocDir = await getApplicationDocumentsDirectory();
   await Hive.initFlutter(appDocDir.path);
+  print('direction ${appDocDir.path}');
   Hive.registerAdapter(UserItemAdapter());
   Hive.registerAdapter(CareerItemAdapter());
   Hive.registerAdapter(MoneyItemAdapter());
   Hive.registerAdapter(NoteItemAdapter());
   Hive.registerAdapter(CategoryItemAdapter());
+  Hive.registerAdapter(WalletItemAdapter());
+  // get controller
+  Get.put(CategoryController());
+  Get.put(WalletController());
+  Get.put(MoneyController());
   runZoned(() {
     runApp(
       MyApp(),
@@ -49,17 +62,17 @@ class MyApp extends StatefulWidget {
     final state = context.findAncestorStateOfType<_MyAppState>();
     await state.changeLanguage(newLocale);
   }
+
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-
   Locale defaultLanguage;
 
   void takeLanguage() {
     final localeCode =
-    SharedPreferencesHelper.instance.getString(key: 'languageApp');
+        SharedPreferencesHelper.instance.getString(key: 'languageApp');
     ConfigApp.langApp = localeCode ?? 'vi';
     defaultLanguage = Locale(localeCode ?? 'vi');
   }
@@ -98,13 +111,14 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorObservers: [BotToastNavigatorObserver()],
+    return GetMaterialApp(
+      navigatorObservers: [
+        BotToastNavigatorObserver(),
+      ],
       debugShowCheckedModeBanner: false,
       navigatorKey: CoreRoutes.instance.navigatorKey,
       onGenerateRoute: Routes.generateRoute,
-      initialRoute:
-         CoreRouteNames.SPLASH,
+      initialRoute: CoreRouteNames.SPLASH,
       locale: defaultLanguage,
       localizationsDelegates: const [
         S.delegate,

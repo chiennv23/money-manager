@@ -6,7 +6,7 @@ import '../../../Components/base_component.dart';
 import '../../../Core/routes.dart';
 import '../Contains/constants.dart';
 import '../Contains/skin/typo_skin.dart';
-import 'order_index.dart';
+import 'transaction_index.dart';
 
 class SettingIndex extends StatefulWidget {
   const SettingIndex({Key key}) : super(key: key);
@@ -18,27 +18,7 @@ class SettingIndex extends StatefulWidget {
 class _SettingIndexState extends State<SettingIndex> {
   final _mainMenu = [
     {
-      'title': 'Quản lý người gửi',
-      'icon': FFilled.shop_location,
-      'route': CoreRouteNames.ACCOUNT_INFO
-    },
-    {
-      'title': 'Quản lý người nhận',
-      'icon': FFilled.user_check,
-      'route': CoreRouteNames.ACCOUNT_INFO
-    },
-    {
-      'title': 'Quản lý hàng hóa',
-      'icon': FFilled.box,
-      'route': CoreRouteNames.ACCOUNT_INFO
-    },
-    {
-      'title': 'Quản lý tài khoản nhập thay thế',
-      'icon': FFilled.user_edit,
-      'route': CoreRouteNames.ACCOUNT_INFO
-    },
-    {
-      'title': 'Quản lý tài khoản ngân hàng',
+      'title': 'Test',
       'icon': FFilled.bank,
       'route': CoreRouteNames.ACCOUNT_INFO,
     },

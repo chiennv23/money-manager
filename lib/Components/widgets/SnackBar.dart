@@ -91,7 +91,7 @@ Future<void> wCustomSnackBar({
   Color iconColor,
   VoidCallback onTap,
   Duration duration,
-  bool isBottom = false,
+  bool isBottom = true,
   Widget action,
   double radius,
 }) async {
@@ -152,7 +152,7 @@ class SnackBarCore {
   static Future<void> internet(
       {String title = 'Không thấy kết nối mạng, vui lòng thử lại',
       VoidCallback onTap,
-      bool isBottom = false,
+      bool isBottom = true,
       Widget action}) {
     return wCustomSnackBar(
         title: title,
@@ -167,7 +167,7 @@ class SnackBarCore {
   static Future<void> customSnackBar(
       {String title = 'Custom messenger',
       VoidCallback onTap,
-      bool isBottom = false,
+      bool isBottom = true,
       Color backColor,
       Color iconColor,
       String icon,
@@ -185,7 +185,7 @@ class SnackBarCore {
   static Future<void> info(
       {String title = 'Info message',
       VoidCallback onTap,
-      bool isBottom = false,
+      bool isBottom = true,
       Widget action}) {
     return wCustomSnackBar(
         title: title,
@@ -218,7 +218,7 @@ class SnackBarCore {
       VoidCallback onTap,
       String iconSnackBar = FFilled.close_circle,
       Color colorSnackBar = FColors.red6,
-      bool isBottom = false,
+      bool isBottom = true,
       Widget action}) {
     return wCustomSnackBar(
         title: title,
@@ -233,7 +233,7 @@ class SnackBarCore {
   static Future<void> warning(
       {String title = 'Cảnh báo có lỗi',
       VoidCallback onTap,
-      bool isBottom = false,
+      bool isBottom = true,
       Widget action}) {
     return wCustomSnackBar(
         title: title,
@@ -249,7 +249,7 @@ class SnackBarCore {
       {@required String content,
       String title = 'Đã sao chép',
       VoidCallback onTap,
-      bool isBottom = false,
+      bool isBottom = true,
       Widget action}) async {
     await FlutterClipboard.copy(content);
     return wCustomSnackBar(

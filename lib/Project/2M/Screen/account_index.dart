@@ -12,7 +12,7 @@ import '../../../Utils/PickImage/imagePickerHandler.dart';
 import '../Contains/skin/typo_skin.dart';
 import '../Module/User/DA/user_controller.dart';
 import '../Module/User/Logout/handle_log_out.dart';
-import 'order_index.dart';
+import 'transaction_index.dart';
 
 class AccountIndex extends StatefulWidget {
   const AccountIndex({Key key}) : super(key: key);
@@ -31,26 +31,7 @@ class _AccountIndexState extends State<AccountIndex>
       'icon': FFilled.ticket,
       'route': CoreRouteNames.ACCOUNT_INFO
     },
-    {
-      'title': 'Đổi mật khẩu',
-      'icon': FFilled.lock,
-      'route': CoreRouteNames.ACCOUNT_INFO
-    },
-    {
-      'title': 'Thiết lập in',
-      'icon': FFilled.printer,
-      'route': CoreRouteNames.ACCOUNT_INFO
-    },
-    {
-      'title': 'Cấu hình thông báo',
-      'icon': FFilled.bell,
-      'route': CoreRouteNames.ACCOUNT_INFO
-    },
-    {
-      'title': 'Thiết lập nhận báo cáo vận hành',
-      'icon': FFilled.file_text,
-      'route': CoreRouteNames.ACCOUNT_INFO
-    },
+
   ];
 
   AnimationController _controller;

@@ -2,10 +2,12 @@ import 'package:coresystem/Components/base_component.dart';
 import 'package:coresystem/Core/routes.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Contains/skin/typo_skin.dart';
+import 'package:coresystem/Project/2M/Module/Category/DA/category_controller.dart';
 import 'package:coresystem/Project/2M/Module/TabIndex/NavigationTabItem.dart';
-import 'package:coresystem/Project/2M/Module/User/Views/sign_up.dart';
+import 'package:coresystem/Project/2M/Module/Money/Views/input_money.dart';
 import 'package:coresystem/Utils/Ocr_scan/ocr_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class PageIndex extends StatefulWidget {
   final int indexTab;
@@ -22,6 +24,7 @@ class PageIndex extends StatefulWidget {
 class _PageIndexState extends State<PageIndex>
     with SingleTickerProviderStateMixin {
   int currentIndex = 0;
+  final CategoryController categoryController = Get.find();
 
   @override
   void initState() {
@@ -48,13 +51,13 @@ class _PageIndexState extends State<PageIndex>
         ),
       ),
       builder: (context) => Container(
-        height: 56.0 * 3 + 68 + 32.0,
+        height: 200 + 68 + 32.0,
         child: StatefulBuilder(
           builder: (context, setStatefulBuilder) {
             return Scaffold(
               backgroundColor: FColors.transparent,
               appBar: PreferredSize(
-                preferredSize: Size.fromHeight(68.0 + 16),
+                preferredSize: Size.fromHeight(16),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
@@ -74,26 +77,6 @@ class _PageIndexState extends State<PageIndex>
                             color: FColorSkin.grey4_background,
                             borderRadius: BorderRadius.circular(8.0)),
                       ),
-                      AppBar(
-                        backgroundColor: FColors.grey1,
-                        centerTitle: true,
-                        elevation: 0.2,
-                        leading: Container(
-                          child: FFilledButton.icon(
-                            size: FButtonSize.size48,
-                            backgroundColor: FColors.transparent,
-                            child: FIcon(icon: FOutlined.close),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ),
-                        title: Text(
-                          'Hành động',
-                          style: FTextStyle.semibold16_24
-                              .copyWith(color: FColors.grey10),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -102,30 +85,79 @@ class _PageIndexState extends State<PageIndex>
                 color: FColorSkin.grey1_background,
                 child: Column(
                   children: [
-                    FListTile(
-                        border: Border(
-                            bottom:
-                                BorderSide(color: FColorSkin.grey3_background)),
-                        onTap: () async {
-                          final OcrScan ocr = OcrScan();
-                          await ocr.TakeImgAndOCR();
-                        },
-                        size: FListTileSize.size56,
-                        title: Text(
-                          'Tạo ticket',
-                          style: FTypoSkin.buttonText2
-                              .copyWith(color: FColorSkin.primaryText),
-                        )),
-                    FListTile(
-                        onTap: () {
-                          CoreRoutes.instance.navigatorPushRoutes(SignUp());
-                        },
-                        size: FListTileSize.size56,
-                        title: Text(
-                          'Tạo đơn hàng',
-                          style: FTypoSkin.buttonText2
-                              .copyWith(color: FColorSkin.primaryText),
-                        )),
+                    Container(
+                      padding: EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width / 1.8,
+                            child: Text(
+                              'Thêm thông tin giao dịch',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: FTypoSkin.title1
+                                  .copyWith(color: FColorSkin.title),
+                            ),
+                          ),
+                          FTextButton(
+                              child: Text(
+                                'Huỷ bỏ',
+                                style: FTypoSkin.bodyText1
+                                    .copyWith(color: FColorSkin.subtitle),
+                              ),
+                              onPressed: () {
+                                CoreRoutes.instance.pop();
+                              })
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(left: 16.0, right: 0.0),
+                      child: Row(
+                        children: [
+                          ...List.generate(
+                            typeList.length,
+                            (index) => Obx(() {
+                              return Expanded(
+                                child: Container(
+                                  margin: EdgeInsets.only(right: 16),
+                                  child: InkWell(
+                                    onTap: () {
+                                      categoryController
+                                          .getTypeCate(typeList[index].id);
+                                      CoreRoutes.instance
+                                          .navigatorPushDownToUp(InputMoney(
+                                        idType:
+                                            categoryController.idCateType.value,
+                                      ));
+                                    },
+                                    child: AnimatedContainer(
+                                        height: 140,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            color: categoryController
+                                                        .idCateType.value ==
+                                                    typeList[index].id
+                                                ? FColorSkin.primaryColor
+                                                : FColorSkin.title,
+                                            borderRadius:
+                                                BorderRadius.circular(16.0)),
+                                        duration: Duration(milliseconds: 250),
+                                        child: Text(
+                                          typeList[index].title,
+                                          style: FTypoSkin.title3.copyWith(
+                                              color:
+                                                  FColorSkin.grey1_background),
+                                        )),
+                                  ),
+                                ),
+                              );
+                            }),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -141,32 +173,16 @@ class _PageIndexState extends State<PageIndex>
     return Scaffold(
       backgroundColor: FColorSkin.transparent,
       resizeToAvoidBottomInset: false,
-      body: Stack(
-        alignment: AlignmentDirectional.center,
-        children: [
-          TabNavigationItem.itemNav[currentIndex].page,
-          Positioned(
-            bottom: 18,
-            right: 16,
-            child: FFilledButton.icon(
-                size: FButtonSize.size64,
-                backgroundColor: FColorSkin.primaryColor,
-                child: FIcon(
-                  icon: FFilled.message,
-                  size: 40,
-                  color: FColorSkin.grey1_background,
-                ),
-                onPressed: () {}),
-          )
-        ],
-      ),
+      body: TabNavigationItem.itemNav[currentIndex].page,
       floatingActionButton: Container(
         padding: EdgeInsets.only(top: 53),
         child: FFilledButton.icon(
+            size: FButtonSize.size48,
             backgroundColor: FColorSkin.primaryColor,
             onPressed: _Action,
             child: FIcon(
               icon: FOutlined.plus,
+              size: 28,
               color: FColorSkin.grey1_background,
             )),
       ),
@@ -204,4 +220,16 @@ class _PageIndexState extends State<PageIndex>
       ),
     );
   }
+}
+
+final List<InputTypeItem> typeList = [
+  InputTypeItem(id: 0, title: 'Chi tiêu', imgAvt: ''),
+  InputTypeItem(id: 1, title: 'Thu nhập', imgAvt: ''),
+];
+
+class InputTypeItem {
+  int id;
+  String title, imgAvt;
+
+  InputTypeItem({this.id, this.title, this.imgAvt});
 }

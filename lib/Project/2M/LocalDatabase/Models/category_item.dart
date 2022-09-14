@@ -1,4 +1,6 @@
 import 'package:hive/hive.dart';
+import 'package:uuid/uuid.dart';
+
 part 'category_item.g.dart';
 
 @HiveType(typeId: 2)

@@ -192,6 +192,11 @@ class FDate {
 }
 
 extension FDateTimeExtension on DateTime {
+  bool isSameDate(DateTime other) {
+    return year == other.year && month == other.month
+        && day == other.day;
+  }
+
   String format(String pattern) {
     try {
       if (this == null) {
@@ -273,6 +278,7 @@ extension WStringExtension on String {
       )
       .toLowerCase()
       .trim();
+
   String wVietNam() {
     return TiengVietCore.removeDiacritics(this);
   }

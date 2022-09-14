@@ -129,6 +129,14 @@ class FTextStyle {
     leadingDistribution: TextLeadingDistribution.even,
     fontWeight: FontWeight.w600,
   );
+  static const TextStyle semibold32_42 = TextStyle(
+    fontFamily: 'Arial',
+    fontSize: 32,
+    height: 19 / 15,
+    color: Color(0xff262626),
+    leadingDistribution: TextLeadingDistribution.even,
+    fontWeight: FontWeight.w600,
+  );
   static const TextStyle semibold38_46 = TextStyle(
     fontFamily: 'Arial',
     fontSize: 38,

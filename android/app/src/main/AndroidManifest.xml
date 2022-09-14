@@ -16,7 +16,7 @@
     </queries>
 
     <application
-            android:label="MoneyNote++"
+            android:label="Monage"
             android:usesCleartextTraffic="true"
             android:icon="@mipmap/ic_launcher"
             android:requestLegacyExternalStorage="true">

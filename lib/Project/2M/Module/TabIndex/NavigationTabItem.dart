@@ -2,9 +2,9 @@ import 'package:coresystem/Components/base_component.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Module/User/Views/account_info.dart';
 import 'package:coresystem/Project/2M/Screen/account_index.dart';
-import 'package:coresystem/Project/2M/Screen/order_index.dart';
+import 'package:coresystem/Project/2M/Screen/transaction_index.dart';
 import 'package:coresystem/Project/2M/Screen/setting_index.dart';
-import 'package:coresystem/Project/2M/Screen/support_index.dart';
+import 'package:coresystem/Project/2M/Screen/wallet_index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -52,24 +52,24 @@ class TabNavigationItem {
 
   static List<TabNavigationItem> itemNav = [
     TabNavigationItem(
-      page: OrderIndex(),
+      page: TransactionIndex(),
       unActiveIcon: iconUnActive(
-        FOutlined.box,
+        FOutlined.home,
       ),
       activeIcon: iconActive(
-        FFilled.box,
+        FFilled.home,
       ),
-      title: 'Đơn hàng',
+      title: 'Transaction',
     ),
     TabNavigationItem(
       page: SettingIndex(),
       activeIcon: iconActive(
-        FFilled.tool,
+        FFilled.pie_chart,
       ),
       unActiveIcon: iconUnActive(
-        FOutlined.tool,
+        FOutlined.pie_chart,
       ),
-      title: 'Cấu hình',
+      title: 'Report',
     ),
     TabNavigationItem(
       page: Container(),
@@ -81,12 +81,12 @@ class TabNavigationItem {
     TabNavigationItem(
       page: SupportIndex(),
       unActiveIcon: iconUnActive(
-        FOutlined.question_circle,
+        FOutlined.wallet,
       ),
       activeIcon: iconActive(
-        FFilled.question_circle,
+        FFilled.wallet,
       ),
-      title: 'Hỗ trợ',
+      title: 'Wallet',
     ),
     TabNavigationItem(
       page: AccountIndex(),
@@ -96,7 +96,7 @@ class TabNavigationItem {
       activeIcon: iconActive(
         FFilled.user,
       ),
-      title: 'Cá nhân',
+      title: 'Setting',
     ),
   ];
 }

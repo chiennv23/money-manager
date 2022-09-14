@@ -13,20 +13,22 @@ Color _colorFromHex(String hexColor) {
 
 class FColorSkin {
   /// [Primary Color]
-  static Color primaryColor = _colorFromHex('FBAF17');
-  static Color primaryColorHover = _colorFromHex('40A9FF');
-  static Color primaryColorPressed = _colorFromHex('096DD9');
+  static Color primaryColor = _colorFromHex('#366AE2');
+  static Color primaryColorSub = _colorFromHex('#4D7AE5');
+  static Color primaryColorHover = _colorFromHex('#799CEC');
+  static Color primaryColorPressed = _colorFromHex('#1D50C9');
   static Color primaryColorActive = _colorFromHex('096DD9');
-  static Color primaryColorTagBackground = _colorFromHex('E6F7FF');
-  static Color primaryColorBorderColor = _colorFromHex('91D5FF');
+  static Color primaryColorTagBackground = _colorFromHex('#EDF2FD');
+  static Color primaryColorBorderColor = _colorFromHex('#BCCDF5');
 
   /// [Secondary Color 1]
-  static Color secondaryColor1 = _colorFromHex('004588');
-  static Color secondaryColor1Hover = _colorFromHex('4DD077');
-  static Color secondaryColor1Pressed = _colorFromHex('039732');
-  static Color secondaryColor1Active = _colorFromHex('039732');
-  static Color secondaryColor1TagBackground = _colorFromHex('E6EDF4');
-  static Color secondaryColor1BorderColor = _colorFromHex('B3EBC5');
+  static Color secondaryColor1 = _colorFromHex('#FC6B03');
+  static Color secondaryColor1Sub = _colorFromHex('#FD8835');
+  static Color secondaryColor1Hover = _colorFromHex('#FD974E');
+  static Color secondaryColor1Pressed = _colorFromHex('#B14B02');
+  static Color secondaryColor1Active = _colorFromHex('#B14B02');
+  static Color secondaryColor1TagBackground = _colorFromHex('#FFEDE1');
+  static Color secondaryColor1BorderColor = _colorFromHex('#FEC49A');
 
   /// [Secondary Color 2]
   static Color secondaryColor2 = _colorFromHex('13C2C2');
@@ -61,11 +63,12 @@ class FColorSkin {
 
   /// [Typography Colors Usage]
   static Color onColorBackground = FColors.grey1;
-  static Color disable = FColors.grey5;
-  static Color subtitle = FColors.grey6;
+  static Color disable = Color(0xffAEBCD0);
+  static Color subtitle = Color(0xff6E87AA);
+  static Color body = Color(0xff6E87AA);
   static const Color secondaryText = Color(0xff8C8C8C);
   static const Color primaryText = Color(0xff595959);
-  static const Color title = FColors.grey9;
+  static const Color title = Color(0xff1C2430);
 
   /// [Alert Info Color]
   static Color infoPrimary = _colorFromHex('1890FF');
