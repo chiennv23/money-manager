@@ -20,7 +20,7 @@ dependencies:
   flutter_spinkit: ^5.0.0
   flutter_svg: ^0.22.0
   http:
-  image_cropper: any
+  image_cropper: 1.5.1
   image_picker: any
   shared_preferences: ^2.0.5
   lottie: ^1.2.1
@@ -53,7 +53,6 @@ flutter:
     - lib/Assets/IconApp/
     - lib/Assets/Images/
     - lib/Assets/Svg/
-    - lib/Assets/Json/
 
 flutter_intl:
   enabled: true

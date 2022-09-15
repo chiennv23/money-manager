@@ -160,8 +160,7 @@ class MoneyController extends GetxController {
     // 1: thu nhap
     await walletController.addWallet(
         moneyItem.wallet.iD, moneyItem.wallet.title,
-        moneyNote: moneyItem.moneyValue.round(),
-        expenseType: moneyItem.moneyType == '0',);
+        editMoneyItem: moneyItem);
     if (_moneyList.any((element) => element.iD == moneyItem.iD)) {
       // edit money
       final indexEditMoney =
@@ -174,6 +173,7 @@ class MoneyController extends GetxController {
       editObj.moneyCateType = moneyItem.moneyCateType;
       editObj.moneyValue = moneyItem.moneyValue;
       await CacheService.edit(indexEditMoney, editObj);
+      CoreRoutes.instance.pop();
     } else {
       // add money
       //add data to Hive

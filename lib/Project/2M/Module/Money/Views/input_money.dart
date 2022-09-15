@@ -65,6 +65,7 @@ class _InputMoneyState extends State<InputMoney>
         final indexWallet = walletController.walletList
             .indexWhere((element) => element.iD == widget.moneyItem.wallet.iD);
         walletController.getIndex(indexWallet);
+        walletController.walletChoosedBefore = widget.moneyItem.wallet;
         moneyController.selectedValue.value = widget.moneyItem.creMoneyDate;
         getNote = widget.moneyItem.noteMoney.noteValue;
         _imagesFile = widget.moneyItem.noteMoney.noteImg ?? [];
@@ -408,7 +409,6 @@ class _InputMoneyState extends State<InputMoney>
                                                         },
                                                         child: Container(
                                                           height: 108,
-                                                          width: 84,
                                                           alignment:
                                                               Alignment.center,
                                                           padding: EdgeInsets
@@ -804,10 +804,10 @@ class _InputMoneyState extends State<InputMoney>
                             moneyType: widget.idType.toString(),
                             moneyValue: moneyValue,
                             noteMoney: NoteItem(
-                                noteValue: getNote ?? '',
-                                // noteImg: _imagesFile == null
-                                //     ? []
-                                //     : [..._imagesFile]
+                              noteValue: getNote ?? '',
+                              // noteImg: _imagesFile == null
+                              //     ? []
+                              //     : [..._imagesFile]
                             ),
                             creMoneyDate: moneyController.selectedValue.value,
                             moneyCateType: categoryController.cateChoose,

@@ -3,6 +3,7 @@ import 'package:coresystem/Project/2M/Contains/constants.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/LocalDatabase/Models/wallet_item.dart';
 import 'package:coresystem/Project/2M/Module/Wallet/DA/wallet_controller.dart';
+import 'package:coresystem/Project/2M/Screen/wallet_index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -28,6 +29,7 @@ class CreateWallet extends StatefulWidget {
 class _CreateWalletState extends State<CreateWallet> {
   final nameWalletController = TextEditingController();
   WalletController walletController = Get.find();
+  int indexWalletColor = 0;
 
   @override
   void initState() {
@@ -75,6 +77,45 @@ class _CreateWalletState extends State<CreateWallet> {
                 focusColor: FColorSkin.transparent,
                 hintStyle: TextStyle(color: FColorSkin.subtitle),
               ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 16.0,
+                ),
+                child: Text(
+                  'Wallet Theme',
+                  style: FTypoSkin.title3.copyWith(color: FColorSkin.title),
+                ),
+              ),
+              Container(
+                  height: 50,
+                  child: Wrap(
+                    children: List.generate(listTypeCardWallet.length, (index) {
+                      final item = listTypeCardWallet[index];
+                      return Container(
+                        margin: EdgeInsets.only(right: 16),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: indexWalletColor == index
+                                    ? FColorSkin.primaryColor
+                                    : FColorSkin.transparent)),
+                        child: InkWell(
+                          onTap: () {
+                            indexWalletColor = index;
+                            setState(() {});
+                          },
+                          child: FBoundingBox(
+                            size: FBoxSize.size48,
+                            child: Image.asset(
+                              item.img,
+                              height: 48,
+                              width: 48,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  )),
               Padding(
                 padding: const EdgeInsets.only(
                   top: 16.0,
