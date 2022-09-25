@@ -38,6 +38,7 @@ class ImagePickerHandler {
         _listener.userImageList(_imagesFile);
       }
     }
+    _imagesFile.clear();
   }
 
   openGallery() async {
@@ -65,6 +66,7 @@ class ImagePickerHandler {
       }
     }
     _listener.userImageList(_imagesFile);
+    _imagesFile.clear();
   }
 
   void init() {
@@ -72,7 +74,7 @@ class ImagePickerHandler {
     imagePicker.initState();
   }
 
-  List<File> _imagesFileCrop = [];
+  final List<File> _imagesFileCrop = [];
 
   ImageCropper imageCropper = ImageCropper();
 

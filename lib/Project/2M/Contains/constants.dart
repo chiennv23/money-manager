@@ -1,19 +1,12 @@
 import 'package:coresystem/Components/base_component.dart';
 import 'package:coresystem/Components/styles/icon_data.dart';
 import 'package:coresystem/Components/styles/text_style.dart';
-import 'package:coresystem/Components/widgets/SnackBar.dart';
-import 'package:coresystem/Config/AppConfig.dart';
-import 'package:coresystem/Core/enum_core.dart';
 import 'package:coresystem/Core/routes.dart';
-import 'package:coresystem/Core/storageKeys_helper.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Contains/skin/typo_skin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
-
-import '../../../main.dart';
 
 AppBar appbarWithBottom(
     {String title,

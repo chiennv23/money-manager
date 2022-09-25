@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'category_item.dart';
 import 'wallet_item.dart';
@@ -35,7 +36,7 @@ class MoneyItem {
       this.moneyType,
       this.noteMoney,
       this.moneyValue,
-      this.wallet}) ;
+      this.wallet});
 }
 
 @HiveType(typeId: 4)
@@ -47,7 +48,7 @@ class NoteItem {
   String noteValue;
 
   @HiveField(2)
-  List<File> noteImg;
+  List<Uint8List> noteImg;
 
   NoteItem({this.iD, this.noteImg, this.noteValue});
 }

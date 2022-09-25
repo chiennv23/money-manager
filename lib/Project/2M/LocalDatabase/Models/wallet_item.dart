@@ -16,8 +16,8 @@ class WalletItem {
   @HiveField(3)
   DateTime creWalletDate;
 
-  @HiveField(4, defaultValue: 0)
-  int moneyWallet;
+  @HiveField(4, defaultValue: 0.0)
+  double moneyWallet;
 
   WalletItem(
       {this.iD, this.title, this.avt, this.creWalletDate, this.moneyWallet});

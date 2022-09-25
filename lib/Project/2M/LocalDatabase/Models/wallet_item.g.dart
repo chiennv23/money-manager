@@ -21,7 +21,7 @@ class WalletItemAdapter extends TypeAdapter<WalletItem> {
       title: fields[1] as String,
       avt: fields[2] as String,
       creWalletDate: fields[3] as DateTime,
-      moneyWallet: fields[4] as int,
+      moneyWallet: fields[4] == null ? 0.0 : fields[4] as double,
     );
   }
 

@@ -1,7 +1,22 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
+
+class ImageHelper {
+  static Future<Uint8List> compressImage(File image) async {
+    final Uint8List lst = await FlutterImageCompress.compressWithFile(
+      image.absolute.path,
+      minHeight: 1280,
+      minWidth: 1980,
+      quality: 40,
+    );
+    return lst;
+  }
+}
 
 class WConvert {
   static DateTime dateDefault = DateTime(2019, 1, 1);
@@ -55,17 +70,17 @@ class WConvert {
     final a = value.toInt();
     // ignore: unused_local_variable
     var money = '';
-    if (a >= 1000000000) {
+    if (a >= 1000000000 || a < -1000000000) {
       return money = '${a / 1000000000}B';
     }
-    if (a >= 1000000) {
+    if (a >= 1000000 || a < -1000000) {
       return money = '${a / 1000000}M';
     }
-    if (a >= 1000) {
+    if (a >= 1000 || a < -1000) {
       return money = '${a / 1000}K';
     }
     // ignore: invariant_booleans
-    if (a < 1000) {
+    if (a < 1000 || a < -1000) {
       return money = (a).toString();
     }
   }
@@ -75,15 +90,6 @@ class WConvert {
         ? DateFormat(format)
             .format(dateDefault.add(Duration(seconds: totalSeconds.round())))
         : '';
-  }
-
-  static String formatTime(DateTime time) {
-    // final hour = time.hour;
-    // final minute =
-    //     time.minute < 10 ? '0${time.minute}' : time.minute.toString();
-    // final type = hour < 12 ? 'AM' : 'PM';
-    return "${DateFormat('dd/MM/yyyy').format(time)}";
-    // return "$hour:$minute $type - ${DateFormat('dd/MM/yyyy').format(time)}";
   }
 
   ///Bỏ khoảng trắng thừa
@@ -105,7 +111,7 @@ extension StringExtension on String {
 }
 
 class FDate {
-  /// dd/MM/yyy -> 21/09/1997
+  // dd/MM/yyy -> 21/09/1997
   static String dMy(dynamic date) {
     if (date == null) {
       return '';
@@ -164,6 +170,33 @@ class FDate {
     }
   }
 
+  static String weekday_dMy(dynamic date) {
+    if (date.runtimeType == String) {
+      final tmp = DateTime.tryParse(date);
+      return DateFormat('EEE, dd/MM/yyyy').format(tmp);
+    } else {
+      return DateFormat('EEE, dd/MM/yyyy').format(date);
+    }
+  }
+
+  static String onlyDayWeek(dynamic date) {
+    if (date.runtimeType == String) {
+      final tmp = DateTime.tryParse(date);
+      return DateFormat('EEE').format(tmp);
+    } else {
+      return DateFormat('EEE').format(date);
+    }
+  }
+
+  static String My(dynamic date) {
+    if (date.runtimeType == String) {
+      final tmp = DateTime.tryParse(date);
+      return DateFormat('MMMM, yyyy').format(tmp);
+    } else {
+      return DateFormat('MMMM, yyyy').format(date);
+    }
+  }
+
   // hh:mm:ss
   static String hms(DateTime date) {
     final hour = date.hour;
@@ -193,8 +226,11 @@ class FDate {
 
 extension FDateTimeExtension on DateTime {
   bool isSameDate(DateTime other) {
-    return year == other.year && month == other.month
-        && day == other.day;
+    return year == other.year && month == other.month && day == other.day;
+  }
+
+  bool isSameMy(DateTime other) {
+    return year == other.year && month == other.month;
   }
 
   String format(String pattern) {
@@ -209,6 +245,10 @@ extension FDateTimeExtension on DateTime {
       return null;
     }
   }
+
+  static DateTime dateDefault = DateTime(2019, 1, 1);
+
+  int totalSeconds() => difference(dateDefault).inSeconds;
 }
 
 extension WDoubleExtension on double {
@@ -218,12 +258,6 @@ extension WDoubleExtension on double {
       .format(this);
 
   int wDoubleToInt() => toInt();
-}
-
-extension WDateTimeExtension on DateTime {
-  static DateTime dateDefault = DateTime(2019, 1, 1);
-
-  int totalSeconds() => difference(dateDefault).inSeconds;
 }
 
 extension WIntExtension on int {
@@ -329,5 +363,20 @@ class NumericTextFormatter extends TextInputFormatter {
     } else {
       return newValue;
     }
+  }
+}
+
+extension WListExtension<T> on Iterable<T> {
+  Iterable<T> filterCheckDuplicateItem([Function(T) f]) {
+    List<T> filterList = [];
+    if (f != null) {
+      for (var e in this) {
+        if (!filterList.any((item) => f(item) == f(e))) filterList.add(e);
+      }
+    } else
+      for (var e in this) {
+        if (!filterList.any((item) => item == e)) filterList.add(e);
+      }
+    return filterList;
   }
 }

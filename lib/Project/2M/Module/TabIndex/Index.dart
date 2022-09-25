@@ -171,34 +171,46 @@ class _PageIndexState extends State<PageIndex>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: FColorSkin.transparent,
       resizeToAvoidBottomInset: false,
       body: TabNavigationItem.itemNav[currentIndex].page,
       floatingActionButton: Container(
         padding: EdgeInsets.only(top: 53),
         child: FFilledButton.icon(
             size: FButtonSize.size48,
-            backgroundColor: FColorSkin.primaryColor,
+            backgroundColor: currentIndex == 0
+                ? FColorSkin.grey1_background
+                : FColorSkin.primaryColor,
             onPressed: _Action,
             child: FIcon(
               icon: FOutlined.plus,
               size: 28,
-              color: FColorSkin.grey1_background,
+              color: currentIndex == 0
+                  ? FColorSkin.title
+                  : FColorSkin.grey1_background,
             )),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: DecoratedBox(
         decoration: BoxDecoration(boxShadow: [FElevation.elevation2]),
         child: BottomNavigationBar(
-          backgroundColor: FColorSkin.grey1_background,
+          backgroundColor: currentIndex == 0
+              ? FColorSkin.title
+              : FColorSkin.grey1_background,
           currentIndex: currentIndex,
-          selectedItemColor: FColorSkin.primaryColor,
+          selectedItemColor: currentIndex == 0
+              ? FColorSkin.primaryColorBorderColor
+              : FColorSkin.primaryColor,
           selectedFontSize: 10,
           unselectedFontSize: 10,
           elevation: 0.0,
-          unselectedItemColor: FColorSkin.subtitle,
+          unselectedItemColor: currentIndex == 0
+              ? FColorSkin.primaryColorBorderColor
+              : FColorSkin.subtitle,
           type: BottomNavigationBarType.fixed,
-          selectedLabelStyle: FTypoSkin.subtitle2,
+          selectedLabelStyle: currentIndex == 0
+              ? FTypoSkin.subtitle2
+                  .copyWith(color: FColorSkin.primaryColorBorderColor)
+              : FTypoSkin.subtitle2,
           unselectedLabelStyle: FTypoSkin.subtitle2,
           onTap: (int index) async {
             if (index == 2) {

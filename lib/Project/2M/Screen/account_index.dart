@@ -1,14 +1,24 @@
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:coresystem/Core/CacheService.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
+import 'package:coresystem/Project/2M/LocalDatabase/model_lib.dart';
+import 'package:coresystem/Project/2M/Module/Category/DA/category_controller.dart';
+import 'package:coresystem/Project/2M/Module/Money/DA/money_controller.dart';
+import 'package:coresystem/Project/2M/Module/Wallet/DA/wallet_controller.dart';
+import 'package:coresystem/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../Components/base_component.dart';
 import '../../../Core/routes.dart';
 import '../../../Core/userService.dart';
 import '../../../Utils/PickImage/imagePickerHandler.dart';
+import '../Contains/constants.dart';
 import '../Contains/skin/typo_skin.dart';
 import '../Module/User/DA/user_controller.dart';
 import '../Module/User/Logout/handle_log_out.dart';
@@ -24,19 +34,18 @@ class AccountIndex extends StatefulWidget {
 class _AccountIndexState extends State<AccountIndex>
     with TickerProviderStateMixin, ImagePickerListener {
   UserControl userController = UserControl();
-
+  MoneyController moneyController = Get.find();
+  CategoryController categoryController = Get.find();
+  WalletController walletController = Get.find();
   final _mainMenu = [
     {
       'title': 'Thông tin tài khoản',
       'icon': FFilled.ticket,
       'route': CoreRouteNames.ACCOUNT_INFO
     },
-
   ];
 
   AnimationController _controller;
-
-  PickerLogoutHandler PickLogout;
 
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -69,8 +78,6 @@ class _AccountIndexState extends State<AccountIndex>
       chooseMutil: false,
     );
     imagePicker.init();
-    PickLogout = PickerLogoutHandler(_controller);
-    PickLogout.init();
     _initPackageInfo();
     if (UserService.getAvtUsername != null) {
       _imagesFile = File(UserService.getAvtUsername);
@@ -82,6 +89,35 @@ class _AccountIndexState extends State<AccountIndex>
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void clearAllData() {
+    popupWithStatus(
+      context,
+      backGroundAvatar: FColorSkin.transparent,
+      typePopup: TypePopup.error,
+      textTitle: 'Bạn có chắc muốn xoá dữ liệu?',
+      childSubtitle: Text(
+        'Nếu bạn xoá hết dữ liệu, mọi thông tin chi tiêu đã lưu sẽ không thể khôi phục.',
+        style: FTextStyle.regular14_22.copyWith(color: FColorSkin.primaryText),
+        textAlign: TextAlign.center,
+      ),
+      textCancel: 'Huỷ',
+      actionCancel: () {
+        CoreRoutes.instance.pop();
+      },
+      backGroundAction: FColorSkin.errorPrimary,
+      textAction: 'Xoá toàn bộ',
+      action: () async {
+        // await moneyController.deleteAllMoneyNote();
+        await categoryController.deleteAllCategory();
+        await walletController.delAllWallet();
+        await Hive.deleteFromDisk();
+        await HiveDB().initDefaultList();
+        await GetControl().reStartGetData();
+        RestartWidget.restartApp(context);
+      },
+    );
   }
 
   @override
@@ -193,7 +229,7 @@ class _AccountIndexState extends State<AccountIndex>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Version ${_packageInfo.version} (${_packageInfo.buildNumber})',
+                    'Version ${_packageInfo.version}',
                     style: FTypoSkin.bodyText2
                         .copyWith(color: FColorSkin.secondaryText),
                   )
@@ -203,12 +239,13 @@ class _AccountIndexState extends State<AccountIndex>
             FFilledButton(
                 backgroundColor: FColorSkin.grey4_background,
                 child: Text(
-                  'Đăng xuất',
+                  'Clear All Data',
                   style: FTypoSkin.buttonText2
                       .copyWith(color: FColorSkin.secondaryText),
                 ),
                 onPressed: () {
-                  PickLogout.showDialog(context);
+                  clearAllData();
+                  // walletController.delAllWallet();
                 })
           ],
         ),
@@ -218,9 +255,12 @@ class _AccountIndexState extends State<AccountIndex>
 
   @override
   userImageList(List<File> _image) {
+    // var imgFile = File.fromRawPath();
+    var imgFile = _image[0];
+
     setState(() {
-      UserService.setAvtUsername(_image[0].path);
-      this._imagesFile = _image[0];
+      UserService.setAvtUsername(imgFile.path);
+      this._imagesFile = imgFile;
     });
   }
 }

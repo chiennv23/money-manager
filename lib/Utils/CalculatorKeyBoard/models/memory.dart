@@ -1,3 +1,4 @@
+import 'package:coresystem/Components/widgets/SnackBar.dart';
 import 'package:coresystem/Utils/ConvertUtils.dart';
 import 'package:math_expressions/math_expressions.dart';
 
@@ -62,6 +63,8 @@ class Memory {
       //   _result = _result.replaceAll('-', '');
       // }
     } catch (e) {
+      SnackBarCore.warning(isBottom: true, title: 'Syntax error, try again.');
+      _equation = '0';
       _result = '0';
     }
   }

@@ -37,22 +37,13 @@ Future<void> main() async {
 
   await SharedPreferencesHelper.instance.init();
   HttpOverrides.global = MyHttpOverrides();
-  final appDocDir = await getApplicationDocumentsDirectory();
-  await Hive.initFlutter(appDocDir.path);
-  print('direction ${appDocDir.path}');
-  Hive.registerAdapter(UserItemAdapter());
-  Hive.registerAdapter(CareerItemAdapter());
-  Hive.registerAdapter(MoneyItemAdapter());
-  Hive.registerAdapter(NoteItemAdapter());
-  Hive.registerAdapter(CategoryItemAdapter());
-  Hive.registerAdapter(WalletItemAdapter());
-  // get controller
-  Get.put(CategoryController());
-  Get.put(WalletController());
-  Get.put(MoneyController());
+  // initHive
+  await HiveDB().initHive();
+  // get controllers
+  await GetControl().startGetData();
   runZoned(() {
     runApp(
-      MyApp(),
+      RestartWidget(child: MyApp()),
     );
   });
 }
@@ -105,6 +96,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
+    print('Dispose Hive');
     Hive.close();
     super.dispose();
   }
@@ -149,33 +141,33 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-// class RestartWidget extends StatefulWidget {
-//   RestartWidget({this.child});
-//
-//   final Widget child;
-//
-//   static void restartApp(BuildContext context) {
-//     context.findAncestorStateOfType<_RestartWidgetState>().restartApp();
-//   }
-//
-//   @override
-//   _RestartWidgetState createState() => _RestartWidgetState();
-// }
-//
-// class _RestartWidgetState extends State<RestartWidget> {
-//   Key key = UniqueKey();
-//
-//   void restartApp() {
-//     setState(() {
-//       key = UniqueKey();
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return KeyedSubtree(
-//       key: key,
-//       child: widget.child,
-//     );
-//   }
-// }
+class RestartWidget extends StatefulWidget {
+  RestartWidget({this.child});
+
+  final Widget child;
+
+  static void restartApp(BuildContext context) {
+    context.findAncestorStateOfType<_RestartWidgetState>().restartApp();
+  }
+
+  @override
+  _RestartWidgetState createState() => _RestartWidgetState();
+}
+
+class _RestartWidgetState extends State<RestartWidget> {
+  Key key = UniqueKey();
+
+  void restartApp() {
+    setState(() {
+      key = UniqueKey();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return KeyedSubtree(
+      key: key,
+      child: widget.child,
+    );
+  }
+}

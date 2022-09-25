@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:coresystem/Core/routes.dart';
-import 'package:coresystem/Project/2M/Contains/constants.dart';
-import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Contains/skin/skin_route.dart';
 import 'package:coresystem/Project/2M/Module/Introduction/introduction.dart';
 import 'package:coresystem/Project/2M/Module/TabIndex/Index.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+
+import '../../Core/storageKeys_helper.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key key}) : super(key: key);
@@ -18,17 +18,23 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
+  bool _isfirst = false;
+
   @override
   void initState() {
+    _isfirst = SharedPreferencesHelper.instance.getBool(key: 'first_run');
     super.initState();
   }
 
   void initView() {
-    Timer(Duration(milliseconds: 2360), () async {
+    Timer(Duration(milliseconds: 2365), () async {
       if (kReleaseMode) {
-        await CoreRoutes.instance.navigateAndRemoveFade(PageIndex());
+        if (_isfirst) {
+          await CoreRoutes.instance.navigateAndRemoveFade(IntroduceApp());
+        } else {
+          await CoreRoutes.instance.navigateAndRemoveFade(PageIndex());
+        }
       } else {
-        // await CoreRoutes.instance.navigateAndRemoveFade(IntroduceApp());
         await CoreRoutes.instance.navigateAndRemoveFade(PageIndex());
       }
     });
@@ -56,14 +62,6 @@ class _SplashState extends State<Splash> {
           ),
         ],
       )),
-    );
-    return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        width: double.infinity,
-        height: double.infinity,
-        child: Image.asset(StringImage.on_boarding),
-      ),
     );
   }
 }

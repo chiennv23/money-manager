@@ -16,6 +16,8 @@ class CategoryController extends GetxController {
   @override
   void onInit() {
     // deleteAllCategory();
+    idCate.value = 0;
+    cateChoose = CategoryItem();
     getCateList();
     super.onInit();
   }
@@ -33,15 +35,17 @@ class CategoryController extends GetxController {
   // get index UI cate
   void getIndex(int index) {
     idCate.value = index;
-    cateChoose = cateList[index];
+    cateChoose = cateList[idCate.value];
   }
 
   String get showNameCate =>
-      '${idCate.value != 0 ? cateList[idCate.value].cateName : cateList?.first?.cateName}';
+      '${idCate.value > 0 ? cateList[idCate.value].cateName : cateList?.first?.cateName}';
 
   Future getCateList() async {
     final lst = await getAllCategory();
-    _cateList.assignAll(lst);
+    if (lst != null) {
+      _cateList.assignAll(lst);
+    }
     if (_cateList != null && _cateList.length != 0) {
       cateChoose = _cateList.first;
     }
@@ -59,10 +63,9 @@ class CategoryController extends GetxController {
     await CacheService.add<CategoryItem>(id, obj);
     _cateList.insert(0, obj);
     _cateList.refresh();
-    idCate.value = _cateList.indexWhere((element) => element.iD == id);
-    cateChoose = _cateList[idCate.value];
-
-    CoreRoutes.instance.pop(result: id);
+    idCate.value = _cateList.indexWhere((element) => element.iD == obj.iD);
+    cateChoose = _cateList.first;
+    CoreRoutes.instance.pop(result: idCate.value);
     await SnackBarCore.success();
   }
 
@@ -74,6 +77,8 @@ class CategoryController extends GetxController {
 
   Future<void> deleteAllCategory() async {
     await CacheService.clear<CategoryItem>();
+    _cateList.clear();
+    update();
   }
 
   Future<CategoryItem> getCategory(String iD) async {

@@ -70,7 +70,7 @@ class NoteItemAdapter extends TypeAdapter<NoteItem> {
     };
     return NoteItem(
       iD: fields[0] as String,
-      noteImg: (fields[2] as List)?.cast<File>(),
+      noteImg: (fields[2] as List)?.cast<Uint8List>(),
       noteValue: fields[1] as String,
     );
   }

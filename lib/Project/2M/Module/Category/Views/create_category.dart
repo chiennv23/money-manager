@@ -89,7 +89,7 @@ class _CreateCategoryState extends State<CreateCategory> {
                 focusColor: FColorSkin.transparent,
                 hintStyle: TextStyle(color: FColorSkin.title),
                 onSubmitted: (v) {
-                  final id = Uuid().v1();
+                  final id = uuid.v4();
                   categoryController.addCategory(
                       id, nameCateController.text.trim(), widget.idType);
                 },
@@ -114,7 +114,7 @@ class _CreateCategoryState extends State<CreateCategory> {
             onPressed: checkEmpty
                 ? null
                 : () async {
-                    final id = Uuid().v1();
+                    final id = uuid.v4();
                     await categoryController.addCategory(
                         id, nameCateController.text.trim(), widget.idType);
                   },

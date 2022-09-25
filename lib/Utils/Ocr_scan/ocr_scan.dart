@@ -80,12 +80,12 @@ class OcrScan {
     return null;
   }
 
-  Future<void> TakeImgAndOCR({bool forRoleStaff = false}) async {
+  Future<String> TakeImgAndOCR({bool forRoleStaff = false}) async {
     final _pickedImageFile =
         await _picker.pickImage(source: ImageSource.camera, imageQuality: 100);
     if (_pickedImageFile == null) {
       // Cancelled by user.
-      return;
+      return null;
     }
 
     await _PhotoOptimizerForOCR.optimizeByResize(_pickedImageFile.path);
@@ -93,8 +93,10 @@ class OcrScan {
     final inputImage = InputImage.fromFilePath(_pickedImageFile.path);
 
     final recognisedText = await textDetector.processImage(inputImage);
-    print(TiengVietCore.removeDiacritics(recognisedText.text.toString().toLowerCase()));
-
+    print(TiengVietCore.removeDiacritics(
+        recognisedText.text.toString().toLowerCase()));
+    return TiengVietCore.removeDiacritics(
+        recognisedText.text.toString().toLowerCase());
     // try {
     //   final _resultString = recognisedText.text.replaceAll('\n', ' ');
     //   final obj = <String, String>{'text': _resultString};
@@ -200,8 +202,7 @@ class _PhotoOptimizerForOCR {
   ///
   /// __PS__. Not every photo would have exif metadata; hence it is normal to return an empty [Map].
   static Future<Map<String, IfdTag>> getPhotoFileMeta(String path) async {
-    final _meta =
-        readExifFromBytes(File(path).readAsBytesSync());
+    final _meta = readExifFromBytes(File(path).readAsBytesSync());
     return _meta;
   }
 
@@ -210,8 +211,7 @@ class _PhotoOptimizerForOCR {
   /// __PS__. Not every photo would have exif metadata;
   /// hence if no metadata available a message "oops, no exif data available for this photo!!!" would be returned
   static Future<String> getPhotoFileMetaInString(String path) async {
-    final _meta =
-        await readExifFromBytes(File(path).readAsBytesSync());
+    final _meta = await readExifFromBytes(File(path).readAsBytesSync());
     final _s = StringBuffer();
 
     if (_meta == null || _meta.isEmpty) {
@@ -234,8 +234,7 @@ class _PhotoOptimizerForOCR {
       {int maxWidthOrLength = 1500}) async {
     var _w = 0;
     var _h = 0;
-    final _meta =
-        await _PhotoOptimizerForOCR.getPhotoFileMeta(path);
+    final _meta = await _PhotoOptimizerForOCR.getPhotoFileMeta(path);
 
     // Note that not every photo might have exif information~~~
     if (_meta == null ||

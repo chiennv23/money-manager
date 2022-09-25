@@ -11,6 +11,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../../Utils/ConvertUtils.dart';
 import '../../../Contains/skin/typo_skin.dart';
+import '../../../LocalDatabase/model_lib.dart';
 
 class CreateWallet extends StatefulWidget {
   final WalletItem walletItem;
@@ -36,6 +37,9 @@ class _CreateWalletState extends State<CreateWallet> {
     // edit wallet
     if (widget.walletItem != null) {
       nameWalletController.text = widget.walletItem.title;
+      indexWalletColor = listTypeCardWallet
+          .firstWhere((element) => element.img == widget.walletItem.avt)
+          .id;
     }
     super.initState();
   }
@@ -47,46 +51,54 @@ class _CreateWalletState extends State<CreateWallet> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        backgroundColor: FColorSkin.grey3_background,
-        appBar: appbarOnlyTitle(
-          title: widget.walletItem != null ? 'Edit Wallet' : 'Create Wallet',
+        backgroundColor: FColorSkin.grey1_background,
+        resizeToAvoidBottomInset: false,
+        appBar: appbarNoTitle(
+          iconBack: FOutlined.left,
           systemUiOverlayStyle: SystemUiOverlayStyle.dark,
         ),
         body: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
+          // padding: EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 8),
+                padding: const EdgeInsets.only(
+                    top: 8.0, bottom: 8, left: 16, right: 16),
                 child: Text(
-                  "Name's wallet: ",
-                  style: FTypoSkin.title3.copyWith(color: FColorSkin.title),
+                  'Your Wallet',
+                  style: FTypoSkin.title.copyWith(color: FColorSkin.title),
                 ),
               ),
               FTextFormField(
                 maxLine: 1,
+                cursorHeight: 42,
                 controller: nameWalletController,
                 autoFocus: true,
+                borderColor: FColorSkin.transparent,
                 onChanged: (vl) {
                   setState(() {});
                 },
                 textInputAction: TextInputAction.done,
-                // hintText: 'Money',
-                size: FInputSize.size48,
+                hintText: 'Wallet Name',
+                style:
+                    TextStyle(fontSize: 40.0, color: FColorSkin.primaryColor),
+                size: FInputSize.size64
+                    .copyWith(contentPadding: EdgeInsets.zero, height: 42),
                 focusColor: FColorSkin.transparent,
-                hintStyle: TextStyle(color: FColorSkin.subtitle),
+                hintStyle: TextStyle(
+                    color: FColorSkin.subtitle.withOpacity(.3), fontSize: 40),
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                  top: 16.0,
-                ),
+                padding: const EdgeInsets.only(top: 40.0, left: 16, right: 16),
                 child: Text(
                   'Wallet Theme',
                   style: FTypoSkin.title3.copyWith(color: FColorSkin.title),
                 ),
               ),
               Container(
+                  padding:
+                      const EdgeInsets.only(top: 16.0, left: 16, right: 16),
                   height: 50,
                   child: Wrap(
                     children: List.generate(listTypeCardWallet.length, (index) {
@@ -104,6 +116,7 @@ class _CreateWalletState extends State<CreateWallet> {
                             setState(() {});
                           },
                           child: FBoundingBox(
+                            backgroundColor: FColorSkin.grey1_background,
                             size: FBoxSize.size48,
                             child: Image.asset(
                               item.img,
@@ -117,22 +130,23 @@ class _CreateWalletState extends State<CreateWallet> {
                     }),
                   )),
               Padding(
-                padding: const EdgeInsets.only(
-                  top: 16.0,
-                ),
+                padding: const EdgeInsets.only(top: 55.0, left: 16, right: 16),
                 child: Text(
                   'Preview',
                   style: FTypoSkin.title3.copyWith(color: FColorSkin.title),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 16.0),
+                padding: const EdgeInsets.only(top: 16.0, left: 16, right: 16),
                 child: Hero(
                   tag: '${widget.indexHero}',
                   child: Stack(
                     children: [
                       Image.asset(
-                        'lib/Assets/Images/wallet.png',
+                        listTypeCardWallet
+                            .firstWhere(
+                                (element) => element.id == indexWalletColor)
+                            .img,
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),
@@ -144,21 +158,46 @@ class _CreateWalletState extends State<CreateWallet> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             FIcon(
-                              icon: FFilled.gold_coin,
-                              size: 20,
-                              color: FColorSkin.grey1_background,
+                                icon: FFilled.gold_coin,
+                                size: 20,
+                                color: listTypeCardWallet
+                                        .firstWhere((element) =>
+                                            element.id == indexWalletColor)
+                                        .tone
+                                    ? FColorSkin.title
+                                    : FColorSkin.grey1_background),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 10.0, bottom: 5),
+                              child: Material(
+                                color: FColorSkin.transparent,
+                                child: Text(
+                                  nameWalletController.text,
+                                  style: FTypoSkin.bodyText2.copyWith(
+                                      color: listTypeCardWallet
+                                              .firstWhere((element) =>
+                                                  element.id ==
+                                                  indexWalletColor)
+                                              .tone
+                                          ? FColorSkin.title
+                                          : FColorSkin.grey1_background),
+                                ),
+                              ),
                             ),
-                            Text(
-                              nameWalletController.text,
-                              style: FTypoSkin.bodyText2
-                                  .copyWith(color: FColorSkin.grey1_background),
-                            ),
-                            Text(
-                              widget.walletItem != null
-                                  ? '${widget.walletItem.moneyWallet.wToMoney(0).replaceAll('.', ',')} VND'
-                                  : '0 VND',
-                              style: FTypoSkin.title2
-                                  .copyWith(color: FColorSkin.grey1_background),
+                            Material(
+                              color: FColorSkin.transparent,
+                              child: Text(
+                                widget.walletItem != null
+                                    ? '${widget.walletItem.moneyWallet.wToMoney(0).replaceAll('.', ',')} VND'
+                                    : '0 VND',
+                                style: FTypoSkin.title2.copyWith(
+                                    color: listTypeCardWallet
+                                            .firstWhere((element) =>
+                                                element.id == indexWalletColor)
+                                            .tone
+                                        ? FColorSkin.title
+                                        : FColorSkin.grey1_background),
+                              ),
                             ),
                           ],
                         ),
@@ -166,10 +205,18 @@ class _CreateWalletState extends State<CreateWallet> {
                       Positioned(
                         bottom: 30.0,
                         right: 16.0,
-                        child: Text(
-                          'Created: ${widget.walletItem != null ? FDate.dMy(widget.walletItem.creWalletDate) : FDate.dMy(DateTime.now())}',
-                          style: FTypoSkin.bodyText2
-                              .copyWith(color: FColorSkin.grey1_background),
+                        child: Material(
+                          color: FColorSkin.transparent,
+                          child: Text(
+                            'Created: ${widget.walletItem != null ? FDate.dMy(widget.walletItem.creWalletDate) : FDate.dMy(DateTime.now())}',
+                            style: FTypoSkin.bodyText2.copyWith(
+                                color: listTypeCardWallet
+                                        .firstWhere((element) =>
+                                            element.id == indexWalletColor)
+                                        .tone
+                                    ? FColorSkin.title
+                                    : FColorSkin.grey1_background),
+                          ),
                         ),
                       )
                     ],
@@ -186,20 +233,24 @@ class _CreateWalletState extends State<CreateWallet> {
           height: 80,
           child: FFilledButton(
             size: FButtonSize.size40,
+            borderRadius: BorderRadius.circular(20.0),
             onPressed: checkEmpty
                 ? null
                 : () {
                     final id = widget.walletItem != null
                         ? widget.walletItem.iD
-                        : Uuid().v1();
+                        : uuid.v4();
                     walletController.addWallet(
                       id,
                       nameWalletController.text.trim(),
+                      listTypeCardWallet
+                          .firstWhere(
+                              (element) => element.id == indexWalletColor)
+                          .img,
                     );
                   },
-            backgroundColor: checkEmpty
-                ? FColorSkin.disableBackground
-                : FColorSkin.primaryColor,
+            backgroundColor:
+                checkEmpty ? FColorSkin.disableBackground : FColorSkin.title,
             child: Container(
               alignment: Alignment.center,
               child: Text(

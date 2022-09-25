@@ -24,6 +24,7 @@ class _SettingIndexState extends State<SettingIndex> {
     },
   ];
 
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(

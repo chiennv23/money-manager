@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'package:coresystem/Core/CacheService.dart';
 import 'package:coresystem/Core/routes.dart';
+import 'package:coresystem/main.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'dialog_log_out.dart';
 
@@ -12,7 +15,7 @@ class PickerLogoutHandler {
     this._controller,
   );
 
-  Future LogoutAction() {
+  Future LogoutAction() async {
     // PickerAction.dismissDialog();
 
   }
