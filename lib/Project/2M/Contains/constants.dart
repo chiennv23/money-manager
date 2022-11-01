@@ -468,8 +468,19 @@ class StringIcon {
 }
 
 class StringImage {
-  static const Home = 'lib/Assets/Images/home.png';
-  static const on_boarding = 'lib/Assets/Images/Onboarding.png';
+  static const balo = 'lib/Assets/Images/balo.png';
+  static const friend = 'lib/Assets/Images/friend.png';
+  static const game = 'lib/Assets/Images/game.png';
+  static const learn = 'lib/Assets/Images/learn.png';
+  static const location = 'lib/Assets/Images/location.png';
+  static const lock = 'lib/Assets/Images/lock.png';
+  static const lock2 = 'lib/Assets/Images/lock2.png';
+  static const market = 'lib/Assets/Images/market.png';
+  static const mic = 'lib/Assets/Images/mic.png';
+  static const phone = 'lib/Assets/Images/phone.png';
+  static const umbrella = 'lib/Assets/Images/umbrella.png';
+  static const wallet = 'lib/Assets/Images/wallet.png';
+  static const water = 'lib/Assets/Images/water.png';
 }
 
 enum TypePopup { success, warning, error, info, approval, decline, mapPopup }

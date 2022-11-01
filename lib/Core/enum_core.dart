@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../Components/widgets/SnackBar.dart';
-import '../Config/AppConfig.dart';
 import '../main.dart';
 
 class EnumCore {
@@ -20,6 +19,8 @@ class EnumCore {
       });
 }
 
+String langApp = 'en';
+
 
 Future loadingEN(BuildContext context) async {
   if (SharedPreferencesHelper.instance.getString(key: 'languageApp') == 'en') {
@@ -28,7 +29,7 @@ Future loadingEN(BuildContext context) async {
     await MyApp.setLocale(context, Locale('en'));
     await SharedPreferencesHelper.instance
         .setString(key: 'languageApp', val: 'en');
-    ConfigApp.langApp = 'en';
+    langApp = 'en';
 
     // RestartWidget.restartApp(context);
     await Future.delayed(Duration(milliseconds: 500));
@@ -42,7 +43,7 @@ Future loadingVI(BuildContext context) async {
     await MyApp.setLocale(context, Locale('vi'));
     await SharedPreferencesHelper.instance
         .setString(key: 'languageApp', val: 'vi');
-    ConfigApp.langApp = 'vi';
+    langApp = 'vi';
     // RestartWidget.restartApp(context);
     await Future.delayed(Duration(milliseconds: 500));
   }

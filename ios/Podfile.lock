@@ -126,7 +126,7 @@ PODS:
     - GoogleUtilities/Network (~> 7.7)
     - "GoogleUtilities/NSData+zlib (~> 7.7)"
     - nanopb (~> 2.30908.0)
-  - GoogleDataTransport (9.1.4):
+  - GoogleDataTransport (9.2.0):
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
@@ -231,7 +231,7 @@ PODS:
   - image_cropper (0.0.4):
     - Flutter
     - TOCropViewController (~> 2.6.1)
-  - image_picker (0.0.1):
+  - image_picker_ios (0.0.1):
     - Flutter
   - libwebp (1.2.3):
     - libwebp/demux (= 1.2.3)
@@ -375,12 +375,14 @@ PODS:
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
+  - open_file (0.0.1):
+    - Flutter
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_ios (0.0.1):
     - Flutter
-  - PromisesObjC (2.1.0)
-  - Protobuf (3.21.1)
+  - PromisesObjC (2.1.1)
+  - Protobuf (3.21.4)
   - SDWebImage (5.13.2):
     - SDWebImage/Core (= 5.13.2)
   - SDWebImage/Core (5.13.2)
@@ -411,7 +413,8 @@ DEPENDENCIES:
   - google_mlkit_text_recognition (from `.symlinks/plugins/google_mlkit_text_recognition/ios`)
   - google_mlkit_translation (from `.symlinks/plugins/google_mlkit_translation/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
-  - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - open_file (from `.symlinks/plugins/open_file/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
@@ -507,8 +510,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_mlkit_translation/ios"
   image_cropper:
     :path: ".symlinks/plugins/image_cropper/ios"
-  image_picker:
-    :path: ".symlinks/plugins/image_picker/ios"
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
+  open_file:
+    :path: ".symlinks/plugins/open_file/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_ios:
@@ -539,14 +544,14 @@ SPEC CHECKSUMS:
   google_mlkit_text_recognition: 99cf85a1eb8ff9f2918c959bd8c907ba4489b6ec
   google_mlkit_translation: 3c94c6d77999331af627f2b4bd29bbbb8b2d2f42
   GoogleAppMeasurement: 4c19f031220c72464d460c9daa1fb5d1acce958e
-  GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
+  GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
   GoogleMLKit: 755661c46990a85e42278015f26400286d98ad95
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
   image_cropper: 60c2789d1f1a78c873235d4319ca0c34a69f2d98
-  image_picker: 541dcbb3b9cf32d87eacbd957845d8651d6c62c3
+  image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
   libwebp: 60305b2e989864154bd9be3d772730f08fc6a59c
   Mantle: c5aa8794a29a022dfbbfc9799af95f477a69b62d
   MLImage: a454f9f8ecfd537783a12f9488f5be1a68820829
@@ -582,13 +587,14 @@ SPEC CHECKSUMS:
   MLKitVisionKit: 68c122ceb9b2fe1a05ffe09341c750d566c77170
   MLKitXenoCommon: 849f10d93d3fda1ee034cab23863e4abb4c24f10
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
+  open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
-  PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72
-  Protobuf: 9e88c1e667d75aa2491d211f26ccddde4e8ad4cf
+  PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
+  Protobuf: 85a48c73d708782e2869564c0438e211aae98e7a
   SDWebImage: 72f86271a6f3139cc7e4a89220946489d4b9a866
   SDWebImageWebPCoder: 18503de6621dd2c420d680e33d46bf8e1d5169b0
-  shared_preferences_ios: aef470a42dc4675a1cdd50e3158b42e3d1232b32
+  shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
 

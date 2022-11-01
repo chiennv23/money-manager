@@ -93,7 +93,7 @@ class _PageIndexState extends State<PageIndex>
                           Container(
                             width: MediaQuery.of(context).size.width / 1.8,
                             child: Text(
-                              'Thêm thông tin giao dịch',
+                              'More transaction information',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: FTypoSkin.title1
@@ -102,7 +102,7 @@ class _PageIndexState extends State<PageIndex>
                           ),
                           FTextButton(
                               child: Text(
-                                'Huỷ bỏ',
+                                'Cancel',
                                 style: FTypoSkin.bodyText1
                                     .copyWith(color: FColorSkin.subtitle),
                               ),
@@ -124,12 +124,13 @@ class _PageIndexState extends State<PageIndex>
                                   margin: EdgeInsets.only(right: 16),
                                   child: InkWell(
                                     onTap: () {
+                                      print(1);
                                       categoryController
                                           .getTypeCate(typeList[index].id);
+                                      CoreRoutes.instance.pop();
                                       CoreRoutes.instance
                                           .navigatorPushDownToUp(InputMoney(
-                                        idType:
-                                            categoryController.idCateType.value,
+                                        idType: typeList[index].id,
                                       ));
                                     },
                                     child: AnimatedContainer(
@@ -235,8 +236,8 @@ class _PageIndexState extends State<PageIndex>
 }
 
 final List<InputTypeItem> typeList = [
-  InputTypeItem(id: 0, title: 'Chi tiêu', imgAvt: ''),
-  InputTypeItem(id: 1, title: 'Thu nhập', imgAvt: ''),
+  InputTypeItem(id: 0, title: 'Expense', imgAvt: ''),
+  InputTypeItem(id: 1, title: 'Income', imgAvt: ''),
 ];
 
 class InputTypeItem {

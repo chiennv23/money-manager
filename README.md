@@ -1,6 +1,7 @@
 # coresystem
 
 app money-manager.
+app-name Monage.
 
 ## Getting Started
 

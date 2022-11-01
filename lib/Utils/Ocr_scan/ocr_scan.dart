@@ -2,181 +2,58 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
-import 'package:coresystem/Utils/ConvertTiengvietNoSign/tiengviet.dart';
+import 'package:coresystem/Components/base_component.dart';
+import 'package:coresystem/Project/2M/Module/Money/DA/money_controller.dart';
 import 'package:coresystem/Utils/ConvertUtils.dart';
 import 'package:exif/exif.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image/image.dart' as im;
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../Core/routes.dart';
+import '../../Project/2M/Contains/skin/color_skin.dart';
+
 class OcrScan {
+  MoneyController moneyController = Get.find();
   final ImagePicker _picker = ImagePicker();
+  final ImageCropper imageCropper = ImageCropper();
   TextRecognizer textDetector = GoogleMlKit.vision.textRecognizer();
 
-  String DetectFullName(String txt) {
-    var regExp = RegExp(r'([0-9]{6}[^@]+[0-9]{2}/[0-9]{2}/[0-9]{4})');
-    var match = regExp.firstMatch(txt);
-
-    var matchedText = match?.group(0);
-    if (matchedText != null) {
-      var char = matchedText.replaceAll(RegExp(r'\d'), '');
-
-      return char;
-    }
-    regExp = RegExp(r'([0-9]{6}[^@]+[0-9]{2}-[0-9]{2}-[0-9]{4})');
-    match = regExp.firstMatch(txt);
-
-    matchedText = match?.group(0);
-    if (matchedText != null) {
-      var char = matchedText.replaceAll(RegExp(r'\d'), '');
-
-      return char;
-    }
-    return null;
-  }
-
-  String DetectCMT(String txt) {
-    var regExp = RegExp(r'([0-9]{2}-[0-9]{2}-[0-9]{4})');
-    var match = regExp.firstMatch(txt);
-
-    var matchedText = match?.group(0);
-    if (matchedText != null) {
-      return matchedText;
-    }
-    regExp = RegExp(r'([0-9]{2}/[0-9]{2}/[0-9]{4})');
-    match = regExp.firstMatch(txt);
-    matchedText = match?.group(0);
-    if (matchedText != null) {
-      return matchedText;
-    }
-    return null;
-  }
-
-  String DetectNumberCMT(String txt) {
-    var regExp = RegExp(r'([0-9]{12})');
-    var match = regExp.firstMatch(txt);
-
-    var matchedText = match?.group(0);
-    if (matchedText != null) {
-      return matchedText;
-    }
-
-    regExp = RegExp(r'([0-9]{9})');
-    match = regExp.firstMatch(txt);
-
-    matchedText = match?.group(0);
-    if (matchedText != null) {
-      return matchedText;
-    }
-
-    regExp = RegExp(r'([0-9]{8})');
-    match = regExp.firstMatch(txt);
-
-    matchedText = match?.group(0);
-    if (matchedText != null) {
-      return matchedText;
-    }
-    return null;
-  }
-
   Future<String> TakeImgAndOCR({bool forRoleStaff = false}) async {
-    final _pickedImageFile =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 100);
+    final _pickedImageFile = await _picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 100,
+    );
     if (_pickedImageFile == null) {
       // Cancelled by user.
       return null;
     }
 
-    await _PhotoOptimizerForOCR.optimizeByResize(_pickedImageFile.path);
+    final fileCropped = await imageCropper.cropImage(
+        sourcePath: _pickedImageFile.path,
+        aspectRatio: CropAspectRatio(ratioX: 1.5, ratioY: 1.0),
+        cropStyle: CropStyle.rectangle,
+        compressQuality: 80,
+        maxHeight: 200,
+        compressFormat: ImageCompressFormat.jpg);
+    if (fileCropped != null) {
+      // add full img into money note when cropped done
+      moneyController.imgOCR.clear();
+      final file = File(_pickedImageFile.path);
+      final imgShow = await ImageHelper.compressImage(file);
+      moneyController.imgOCR.add(imgShow);
+    }
+    await _PhotoOptimizerForOCR.optimizeByResize(fileCropped.path);
 
-    final inputImage = InputImage.fromFilePath(_pickedImageFile.path);
+    final inputImage = InputImage.fromFilePath(fileCropped.path);
 
     final recognisedText = await textDetector.processImage(inputImage);
-    print(TiengVietCore.removeDiacritics(
-        recognisedText.text.toString().toLowerCase()));
-    return TiengVietCore.removeDiacritics(
-        recognisedText.text.toString().toLowerCase());
-    // try {
-    //   final _resultString = recognisedText.text.replaceAll('\n', ' ');
-    //   final obj = <String, String>{'text': _resultString};
-    //   final char = obj['text'].split('');
-    //
-    //   final list = [];
-    //
-    //   var s = 0;
-    //   var e = 0;
-    //   var utr = '';
-    //   var objq = <dynamic, dynamic>{'s': 0, 'e': 0};
-    //   for (var i = 0; i < char.length; i++) {
-    //     if (char[i].toString().isNotEmpty && char[i].toString() != '') {
-    //       if (num.tryParse(char[i]) != null) {
-    //         if (s == 0) {
-    //           s = i;
-    //         } else {
-    //           e = i;
-    //         }
-    //       }
-    //     }
-    //   }
-    //   if (e > 0) {
-    //     utr = obj['text'].toString().substring(s, e + 1);
-    //     utr = utr.replaceAll('.', ' ');
-    //     utr = utr.replaceAll(':', ' ');
-    //     print('noi dung $utr');
-    //     final data = utr.split('');
-    //     for (var i = 0; i < data.length; i++) {
-    //       if (num.tryParse(data[i]) != null) {
-    //         if (objq['s'] == 0) {
-    //           objq['s'] = i;
-    //         } else {
-    //           objq['e'] = i;
-    //         }
-    //       } else {
-    //         if (objq['e'] > 0) {
-    //           list.add(objq);
-    //           objq = {'s': 0, 'e': 0};
-    //         }
-    //       }
-    //     }
-    //   }
-    //   print(list.length);
-    //   if (list.length > 2) {
-    //     var ht = DetectFullName(_resultString).split(' ');
-    //     print('tennnnn full: ${DetectFullName(_resultString)}');
-    //     var isGender = ht.any((e) => e.wUnicodeToAscii() == 'nu');
-    //     var listht = [];
-    //     for (var i = 0; i < ht.length; i++) {
-    //       if (ht[i].isNotEmpty &&
-    //           ht[i] != '' &&
-    //           ht[i] == ht[i].toUpperCase() &&
-    //           num.tryParse(ht[i]) == null) {
-    //         if (listht.isEmpty) {
-    //           if (i > 0) {
-    //             if (ht[i - 1].isNotEmpty &&
-    //                 ht[i - 1] != '' &&
-    //                 ht[i - 1] == ht[i - 1].toUpperCase() &&
-    //                 num.tryParse(ht[i - 1]) == null) {
-    //               listht.add(ht[i - 1]);
-    //               listht.add(ht[i]);
-    //             }
-    //           }
-    //         } else if (i > 0) {
-    //           if (ht[i - 1].isNotEmpty &&
-    //               ht[i - 1] != '' &&
-    //               ht[i - 1] == ht[i - 1].toUpperCase() &&
-    //               num.tryParse(ht[i - 1]) == null) {
-    //             listht.add(ht[i]);
-    //           }
-    //         }
-    //       }
-    //     }
-    //
-    //   }
-    // } catch (e) {
-    //   print('error in recognizing the image / photo => ${e.toString()}');
-    // }
-    // }
+
+    return recognisedText.text.toString().toLowerCase();
   }
 
   void Close() {

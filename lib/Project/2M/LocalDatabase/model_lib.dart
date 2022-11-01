@@ -3,6 +3,7 @@ library model_lib;
 import 'dart:io';
 
 import 'package:coresystem/Core/CacheService.dart';
+import 'package:coresystem/Project/2M/Contains/constants.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hive/hive.dart';
@@ -10,6 +11,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../main.dart';
 import '../Module/Category/DA/category_controller.dart';
 import '../Module/Money/DA/money_controller.dart';
 import '../Module/Wallet/DA/wallet_controller.dart';
@@ -87,8 +89,24 @@ final List<WalletItem> _wallets = [
     title: 'Cash',
     creWalletDate: DateTime.now(),
     moneyWallet: 0.0,
-    avt: 'lib/Assets/Images/wallet.png',
+    avt: defaultImg,
   )
+];
+
+final List<String> iconsList = [
+  StringImage.lock2,
+  StringImage.lock,
+  StringImage.friend,
+  StringImage.balo,
+  StringImage.umbrella,
+  StringImage.mic,
+  StringImage.learn,
+  StringImage.wallet,
+  StringImage.phone,
+  StringImage.location,
+  StringImage.market,
+  StringImage.water,
+  StringImage.game,
 ];
 
 final List<CategoryItem> _categories = [
@@ -96,72 +114,72 @@ final List<CategoryItem> _categories = [
   CategoryItem(
     cateType: '0',
     cateName: 'Ăn uống',
-    cateIcon: '',
+    cateIcon: StringImage.water,
   ),
   CategoryItem(
     cateType: '0',
     cateName: 'Chi tiêu hàng ngày',
-    cateIcon: '',
+    cateIcon: StringImage.friend,
   ),
   CategoryItem(
     cateType: '0',
     cateName: 'Quần áo',
-    cateIcon: '',
+    cateIcon: StringImage.balo,
   ),
   CategoryItem(
     cateType: '0',
     cateName: 'Siêu thị',
-    cateIcon: '',
+    cateIcon: StringImage.market,
   ),
   CategoryItem(
     cateType: '0',
     cateName: 'Y tế',
-    cateIcon: '',
+    cateIcon: StringImage.umbrella,
   ),
   CategoryItem(
     cateType: '0',
     cateName: 'Đi lại',
-    cateIcon: '',
+    cateIcon: StringImage.location,
   ),
   CategoryItem(
     cateType: '0',
     cateName: 'Tiền điện',
-    cateIcon: '',
+    cateIcon: StringImage.wallet,
   ),
   CategoryItem(
     cateType: '0',
-    cateName: 'Tiền nhà',
-    cateIcon: '',
+    cateName: 'Tiền học',
+    cateIcon: StringImage.learn,
   ),
   CategoryItem(
     cateType: '0',
     cateName: 'Phí điện thoại',
-    cateIcon: '',
+    cateIcon: StringImage.phone,
   ),
   // 1: thu nhap
   CategoryItem(
     cateType: '1',
     cateName: 'Tiền lương',
-    cateIcon: '',
+    cateIcon: StringImage.wallet,
   ),
   CategoryItem(
     cateType: '1',
     cateName: 'Tiền phụ cấp',
-    cateIcon: '',
+    cateIcon: StringImage.mic,
   ),
   CategoryItem(
     cateType: '1',
     cateName: 'Tiền thưởng',
-    cateIcon: '',
+    cateIcon: StringImage.balo,
   ),
   CategoryItem(
     cateType: '1',
     cateName: 'Thu thập phụ',
-    cateIcon: '',
+    cateIcon: StringImage.lock2,
   ),
   CategoryItem(
     cateType: '1',
     cateName: 'Đầu tư',
-    cateIcon: '',
+    cateIcon: StringImage.friend,
   ),
 ];

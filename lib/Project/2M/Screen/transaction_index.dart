@@ -13,7 +13,6 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import '../../../Config/AppConfig.dart';
 import '../../../Core/enum_core.dart';
 import '../../../Core/userService.dart';
 import '../Contains/skin/color_skin.dart';
@@ -43,13 +42,30 @@ class _TransactionIndexState extends State<TransactionIndex>
   void initState() {
     super.initState();
     tabController = TabController(
-      length: walletController.walletList.length,
+      length: walletController.walletList.length + 1,
       vsync: this,
     );
+    tabController.addListener(_handleTabSelection);
     moneyController.walletIdInTab.value = '';
     // scrollController.addListener(handleScroll);
     if (UserService.getAvtUsername != null) {
       _imagesFile = File(UserService.getAvtUsername);
+    }
+  }
+
+  void _handleTabSelection() {
+    if (tabController.indexIsChanging ||
+        tabController.index != tabController.previousIndex) {
+      // setState(() {
+      //   indexTab = tabController.index;
+      // });
+      // print(indexTab);
+      if (tabController.index == 0) {
+        moneyController.changeWalletIndex('');
+      } else {
+        moneyController.changeWalletIndex(
+            walletController.walletList[tabController.index - 1].iD);
+      }
     }
   }
 
@@ -152,18 +168,18 @@ class _TransactionIndexState extends State<TransactionIndex>
           ),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0, top: 40),
-            child: FFilledButton.icon(
-                size: FButtonSize.size32,
-                backgroundColor: FColorSkin.grey3_background,
-                child: FIcon(
-                  icon: FFilled.setting,
-                  size: 20,
-                  color: FColorSkin.secondaryText,
-                ),
-                onPressed: () {}),
-          )
+          // Padding(
+          //   padding: const EdgeInsets.only(right: 16.0, top: 40),
+          //   child: FFilledButton.icon(
+          //       size: FButtonSize.size32,
+          //       backgroundColor: FColorSkin.grey3_background,
+          //       child: FIcon(
+          //         icon: FFilled.setting,
+          //         size: 20,
+          //         color: FColorSkin.secondaryText,
+          //       ),
+          //       onPressed: () {}),
+          // )
         ],
         elevation: 0.0,
       ),
@@ -187,7 +203,7 @@ class _TransactionIndexState extends State<TransactionIndex>
                         child: ColumnChart(
                           title:
                               'Income T${moneyController.selectedValue.value.month}',
-                          money: moneyController.incomeAllMoneyWallet,
+                          money: moneyController.incomeAllMoneyWalletbyDates,
                           value:
                               moneyController.getHeightChartHome('1', pxBody),
                           color: FColorSkin.primaryColor,
@@ -198,7 +214,7 @@ class _TransactionIndexState extends State<TransactionIndex>
                         child: ColumnChart(
                           title:
                               'Expense T${moneyController.selectedValue.value.month}',
-                          money: moneyController.expenseAllMoneyWallet,
+                          money: moneyController.expenseAllMoneyWalletByDates,
                           value:
                               moneyController.getHeightChartHome('0', pxBody),
                           color: FColorSkin.warningPrimary,
@@ -219,8 +235,8 @@ class _TransactionIndexState extends State<TransactionIndex>
                   // overlay white
                   AnimatedOpacity(
                     duration: Duration(milliseconds: 450),
-                    opacity: (moneyController.incomeAllMoneyWallet != 0.0 &&
-                            moneyController.expenseAllMoneyWallet != 0.0 &&
+                    opacity: (moneyController.incomeAllMoneyWalletbyDates != 0.0 &&
+                            moneyController.expenseAllMoneyWalletByDates != 0.0 &&
                             moneyController.surplusMoneyWallet > 0.0)
                         ? 1
                         : 0,
@@ -267,6 +283,7 @@ class _TransactionIndexState extends State<TransactionIndex>
                           ),
                         ),
                         child: TabBar(
+                            controller: tabController,
                             onTap: (index) {
                               if (index == 0) {
                                 moneyController.changeWalletIndex('');
@@ -299,6 +316,7 @@ class _TransactionIndexState extends State<TransactionIndex>
                           child: Container(
                               color: FColorSkin.title,
                               child: TabBarView(
+                                  controller: tabController,
                                   children: List.generate(
                                       walletController.walletList.length + 1,
                                       (index) => Column(
@@ -323,6 +341,7 @@ class _TransactionIndexState extends State<TransactionIndex>
                                                               color: FColorSkin
                                                                   .grey1_background),
                                                     ),
+                                                    // detail
                                                     FFilledButton.icon(
                                                         size:
                                                             FButtonSize.size24,
@@ -336,9 +355,22 @@ class _TransactionIndexState extends State<TransactionIndex>
                                                               .grey1_background,
                                                         ),
                                                         onPressed: () {
+                                                          String title = '';
+                                                          if (tabController
+                                                                  .index !=
+                                                              0) {
+                                                            title = walletController
+                                                                .walletList[
+                                                                    tabController
+                                                                            .index -
+                                                                        1]
+                                                                .title;
+                                                          }
                                                           CoreRoutes.instance
                                                               .navigatorPushRoutes(
-                                                                  ExpenseMoneyDetail());
+                                                                  ExpenseMoneyDetail(
+                                                                      walletName:
+                                                                          title));
                                                         })
                                                   ],
                                                 ),
@@ -373,8 +405,17 @@ class _TransactionIndexState extends State<TransactionIndex>
                                                         ));
                                                       },
                                                       avatar: FBoundingBox(
-                                                          size:
-                                                              FBoxSize.size24),
+                                                        size: FBoxSize.size24,
+                                                        backgroundColor:
+                                                            FColorSkin
+                                                                .grey1_background,
+                                                        child: Image.asset(
+                                                            moneyController
+                                                                .top3ExpenseMoneyList[
+                                                                    index]
+                                                                .moneyCateType
+                                                                .cateIcon),
+                                                      ),
                                                       title: Text(
                                                         moneyController
                                                                 .top3ExpenseMoneyList[
@@ -451,7 +492,7 @@ Widget actionAppbar(BuildContext context, {bool isDark = true}) {
             decoration: BoxDecoration(
                 color: FColorSkin.grey1_background,
                 border: Border.all(
-                    color: ConfigApp.langApp == 'en'
+                    color: langApp == 'en'
                         ? FColorSkin.grey9_background
                         : FColorSkin.grey4_background)),
             padding: EdgeInsets.fromLTRB(1, 1, 0, 0.7),
@@ -464,7 +505,7 @@ Widget actionAppbar(BuildContext context, {bool isDark = true}) {
           decoration: BoxDecoration(
               color: FColorSkin.grey1_background,
               border: Border.all(
-                  color: ConfigApp.langApp != 'en'
+                  color: langApp != 'en'
                       ? FColorSkin.grey9_background
                       : FColorSkin.grey4_background)),
           padding: EdgeInsets.all(1),

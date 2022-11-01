@@ -7,6 +7,7 @@ import 'package:coresystem/Project/2M/LocalDatabase/model_lib.dart';
 import 'package:coresystem/Project/2M/Module/Category/DA/category_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -26,11 +27,16 @@ class CreateCategory extends StatefulWidget {
 class _CreateCategoryState extends State<CreateCategory> {
   final nameCateController = TextEditingController();
   CategoryController categoryController = Get.find();
+  int indexSel = 0;
 
   @override
   void initState() {
     // edit category
-    if (widget.categoryItem != null) {}
+    if (widget.categoryItem != null) {
+      nameCateController.text = widget.categoryItem.cateName;
+      indexSel = iconsList
+          .indexWhere((element) => element == widget.categoryItem.cateIcon);
+    }
     super.initState();
   }
 
@@ -41,66 +47,110 @@ class _CreateCategoryState extends State<CreateCategory> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        backgroundColor: FColorSkin.grey3_background,
-        appBar: appbarOnlyTitle(
-          title: 'Create Category',
+        backgroundColor: FColorSkin.grey1_background,
+        appBar: appbarNoTitle(
           systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-          // bottom: PreferredSize(
-          //   preferredSize: Size.fromHeight(45.0),
-          //   child: Container(
-          //     height: 45,
-          //     color: FColorSkin.title,
-          //     child: TabBar(
-          //         onTap: (index) {},
-          //         labelPadding: EdgeInsets.zero,
-          //         indicatorSize: TabBarIndicatorSize.label,
-          //         indicatorColor: FColorSkin.grey1_background,
-          //         labelColor: FColorSkin.grey1_background,
-          //         tabs: const [
-          //           Tab(
-          //             text: 'Chi tiêu',
-          //           ),
-          //           Tab(
-          //             text: 'Thu nhập',
-          //           )
-          //         ]),
-          //   ),
-          // )
         ),
         body: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 8),
+              Container(
+                margin: const EdgeInsets.only(bottom: 5, left: 24, right: 24),
                 child: Text(
-                  'Name: ',
-                  style: FTypoSkin.title3.copyWith(color: FColorSkin.title),
+                  'Your Category',
+                  style: FTypoSkin.title.copyWith(color: FColorSkin.title),
                 ),
               ),
-              FTextFormField(
-                autoFocus: true,
-                maxLine: 1,
-                controller: nameCateController,
-                textInputAction: TextInputAction.done,
-                hintText: "Name's category",
-                size: FInputSize.size56,
-                focusColor: FColorSkin.transparent,
-                hintStyle: TextStyle(color: FColorSkin.title),
-                onSubmitted: (v) {
-                  final id = uuid.v4();
-                  categoryController.addCategory(
-                      id, nameCateController.text.trim(), widget.idType);
-                },
+              Container(
+                padding: const EdgeInsets.only(left: 12),
+                child: FTextFormField(
+                  maxLine: 1,
+                  cursorHeight: 42,
+                  controller: nameCateController,
+                  autoFocus: true,
+                  borderColor: FColorSkin.transparent,
+                  onChanged: (vl) {
+                    setState(() {});
+                  },
+                  textInputAction: TextInputAction.done,
+                  hintText: "Name's category",
+                  onSubmitted: (v) {
+                    if (checkEmpty) {
+                      return;
+                    }
+                    if (widget.categoryItem != null) {
+                      categoryController.addCategory(
+                          widget.categoryItem.iD,
+                          nameCateController.text.trim(),
+                          iconsList[indexSel],
+                          widget.idType);
+                    } else {
+                      final id = uuid.v4();
+                      categoryController.addCategory(
+                          id,
+                          nameCateController.text.trim(),
+                          iconsList[indexSel],
+                          widget.idType);
+                    }
+                  },
+                  style:
+                      TextStyle(fontSize: 40.0, color: FColorSkin.primaryColor),
+                  size: FInputSize.size64
+                      .copyWith(contentPadding: EdgeInsets.zero, height: 45),
+                  focusColor: FColorSkin.transparent,
+                  hintStyle: TextStyle(
+                      color: FColorSkin.subtitle.withOpacity(.3), fontSize: 38),
+                ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 8.0),
+                padding: const EdgeInsets.only(top: 40.0, bottom: 12, left: 24),
                 child: Text(
                   'Icon: ',
-                  style: FTypoSkin.title3.copyWith(color: FColorSkin.title),
+                  style: FTypoSkin.title2.copyWith(color: FColorSkin.title),
                 ),
               ),
+              Container(
+                  margin: const EdgeInsets.only(
+                      top: 8.0, bottom: 16, left: 24, right: 24),
+                  height: 114.0 * iconsList.length,
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    itemCount: iconsList.length,
+                    itemBuilder: (context, index) {
+                      final icon = iconsList[index];
+                      return Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.0),
+                            border: Border.all(
+                                color: indexSel == index
+                                    ? FColorSkin.primaryColor
+                                    : FColorSkin.transparent)),
+                        child: Material(
+                          borderRadius: BorderRadius.circular(8.0),
+                          color: FColorSkin.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              indexSel = index;
+                              setState(() {});
+                            },
+                            radius: 8.0,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.asset(
+                                icon,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisSpacing: 12,
+                            crossAxisCount: 6,
+                            mainAxisSpacing: 16),
+                  ))
             ],
           ),
         ),
@@ -110,17 +160,28 @@ class _CreateCategoryState extends State<CreateCategory> {
           color: FColorSkin.transparent,
           height: 80,
           child: FFilledButton(
-            size: FButtonSize.size40,
+            size: FButtonSize.size40
+                .copyWith(borderRadius: Radius.circular(20.0)),
             onPressed: checkEmpty
                 ? null
                 : () async {
-                    final id = uuid.v4();
-                    await categoryController.addCategory(
-                        id, nameCateController.text.trim(), widget.idType);
+                    if (widget.categoryItem != null) {
+                      await categoryController.addCategory(
+                          widget.categoryItem.iD,
+                          nameCateController.text.trim(),
+                          iconsList[indexSel],
+                          widget.idType);
+                    } else {
+                      final id = uuid.v4();
+                      await categoryController.addCategory(
+                          id,
+                          nameCateController.text.trim(),
+                          iconsList[indexSel],
+                          widget.idType);
+                    }
                   },
-            backgroundColor: checkEmpty
-                ? FColorSkin.disableBackground
-                : FColorSkin.primaryColor,
+            backgroundColor:
+                checkEmpty ? FColorSkin.disableBackground : FColorSkin.title,
             child: Container(
               alignment: Alignment.center,
               child: Text(

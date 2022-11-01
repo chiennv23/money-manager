@@ -1,10 +1,10 @@
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:coresystem/Core/CacheService.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/LocalDatabase/model_lib.dart';
 import 'package:coresystem/Project/2M/Module/Category/DA/category_controller.dart';
+import 'package:coresystem/Project/2M/Module/Category/Views/category_list.dart';
+import 'package:coresystem/Project/2M/Module/ExportCSV/export_csv.dart';
 import 'package:coresystem/Project/2M/Module/Money/DA/money_controller.dart';
 import 'package:coresystem/Project/2M/Module/Wallet/DA/wallet_controller.dart';
 import 'package:coresystem/main.dart';
@@ -21,7 +21,6 @@ import '../../../Utils/PickImage/imagePickerHandler.dart';
 import '../Contains/constants.dart';
 import '../Contains/skin/typo_skin.dart';
 import '../Module/User/DA/user_controller.dart';
-import '../Module/User/Logout/handle_log_out.dart';
 import 'transaction_index.dart';
 
 class AccountIndex extends StatefulWidget {
@@ -43,6 +42,8 @@ class _AccountIndexState extends State<AccountIndex>
       'icon': FFilled.ticket,
       'route': CoreRouteNames.ACCOUNT_INFO
     },
+    {'title': 'Category List', 'icon': FFilled.book, 'route': CategoryList()},
+    {'title': 'Export CSV', 'icon': FFilled.file_excel, 'route': ExportCSV()},
   ];
 
   AnimationController _controller;
@@ -127,16 +128,16 @@ class _AccountIndexState extends State<AccountIndex>
       child: Scaffold(
         backgroundColor: FColorSkin.grey3_background,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(65),
+          preferredSize: Size.fromHeight(80),
           child: Stack(
             children: [
               Container(
-                height: 65,
+                height: 75,
                 color: FColorSkin.grey1_background,
               ),
               SafeArea(
                   child: FListTile(
-                padding: EdgeInsets.fromLTRB(16, 0, 8, 16),
+                padding: EdgeInsets.fromLTRB(16, 10, 8, 16),
                 size: FListTileSize.size72,
                 avatar: GestureDetector(
                   onTap: () {
@@ -199,7 +200,11 @@ class _AccountIndexState extends State<AccountIndex>
               return FListTile(
                 size: FListTileSize.size56,
                 onTap: () {
-                  CoreRoutes.instance.navigateToRouteString(item['route']);
+                  if (item['route'].runtimeType == String) {
+                    CoreRoutes.instance.navigateToRouteString(item['route']);
+                  } else {
+                    CoreRoutes.instance.navigatorPushRoutes(item['route']);
+                  }
                 },
                 padding: EdgeInsets.only(left: 16),
                 border: Border(

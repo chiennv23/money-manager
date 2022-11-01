@@ -22,8 +22,11 @@ class CategoryController extends GetxController {
     super.onInit();
   }
 
+  // get all category list
+  List<CategoryItem> get allCateList => _cateList;
+
   // get category list
-  List<CategoryItem> get cateList {
+  List<CategoryItem> get cateByTypeList {
     return _cateList
         .where((element) => element.cateType == idCateType.value.toString())
         .toList();
@@ -35,11 +38,11 @@ class CategoryController extends GetxController {
   // get index UI cate
   void getIndex(int index) {
     idCate.value = index;
-    cateChoose = cateList[idCate.value];
+    cateChoose = cateByTypeList[idCate.value];
   }
 
   String get showNameCate =>
-      '${idCate.value > 0 ? cateList[idCate.value].cateName : cateList?.first?.cateName}';
+      '${idCate.value > 0 ? cateByTypeList[idCate.value].cateName : cateByTypeList?.first?.cateName}';
 
   Future getCateList() async {
     final lst = await getAllCategory();
@@ -51,15 +54,37 @@ class CategoryController extends GetxController {
     }
   }
 
-  Future<void> addCategory(String id, String name, int idType) async {
+  Future<void> addCategory(
+      String id, String name, String icon, int idType) async {
     // 0: chi tieu
     // 1: thu nhap
-    if (_cateList.any((element) => element.cateName == name)) {
+    if (_cateList.any((element) =>
+        element.cateName.trim().toLowerCase() == name.trim().toLowerCase() &&
+        element.iD != id)) {
       await SnackBarCore.warning(title: 'Trùng tên danh mục, hãy thử lại');
       return;
     }
+    if (_cateList.any((element) => element.iD == id)) {
+      // check no edit anything
+      final editCate = _cateList.firstWhere((element) => element.iD == id);
+      final indexEditCate = _cateList.indexWhere((element) => element.iD == id);
+      if (editCate.cateName == name && editCate.cateIcon == icon) {
+        CoreRoutes.instance.pop();
+        return;
+      }
+      // edit
+      editCate.cateIcon = icon;
+      editCate.cateName = name;
+      editCate.cateType = idType.toString();
+      await CacheService.edit<CategoryItem>(id, editCate);
+      _cateList[indexEditCate] = editCate;
+      _cateList.refresh();
+      CoreRoutes.instance.pop();
+      await SnackBarCore.success();
+      return;
+    }
     final obj = CategoryItem(
-        iD: id, cateName: name, cateType: idType.toString(), cateIcon: '');
+        iD: id, cateName: name, cateType: idType.toString(), cateIcon: icon);
     await CacheService.add<CategoryItem>(id, obj);
     _cateList.insert(0, obj);
     _cateList.refresh();

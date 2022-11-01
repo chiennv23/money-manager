@@ -33,7 +33,8 @@ class WalletController extends GetxController {
   double get totalMoneyInWallets {
     print('totalMoneyInWallets');
     if (_walletList != null && _walletList.length != 0) {
-      final moneyList = _walletList.map((element) => element.moneyWallet);
+      final moneyList = moneyController.allMoneyList
+          .map((element) => element.wallet.moneyWallet);
       final total = moneyList.reduce((a, b) => a + b);
       return total;
     } else {
@@ -48,8 +49,11 @@ class WalletController extends GetxController {
 
   // get index UI cate
   void getIndex(int index) {
-    idWallet.value = index;
-    walletChoose.value = _walletList[idWallet.value];
+    if (_walletList.isNotEmpty) {
+      idWallet.value = index;
+      walletChoose.value = _walletList[index];
+    }
+
     update();
   }
 
@@ -61,72 +65,110 @@ class WalletController extends GetxController {
     if (lst != null) {
       _walletList.assignAll(lst);
     }
-    if (_walletList != null && _walletList.length != 0) {
+    if (_walletList != null && _walletList.isNotEmpty) {
       walletChoose.value = _walletList.first;
       // walletChoosenBefore = _walletList.first;
     }
   }
 
-  Future editWalletInMoneyNote(MoneyItem editMoneyItem) async {
-    if (_walletList.any((element) =>
-        element.iD == editMoneyItem.wallet.iD &&
-        element.title == editMoneyItem.wallet.title)) {
-      // edit old wallet
-      final editWalletObj = _walletList.firstWhere((element) =>
-          element.iD == editMoneyItem.wallet.iD &&
-          element.title == editMoneyItem.wallet.title);
+  Future initTotalMoneyEachWallet({List<MoneyItem> moneyList}) async {
+    if (moneyList != null && moneyList.isNotEmpty) {
+      // 0: chi tieu
+      // 1: thu nhap
+      _walletList.forEach((walletItem) {
+        final totalExpense = moneyList
+            .where((element) =>
+                element.moneyType == '0' && element.wallet.iD == walletItem.iD)
+            .toList()
+            .map((e) => e.moneyValue ?? 0.0)
+            .fold(0, (previousValue, element) => previousValue + element);
 
-      // Lấy ví cũ, mới trừ or cộng thêm số tiền mới ở lần chỉnh sửa giao dịch tiền.
-      if (walletChoosenBefore?.iD != null &&
-          walletChoosenBefore?.iD != walletChoose?.value?.iD) {
-        // change money in two wallet
-        if (editMoneyItem.moneyType == '0') {
-          // chi tieu
-          walletChoosenBefore.moneyWallet += editMoneyItem.moneyValue;
-          walletChoose.value.moneyWallet -= editMoneyItem.moneyValue;
-        } else {
-          // thu nhap
-          walletChoosenBefore.moneyWallet -= editMoneyItem.moneyValue;
-          walletChoose.value.moneyWallet += editMoneyItem.moneyValue;
-        }
-        await CacheService.edit<WalletItem>(
-            walletChoosenBefore.iD, walletChoosenBefore);
-        await CacheService.edit<WalletItem>(
-            walletChoose.value.iD, walletChoose.value);
-      } else {
-        // check if quality wallet return
-        if (walletChoosenBefore?.iD == walletChoose?.value?.iD) {
-          return;
-        }
-        // add normal money in wallet when add money note
-        if (editMoneyItem.moneyType == '0') {
-          editWalletObj.moneyWallet -= editMoneyItem.moneyValue;
-        } else {
-          editWalletObj.moneyWallet += editMoneyItem.moneyValue;
-        }
-        await CacheService.edit<WalletItem>(editWalletObj.iD, editWalletObj);
-      }
-      walletChoose.value = _walletList.first;
-      walletChoosenBefore = WalletItem();
-      final lst = await getAllWallet();
-      if (lst != null) {
-        _walletList.assignAll(lst);
-      }
-      _walletList.refresh();
-      await SnackBarCore.success();
-      update();
-      return;
+        final totalIncome = moneyList
+            .where((element) =>
+                element.moneyType == '1' && element.wallet.iD == walletItem.iD)
+            .toList()
+            .map((e) => e.moneyValue ?? 0.0)
+            .fold(0, (previousValue, element) => previousValue + element);
+
+        final indexOfWallet =
+            _walletList.indexWhere((element) => element.iD == walletItem.iD);
+        final obj = _walletList[indexOfWallet];
+        obj.moneyWallet = totalIncome - totalExpense;
+        _walletList[indexOfWallet] = obj;
+      });
     }
+    _walletList.refresh();
   }
+
+  // Future editWalletInMoneyNote(MoneyItem editMoneyItem) async {
+  //   if (_walletList.any((element) =>
+  //       element.iD == editMoneyItem.wallet.iD &&
+  //       element.title == editMoneyItem.wallet.title)) {
+  //     // edit old wallet
+  //     final editWalletObj = _walletList.firstWhere((element) =>
+  //         element.iD == editMoneyItem.wallet.iD &&
+  //         element.title == editMoneyItem.wallet.title);
+  //     final moneyChooseBefore = moneyController.allMoneyList
+  //         .firstWhere((element) => element.iD == editMoneyItem.iD);
+  //
+  //     // Lấy ví cũ, mới trừ or cộng thêm số tiền mới ở lần chỉnh sửa giao dịch tiền.
+  //     if (walletChoosenBefore?.iD != null &&
+  //         walletChoosenBefore?.iD != walletChoose?.value?.iD) {
+  //       // change money in two wallet
+  //       if (editMoneyItem.moneyType == '0') {
+  //         // chi tieu
+  //         walletChoosenBefore.moneyWallet += editMoneyItem.moneyValue;
+  //         walletChoose.value.moneyWallet -= editMoneyItem.moneyValue;
+  //       } else {
+  //         // thu nhap
+  //         walletChoosenBefore.moneyWallet -= editMoneyItem.moneyValue;
+  //         walletChoose.value.moneyWallet += editMoneyItem.moneyValue;
+  //       }
+  //       await CacheService.edit<WalletItem>(
+  //           walletChoosenBefore.iD, walletChoosenBefore);
+  //       await CacheService.edit<WalletItem>(
+  //           walletChoose.value.iD, walletChoose.value);
+  //     } else {
+  //       // check if quality wallet return
+  //       if (walletChoosenBefore?.iD == walletChoose?.value?.iD &&
+  //           moneyChooseBefore.moneyValue == editMoneyItem.moneyValue) {
+  //         return;
+  //       }
+  //       final moneyChanged =
+  //           moneyChooseBefore.moneyValue == editMoneyItem.moneyValue
+  //               ? editMoneyItem.moneyValue
+  //               : (editMoneyItem.moneyValue -= moneyChooseBefore.moneyValue);
+  //       // add normal money in wallet when add money note
+  //       if (editMoneyItem.moneyType == '0') {
+  //         // editWalletObj.moneyWallet +=
+  //         editWalletObj.moneyWallet -= moneyChanged;
+  //       } else {
+  //         editWalletObj.moneyWallet += editMoneyItem.moneyValue;
+  //       }
+  //       await CacheService.edit<WalletItem>(editWalletObj.iD, editWalletObj);
+  //     }
+  //     walletChoose.value = _walletList.first;
+  //     walletChoosenBefore = WalletItem();
+  //     final lst = await getAllWallet();
+  //     if (lst != null) {
+  //       _walletList.assignAll(lst);
+  //     }
+  //     _walletList.refresh();
+  //     await SnackBarCore.success();
+  //     update();
+  //     return;
+  //   }
+  // }
 
   Future addWallet(
     String id,
     String name,
     String img,
   ) async {
-    if (_walletList.length != 0 &&
-        _walletList
-            .any((element) => element.title == name && element.iD != id)) {
+    if (_walletList.isNotEmpty &&
+        _walletList.any((element) =>
+            element.title.toLowerCase() == name.toLowerCase() &&
+            element.iD != id)) {
       await SnackBarCore.warning(title: 'Tên Wallet đã tồn tại, hãy thử lại');
       return;
     }
@@ -138,15 +180,14 @@ class WalletController extends GetxController {
           _walletList.indexWhere((element) => element.iD == id);
       final editWalletObj = _walletList
           .firstWhere((element) => element.iD == id && element.title == name);
-      // edit normal wallet
       editWalletObj.title = name;
       editWalletObj.avt = img;
       await CacheService.edit<WalletItem>(editWalletObj.iD, editWalletObj);
-      walletChoose.value = _walletList.first;
       _walletList[indexEditWallet] = editWalletObj;
+      CoreRoutes.instance.pop(result: editWalletObj);
     } else {
       // add new wallet
-      final WalletItem obj = WalletItem(
+      final obj = WalletItem(
         iD: id,
         title: name,
         avt: img,
@@ -157,11 +198,12 @@ class WalletController extends GetxController {
       _walletList.add(obj);
       idWallet.value = _walletList.indexWhere((element) => element.iD == id);
       walletChoose.value = _walletList[idWallet.value];
+      CoreRoutes.instance.pop(result: obj);
     }
+    await initWalletsList();
     _walletList.refresh();
-    CoreRoutes.instance.pop();
+    await initTotalMoneyEachWallet(moneyList: moneyController.allMoneyList);
     await SnackBarCore.success();
-    update();
   }
 
   Future<List<WalletItem>> getAllWallet() async {

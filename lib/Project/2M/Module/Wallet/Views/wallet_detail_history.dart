@@ -182,11 +182,9 @@ class _WalletDetailHistoryState extends State<WalletDetailHistory> {
                               children: [
                                 FBoundingBox(
                                   size: FBoxSize.size24,
-                                  child: Text(
-                                    '${item.moneyCateType.cateIcon}' ?? '',
-                                    style: FTypoSkin.bodyText2
-                                        .copyWith(color: FColorSkin.subtitle),
-                                  ),
+                                  backgroundColor: FColorSkin.grey1_background,
+                                  child:
+                                      Image.asset(item.moneyCateType.cateIcon),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 12.0),

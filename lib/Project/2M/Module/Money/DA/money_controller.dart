@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:coresystem/Components/widgets/SnackBar.dart';
 import 'package:coresystem/Core/CacheService.dart';
@@ -17,6 +18,8 @@ class MoneyController extends GetxController {
   static DateTime startD = DateTime(dateNow.year, dateNow.month);
   static DateTime endD =
       DateTime(dateNow.year, dateNow.month + 1).add(Duration(seconds: -1));
+
+  RxList<Uint8List> imgOCR = <Uint8List>[].obs;
 
   // static DateTime startD = DateTime.now();
   // static DateTime endD = startD.add(Duration(days: 6));
@@ -56,7 +59,7 @@ class MoneyController extends GetxController {
 
   List<MoneyItem> get moneyStartEndList {
     List<MoneyItem> lst = [];
-    final numberOfDay = endD.difference(startD).inDays;
+    final numberOfDay = endD.difference(startD).inDays + 1;
     for (var i = 0; i < numberOfDay; i++) {
       final nextDay = DateTime(startD.year, startD.month, startD.day + i);
       final listSameDay =
@@ -66,7 +69,7 @@ class MoneyController extends GetxController {
     return lst;
   }
 
-  double get expenseAllMoneyWallet {
+  double get expenseAllMoneyWalletByDates {
     if (_moneyList != null) {
       if (_moneyList.length != 0) {
         final expenseList = walletIdInTab.value == ''
@@ -89,7 +92,7 @@ class MoneyController extends GetxController {
 
   // 0: chi tieu
   // 1: thu nhap
-  double get incomeAllMoneyWallet {
+  double get incomeAllMoneyWalletbyDates {
     if (_moneyList != null) {
       if (_moneyList.length != 0) {
         final incomeList = walletIdInTab.value == ''
@@ -145,7 +148,7 @@ class MoneyController extends GetxController {
         .toList()
         .fold(0, (previousValue, element) => previousValue + element);
     // if (incomeAllMoneyWallet >= expenseAllMoneyWallet) {
-    final total = incomeAllMoneyWallet - expenseAllMoneyWallet;
+    final total = incomeAllMoneyWalletbyDates - expenseAllMoneyWalletByDates;
     return total + (totalIncomeAllTime - totalExpenseAllTime);
     // } else {
     //   return 0.0;
@@ -155,28 +158,28 @@ class MoneyController extends GetxController {
   double getHeightChartHome(String type, double totalHeightChart) {
     if (_moneyList.length != 0 && _moneyList != null) {
       final double maxNumber = [
-        incomeAllMoneyWallet,
-        expenseAllMoneyWallet,
+        incomeAllMoneyWalletbyDates,
+        expenseAllMoneyWalletByDates,
         surplusMoneyWallet
       ].reduce(max);
       final double minNumber = [
-        incomeAllMoneyWallet,
-        expenseAllMoneyWallet,
+        incomeAllMoneyWalletbyDates,
+        expenseAllMoneyWalletByDates,
         surplusMoneyWallet
       ].reduce(min);
       final double sum = maxNumber + minNumber;
       if (type == '0') {
-        return expenseAllMoneyWallet == 0.0 || sum <= 0
+        return expenseAllMoneyWalletByDates == 0.0 || sum <= 0
             ? 0.0
-            : expenseAllMoneyWallet / sum * totalHeightChart >= totalHeightChart
+            : expenseAllMoneyWalletByDates / sum * totalHeightChart >= totalHeightChart
                 ? totalHeightChart
-                : expenseAllMoneyWallet / sum * totalHeightChart;
+                : expenseAllMoneyWalletByDates / sum * totalHeightChart;
       } else if (type == '1') {
-        return incomeAllMoneyWallet == 0.0 || sum <= 0
+        return incomeAllMoneyWalletbyDates == 0.0 || sum <= 0
             ? 0.0
-            : incomeAllMoneyWallet / sum * totalHeightChart >= totalHeightChart
+            : incomeAllMoneyWalletbyDates / sum * totalHeightChart >= totalHeightChart
                 ? totalHeightChart
-                : incomeAllMoneyWallet / sum * totalHeightChart;
+                : incomeAllMoneyWalletbyDates / sum * totalHeightChart;
       } else {
         return surplusMoneyWallet <= 0.0 || sum <= 0
             ? 0.0
@@ -202,9 +205,33 @@ class MoneyController extends GetxController {
                   element.moneyType == '0' &&
                   element.wallet.iD == walletIdInTab.value)
               .toList();
-      final List<MoneyItem> lst = expenseList
+      final lst = expenseList
         ..sort((b, a) => a.moneyValue.compareTo(b.moneyValue));
       return lst.take(3).toList();
+    } else {
+      return [];
+    }
+  }
+
+  List<MoneyItem> get AllExpenseMoneyByDateList {
+    print('AllExpenseMoneyList');
+    if (_moneyList.length != 0 && _moneyList != null) {
+      final expenseList = walletIdInTab.value == ''
+          ? _moneyList
+              .where((element) =>
+                  element.moneyType == '0' &&
+                  element.creMoneyDate
+                      .isSameMy(moneyController.selectedValue.value))
+              .toList()
+          : _moneyList
+              .where((element) =>
+                  element.moneyType == '0' &&
+                  element.creMoneyDate
+                      .isSameMy(moneyController.selectedValue.value) &&
+                  element.wallet.iD == walletIdInTab.value)
+              .toList();
+
+      return expenseList;
     } else {
       return [];
     }
@@ -362,32 +389,29 @@ class MoneyController extends GetxController {
     }
     // 0: chi tieu
     // 1: thu nhap
-    // waiting edit wallet then money add
-    await walletController
-        .editWalletInMoneyNote(moneyItem)
-        .whenComplete(() async {
-      if (_moneyList.any((element) => element.iD == moneyItem.iD)) {
-        // edit money
-        final editObj =
-            _moneyList.firstWhere((element) => element.iD == moneyItem.iD);
-        editObj.creMoneyDate = moneyItem.creMoneyDate;
-        editObj.noteMoney = moneyItem.noteMoney;
-        editObj.wallet = moneyItem.wallet;
-        editObj.moneyCateType = moneyItem.moneyCateType;
-        editObj.moneyValue = moneyItem.moneyValue;
-        await CacheService.edit(moneyItem.iD, editObj);
-        CoreRoutes.instance.pop();
-      } else {
-        // add money
-        //add data to Hive
-        await CacheService.add<MoneyItem>(moneyItem.iD, moneyItem);
+    if (_moneyList.any((element) => element.iD == moneyItem.iD)) {
+      // edit money
+      final editObj =
+          _moneyList.firstWhere((element) => element.iD == moneyItem.iD);
+      editObj.creMoneyDate = moneyItem.creMoneyDate;
+      editObj.noteMoney = moneyItem.noteMoney;
+      editObj.wallet = moneyItem.wallet;
+      editObj.moneyCateType = moneyItem.moneyCateType;
+      editObj.moneyValue = moneyItem.moneyValue;
+      await CacheService.edit(moneyItem.iD, editObj);
+      CoreRoutes.instance.pop();
+    } else {
+      // add money
+      //add data to Hive
+      await CacheService.add<MoneyItem>(moneyItem.iD, moneyItem);
 
-        _moneyList.add(moneyItem);
-      }
-      await initGetMoneyList();
-      _moneyList.refresh();
-      await SnackBarCore.success();
-    });
+      _moneyList.add(moneyItem);
+    }
+    await initGetMoneyList();
+    _moneyList.refresh();
+    await walletController.initTotalMoneyEachWallet(moneyList: _moneyList);
+
+    await SnackBarCore.success();
   }
 
   Future<void> deleteMoneyNote(MoneyItem moneyItem) async {

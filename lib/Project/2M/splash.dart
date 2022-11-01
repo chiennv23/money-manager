@@ -18,22 +18,31 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
-  bool _isfirst = false;
+  bool _isfirst;
 
   @override
   void initState() {
-    _isfirst = SharedPreferencesHelper.instance.getBool(key: 'first_run');
+    _isfirst =
+        SharedPreferencesHelper.instance.getBool(key: 'first_run') ?? true;
+    initView();
     super.initState();
   }
 
+  void deleteAllDataFirstInstall() {
+    if (_isfirst) {
+      print('first run app......');
+      StorageHelper.instance.deleteAll();
+
+      SharedPreferencesHelper.instance.setBool(key: 'first_run', val: false);
+    }
+  }
+
   void initView() {
-    Timer(Duration(milliseconds: 2365), () async {
-      if (kReleaseMode) {
-        if (_isfirst) {
-          await CoreRoutes.instance.navigateAndRemoveFade(IntroduceApp());
-        } else {
-          await CoreRoutes.instance.navigateAndRemoveFade(PageIndex());
-        }
+    Timer(Duration(milliseconds: 2800), () async {
+      // if (kReleaseMode) {
+      if (_isfirst) {
+        deleteAllDataFirstInstall();
+        await CoreRoutes.instance.navigateAndRemoveFade(IntroduceApp());
       } else {
         await CoreRoutes.instance.navigateAndRemoveFade(PageIndex());
       }
@@ -49,9 +58,9 @@ class _SplashState extends State<Splash> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Lottie.asset('lib/Assets/IconApp/processing.json', onLoaded: (vl) {
-            initView();
-          }),
+          Lottie.asset(
+            'lib/Assets/IconApp/processing.json',
+          ),
           Text(
             'Monage',
             style: FTypoSkin.title1.copyWith(color: FColorSkin.title),

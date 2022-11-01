@@ -11,7 +11,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class ExpenseMoneyDetail extends StatefulWidget {
-  const ExpenseMoneyDetail({Key key}) : super(key: key);
+  final String walletName;
+
+  const ExpenseMoneyDetail({Key key, this.walletName}) : super(key: key);
 
   @override
   State<ExpenseMoneyDetail> createState() => _ExpenseMoneyDetailState();
@@ -26,12 +28,7 @@ class _ExpenseMoneyDetailState extends State<ExpenseMoneyDetail> {
       value: SystemUiOverlayStyle.light,
       child: Obx(() {
         // danh sách theo loại tiền chi hoặc thu
-        final lst = moneyController.allMoneyList
-            .where((element) =>
-                element.moneyType == '0' &&
-                element.creMoneyDate
-                    .isSameMy(moneyController.selectedValue.value))
-            .toList();
+        final lst = moneyController.AllExpenseMoneyByDateList;
 
         // danh sách các ngày trong tháng
         final listFilter = lst
@@ -61,10 +58,27 @@ class _ExpenseMoneyDetailState extends State<ExpenseMoneyDetail> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 4.0),
-                            child: Text(
-                              'Detail',
-                              style: FTypoSkin.title3
-                                  .copyWith(color: FColorSkin.grey1_background),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Expense ',
+                                  style: FTypoSkin.title5.copyWith(
+                                      color: FColorSkin.grey1_background,
+                                      fontWeight: FontWeight.normal),
+                                ),
+                                if (widget.walletName != '')
+                                  Text(
+                                    '${widget.walletName} '.toUpperCase(),
+                                    style: FTypoSkin.title3.copyWith(
+                                        color: FColorSkin.grey1_background),
+                                  ),
+                                Text(
+                                  'detail',
+                                  style: FTypoSkin.title5.copyWith(
+                                      color: FColorSkin.grey1_background,
+                                      fontWeight: FontWeight.normal),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -85,7 +99,7 @@ class _ExpenseMoneyDetailState extends State<ExpenseMoneyDetail> {
                             ),
                             Obx(() {
                               return Text(
-                                '${moneyController.expenseAllMoneyWallet.wToMoney(0).replaceAll('.', ',')} VND',
+                                '${moneyController.expenseAllMoneyWalletByDates.wToMoney(0).replaceAll('.', ',')} VND',
                                 style: FTypoSkin.title1.copyWith(
                                   color: FColorSkin.grey1_background,
                                 ),
@@ -177,11 +191,9 @@ class _ExpenseMoneyDetailState extends State<ExpenseMoneyDetail> {
                               children: [
                                 FBoundingBox(
                                   size: FBoxSize.size24,
-                                  child: Text(
-                                    '${item.moneyCateType.cateIcon}' ?? '',
-                                    style: FTypoSkin.bodyText2
-                                        .copyWith(color: FColorSkin.subtitle),
-                                  ),
+                                  backgroundColor: FColorSkin.grey1_background,
+                                  child:
+                                      Image.asset(item.moneyCateType.cateIcon),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 12.0),

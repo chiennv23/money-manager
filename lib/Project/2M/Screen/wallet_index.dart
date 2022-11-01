@@ -26,10 +26,14 @@ class _SupportIndexState extends State<SupportIndex>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   List<int> indexCardWalletList = [];
+  int indexSelected = 0;
 
   @override
   void initState() {
     moneyController.walletIdInTab.value = '';
+    moneyController.selectedValue.value = DateTime.now();
+    walletController.initTotalMoneyEachWallet(
+        moneyList: moneyController.allMoneyList);
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 250),
@@ -98,7 +102,7 @@ class _SupportIndexState extends State<SupportIndex>
                             onPressed: () {
                               if (deleteMode) {
                                 indexCardWalletList.forEach((element) async {
-                                  final String id =
+                                  final id =
                                       walletController.walletList[element].iD;
                                   await walletController.deleteThisWallet(
                                       id,
@@ -140,7 +144,7 @@ class _SupportIndexState extends State<SupportIndex>
                               alignment: AlignmentDirectional.center,
                               children: [
                                 Image.asset(
-                                  'lib/Assets/Images/wallet.png',
+                                  'lib/Assets/Images/walletTheme.png',
                                 ),
                                 FFilledButton.icon(
                                     size: FButtonSize.size48,
@@ -151,7 +155,7 @@ class _SupportIndexState extends State<SupportIndex>
                                       if (deleteMode) {
                                         indexCardWalletList
                                             .forEach((element) async {
-                                          final String id = walletController
+                                          final id = walletController
                                               .walletList[element].iD;
                                           await walletController
                                               .deleteThisWallet(
@@ -212,7 +216,7 @@ class _SupportIndexState extends State<SupportIndex>
                                     padding: const EdgeInsets.only(top: 24.0),
                                     child: Obx(() {
                                       return Text(
-                                        '${moneyController.incomeAllMoneyWallet.wToMoney(0).replaceAll('.', ',')}',
+                                        '${moneyController.incomeAllMoneyWalletbyDates.wToMoney(0).replaceAll('.', ',')}',
                                         style: FTypoSkin.title4.copyWith(
                                             color: FColorSkin.primaryColor,
                                             fontWeight: FontWeight.w500),
@@ -231,7 +235,7 @@ class _SupportIndexState extends State<SupportIndex>
                                   ),
                                   Obx(() {
                                     return Text(
-                                      '${moneyController.expenseAllMoneyWallet.wToMoney(0).replaceAll('.', ',')}',
+                                      '${moneyController.expenseAllMoneyWalletByDates.wToMoney(0).replaceAll('.', ',')}',
                                       style: FTypoSkin.title4.copyWith(
                                           color: FColorSkin.warningPrimary,
                                           fontWeight: FontWeight.w500),
@@ -342,12 +346,21 @@ class _SupportIndexState extends State<SupportIndex>
                                                                     .center,
                                                             children: [
                                                               Image.asset(
-                                                                item.avt ??
-                                                                    'lib/Assets/Images/wallet.png',
+                                                                item.avt,
                                                                 width: double
                                                                     .infinity,
                                                                 fit: BoxFit
                                                                     .cover,
+                                                                errorBuilder:
+                                                                    (_, __,
+                                                                        ___) {
+                                                                  return Image
+                                                                      .asset(
+                                                                    'lib/Assets/Images/walletTheme.png',
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  );
+                                                                },
                                                               ),
                                                               Positioned(
                                                                 right: 0.0,
@@ -460,10 +473,10 @@ class _SupportIndexState extends State<SupportIndex>
 }
 
 List<TypeItem> listTypeCardWallet = [
-  TypeItem(id: 0, img: 'lib/Assets/Images/wallet.png', tone: false),
-  TypeItem(id: 1, img: 'lib/Assets/Images/wallet2.png', tone: true),
-  TypeItem(id: 2, img: 'lib/Assets/Images/wallet3.png', tone: false),
-  TypeItem(id: 3, img: 'lib/Assets/Images/wallet4.png', tone: true),
+  TypeItem(id: 0, img: 'lib/Assets/Images/walletTheme.png', tone: false),
+  TypeItem(id: 1, img: 'lib/Assets/Images/wallet2Theme.png', tone: true),
+  TypeItem(id: 2, img: 'lib/Assets/Images/wallet3Theme.png', tone: false),
+  TypeItem(id: 3, img: 'lib/Assets/Images/wallet4Theme.png', tone: true),
 ];
 
 class TypeItem {

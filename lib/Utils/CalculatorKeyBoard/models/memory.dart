@@ -58,10 +58,8 @@ class Memory {
 
       final ContextModel cm = ContextModel();
       _result = '${exp.evaluate(EvaluationType.REAL, cm)}';
-      // // check negative number and if having x or / still show result
-      // if (_result.startsWith('-')) {
-      //   _result = _result.replaceAll('-', '');
-      // }
+
+      _equation = _result.split('.')[0];
     } catch (e) {
       SnackBarCore.warning(isBottom: true, title: 'Syntax error, try again.');
       _equation = '0';
@@ -78,8 +76,12 @@ class Memory {
     }
   }
 
+  bool get moneyHasSign => _equation.contains(RegExp(r'[÷|×\-+]'));
+
   String get equation {
-    return _equation;
+    return moneyHasSign
+        ? _equation
+        : '${double.parse(_equation).wToMoney(0)}'.replaceAll('.', ',');
   }
 
   String get result {

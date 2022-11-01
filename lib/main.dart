@@ -4,39 +4,24 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:coresystem/Core/routes.dart';
 import 'package:coresystem/Core/storageKeys_helper.dart';
-import 'package:coresystem/Project/2M/LocalDatabase/Models/wallet_item.dart';
 import 'package:coresystem/Project/2M/LocalDatabase/model_lib.dart';
-import 'package:coresystem/Project/2M/Module/Category/DA/category_controller.dart';
 import 'package:coresystem/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:get/get_navigation/src/routes/observers/route_observer.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path_provider/path_provider.dart';
-
-import 'Config/AppConfig.dart';
-import 'Project/2M/Module/Money/DA/money_controller.dart';
-import 'Project/2M/Module/Wallet/DA/wallet_controller.dart';
+import 'Core/enum_core.dart';
 import 'generated/l10n.dart';
 
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-  }
-}
+String defaultImg ='lib/Assets/Images/walletTheme.png';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-
   await SharedPreferencesHelper.instance.init();
-  HttpOverrides.global = MyHttpOverrides();
+
   // initHive
   await HiveDB().initHive();
   // get controllers
@@ -64,7 +49,7 @@ class _MyAppState extends State<MyApp> {
   void takeLanguage() {
     final localeCode =
         SharedPreferencesHelper.instance.getString(key: 'languageApp');
-    ConfigApp.langApp = localeCode ?? 'vi';
+    langApp = localeCode ?? 'vi';
     defaultLanguage = Locale(localeCode ?? 'vi');
   }
 
@@ -76,20 +61,11 @@ class _MyAppState extends State<MyApp> {
     return;
   }
 
-  void deleteAllDataFirstInstall() {
-    if (SharedPreferencesHelper.instance.getBool(key: 'first_run') ?? true) {
-      print('first run app......');
-      StorageHelper.instance.deleteAll();
-
-      SharedPreferencesHelper.instance.setBool(key: 'first_run', val: false);
-    }
-  }
 
   final botToastBuilder = BotToastInit();
 
   @override
   void initState() {
-    deleteAllDataFirstInstall();
     takeLanguage();
     super.initState();
   }

@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 
 class ImageHelper {
   static Future<Uint8List> compressImage(File image) async {
-    final Uint8List lst = await FlutterImageCompress.compressWithFile(
+    final lst = await FlutterImageCompress.compressWithFile(
       image.absolute.path,
       minHeight: 1280,
       minWidth: 1980,
@@ -54,7 +54,7 @@ class WConvert {
     }
   }
 
-  static int totalseconds(DateTime date) {
+  static int totalSeconds(DateTime date) {
     final diffDt = date.difference(dateDefault);
     return diffDt.inSeconds;
   }
@@ -85,7 +85,7 @@ class WConvert {
     }
   }
 
-  static String decimaltoString(double totalSeconds, String format) {
+  static String decimalToString(double totalSeconds, String format) {
     return totalSeconds != null
         ? DateFormat(format)
             .format(dateDefault.add(Duration(seconds: totalSeconds.round())))
@@ -222,6 +222,7 @@ class FDate {
       return '${h < 10 ? '0$h' : h}:${m < 10 ? '0$m' : m}';
     }
   }
+
 }
 
 extension FDateTimeExtension on DateTime {

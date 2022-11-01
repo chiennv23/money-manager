@@ -22,6 +22,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -56,13 +57,14 @@ class _InputMoneyState extends State<InputMoney>
 
   @override
   void initState() {
+    moneyController.imgOCR = <Uint8List>[].obs;
     //edit
     if (widget.moneyItem != null) {
       isCalculator = false;
       memory.setStringResult(widget.moneyItem.moneyValue.toInt().toString());
       Future.delayed(Duration(milliseconds: 100), () {
         categoryController.getTypeCate(widget.idType);
-        final indexCateType = categoryController.cateList.indexWhere(
+        final indexCateType = categoryController.cateByTypeList.indexWhere(
             (element) => element.iD == widget.moneyItem.moneyCateType.iD);
         categoryController.getIndex(indexCateType);
         cateScrollController.jumpTo(indexCateType * 100.0);
@@ -79,12 +81,13 @@ class _InputMoneyState extends State<InputMoney>
       Future.delayed(Duration(milliseconds: 100), () {
         moneyController.selectedValue.value = DateTime.now();
       });
+      walletController.getIndex(0);
       categoryController.getIndex(0);
       isCalculator = true;
     }
     Future.delayed(Duration(milliseconds: 100), () {
       _controllerDatePicker.animateToDate(moneyController.selectedValue.value);
-      _controllerDatePicker.animateToSelection;
+      _controllerDatePicker.jumpToSelection;
     });
     _controller = AnimationController(
       vsync: this,
@@ -108,296 +111,192 @@ class _InputMoneyState extends State<InputMoney>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-        isCalculator = false;
-        setState(() {});
-      },
-      child: Scaffold(
-          backgroundColor: FColorSkin.grey1_background,
-          appBar: appbarNoTitle(
-              iconBack: FOutlined.close,
-              action: [
-                Container(
-                  padding: EdgeInsets.only(right: 8),
-                  child: FFilledButton.icon(
-                      backgroundColor: FColorSkin.transparent,
-                      child: FIcon(icon: FFilled.camera),
-                      onPressed: () async {
-                        final OcrScan ocr = OcrScan();
-                        await ocr.TakeImgAndOCR();
-                      }),
-                )
-              ],
-              systemUiOverlayStyle: SystemUiOverlayStyle.dark),
-          body: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: Get.width,
-                  color: FColorSkin.grey1_background,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.only(bottom: 5, left: 24),
-                        child: Text(
-                          widget.idType == 0 ? 'Chi tiêu' : 'Thu nhập',
-                          style:
-                              FTypoSkin.title.copyWith(color: FColorSkin.title),
-                        ),
-                      ),
-                      // input
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: 24,
-                          ),
-                          AutoSizeText(
-                            'VND ',
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+          isCalculator = false;
+          setState(() {});
+        },
+        child: Scaffold(
+            backgroundColor: FColorSkin.grey1_background,
+            appBar: appbarNoTitle(
+                iconBack: FOutlined.close,
+                actionBack: () {
+                  moneyController.selectedValue.value = DateTime.now();
+                  CoreRoutes.instance.pop();
+                },
+                action: [
+                  Container(
+                    padding: EdgeInsets.only(right: 8),
+                    child: FFilledButton.icon(
+                        backgroundColor: FColorSkin.transparent,
+                        child: FIcon(icon: FFilled.camera),
+                        onPressed: () async {
+                          final ocr = OcrScan();
+                          final rs = await ocr.TakeImgAndOCR();
+                          if (rs != null) {
+                            isCalculator = false;
+                            memory.setStringResult('');
+                            final textMoney =
+                                rs.replaceAll(RegExp(r'[^\d.]+'), '');
+                            print(textMoney);
+                            memory.setStringResult(textMoney);
+                            setState(() {});
+                          }
+                        }),
+                  ),
+                ],
+                systemUiOverlayStyle: SystemUiOverlayStyle.dark),
+            body: SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: Get.width,
+                    color: FColorSkin.grey1_background,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(bottom: 5, left: 24),
+                          child: Text(
+                            widget.idType == 0 ? 'Chi tiêu' : 'Thu nhập',
                             style: FTypoSkin.title
-                                .copyWith(color: FColorSkin.primaryColor),
+                                .copyWith(color: FColorSkin.title),
                           ),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                isCalculator = true;
-                                setState(() {});
-                              },
-                              child: Container(
-                                color: FColorSkin.transparent,
-                                child: AutoSizeText(
-                                  cmd != '='
-                                      // check if having a calculation [moneyHasSign]
-                                      ? moneyHasSign
-                                          ? memory.equation
-                                          : '${double.parse(memory.equation).wToMoney(0)}'
-                                              .replaceAll('.', ',')
-                                      : memory.result.replaceAll('.', ','),
-                                  maxLines: 1,
-                                  maxFontSize: 32,
-                                  minFontSize: 16,
-                                  style: FTypoSkin.title
-                                      .copyWith(color: FColorSkin.primaryColor),
+                        ),
+                        // input
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: 24,
+                            ),
+                            AutoSizeText(
+                              'VND ',
+                              style: FTypoSkin.title
+                                  .copyWith(color: FColorSkin.primaryColor),
+                            ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  isCalculator = true;
+                                  setState(() {});
+                                },
+                                child: Container(
+                                  color: FColorSkin.transparent,
+                                  child: AutoSizeText(
+                                    cmd != '='
+                                        // check if having a calculation [moneyHasSign]
+                                        ? memory.equation
+                                        : memory.result.replaceAll('.', ','),
+                                    maxLines: 1,
+                                    maxFontSize: 32,
+                                    minFontSize: 16,
+                                    style: FTypoSkin.title.copyWith(
+                                        color: FColorSkin.primaryColor),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                    child: SingleChildScrollView(
-                  padding: EdgeInsets.only(bottom: 30, left: 24),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.only(top: 16, bottom: 5.0),
-                        child: FListTile(
-                          padding: EdgeInsets.zero,
-                          title: Row(
-                            children: [
-                              Text(
-                                '${widget.idType == 0 ? 'Chi tiêu' : 'Thu nhập'} cho ',
-                                style: FTypoSkin.title3
-                                    .copyWith(color: FColorSkin.title),
-                              ),
-                              Obx(() {
-                                return Text(
-                                  categoryController.cateList.length == 0 ||
-                                          categoryController.cateList == null
-                                      ? 'Danh mục ?'
-                                      : '${categoryController?.showNameCate}',
+                  Expanded(
+                      child: SingleChildScrollView(
+                    padding: EdgeInsets.only(bottom: 30, left: 24),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(top: 16, bottom: 5.0),
+                          child: FListTile(
+                            padding: EdgeInsets.zero,
+                            title: Row(
+                              children: [
+                                Text(
+                                  '${widget.idType == 0 ? 'Chi tiêu' : 'Thu nhập'} cho ',
                                   style: FTypoSkin.title3
-                                      .copyWith(color: FColorSkin.primaryColor),
-                                );
-                              }),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Obx(() {
-                        return Container(
-                          height: categoryController.cateList.length == 0 ||
-                                  categoryController.cateList == null
-                              ? 40
-                              : 108,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              // add cate
-                              Container(
-                                margin: EdgeInsets.only(right: 8),
-                                child: FFilledButton.icon(
-                                    onPressed: () async {
-                                      FocusScope.of(context).unfocus();
-                                      final rs = await CoreRoutes.instance
-                                          .navigatorPushDownToUp(CreateCategory(
-                                        idType: widget.idType,
-                                      ));
-                                      if (rs != null) {
-                                        await cateScrollController.animateTo(
-                                            0.0,
-                                            duration:
-                                                Duration(milliseconds: 400),
-                                            curve: Curves.linear);
-                                      }
-                                    },
-                                    backgroundColor: FColorSkin.primaryColor,
-                                    child: FIcon(
-                                      icon: FOutlined.plus,
-                                      color: FColorSkin.grey1_background,
-                                      size: 25,
-                                    )),
-                              ),
-                              Expanded(
-                                  child: categoryController.cateList == null &&
-                                          categoryController.idCate.value ==
-                                              null
-                                      ? Container()
-                                      : ListView.builder(
-                                          controller: cateScrollController,
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: categoryController
-                                              .cateList.length,
-                                          itemBuilder: (context, index) {
-                                            final item = categoryController
-                                                .cateList[index];
-                                            return Obx(() {
-                                              return Container(
-                                                height: 108,
-                                                margin:
-                                                    EdgeInsets.only(right: 8.0),
-                                                child: Ink(
-                                                  decoration: BoxDecoration(
-                                                      color: categoryController
-                                                                  .idCate
-                                                                  .value ==
-                                                              index
-                                                          ? FColorSkin
-                                                              .grey1_background
-                                                          : FColorSkin
-                                                              .primaryColorTagBackground,
-                                                      border: Border.all(
-                                                          color: categoryController
-                                                                      .idCate
-                                                                      .value ==
-                                                                  index
-                                                              ? FColorSkin
-                                                                  .primaryColor
-                                                              : FColorSkin
-                                                                  .transparent),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0)),
-                                                  child: InkWell(
-                                                    onTap: () {
-                                                      categoryController
-                                                          .getIndex(index);
-                                                    },
-                                                    child: Container(
-                                                      height: 108,
-                                                      width: 84,
-                                                      alignment:
-                                                          Alignment.center,
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 12.0,
-                                                              horizontal: 9.0),
-                                                      child: Text(
-                                                        item.cateName,
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: FTypoSkin
-                                                            .buttonText3
-                                                            .copyWith(
-                                                                color:
-                                                                    FColorSkin
-                                                                        .title),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            });
-                                          })),
-                            ],
-                          ),
-                        );
-                      }),
-                      Container(
-                        padding: EdgeInsets.only(top: 16, bottom: 5.0),
-                        child: FListTile(
-                          padding: EdgeInsets.zero,
-                          title: Row(
-                            children: [
-                              Text(
-                                '${widget.idType == 0 ? 'Sử dụng' : 'Thêm vào'} ',
-                                style: FTypoSkin.title3
-                                    .copyWith(color: FColorSkin.title),
-                              ),
-                              Obx(() {
-                                return Text(
-                                  walletController.walletList.length == 0 ||
-                                          walletController.walletList == null
-                                      ? 'Ví nào ?'
-                                      : '${walletController.showNameWallet}',
-                                  style: FTypoSkin.title3
-                                      .copyWith(color: FColorSkin.primaryColor),
-                                );
-                              }),
-                            ],
-                          ),
-                        ),
-                      ),
-                      // wallet list
-                      Container(
-                        height: 40,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            // add cate
-                            Container(
-                              margin: EdgeInsets.only(right: 8),
-                              child: FFilledButton.icon(
-                                  onPressed: () {
-                                    FocusScope.of(context).unfocus();
-                                    CoreRoutes.instance
-                                        .navigatorPushDownToUp(CreateWallet());
-                                  },
-                                  backgroundColor: FColorSkin.primaryColor,
-                                  child: FIcon(
-                                    icon: FOutlined.plus,
-                                    color: FColorSkin.grey1_background,
-                                    size: 25,
-                                  )),
+                                      .copyWith(color: FColorSkin.title),
+                                ),
+                                Obx(() {
+                                  return Text(
+                                    categoryController.cateByTypeList.length ==
+                                                0 ||
+                                            categoryController.cateByTypeList ==
+                                                null
+                                        ? 'Danh mục ?'
+                                        : '${categoryController?.showNameCate}',
+                                    style: FTypoSkin.title3.copyWith(
+                                        color: FColorSkin.primaryColor),
+                                  );
+                                }),
+                              ],
                             ),
-                            Expanded(
-                                child: walletController.walletList == null &&
-                                        walletController.idWallet.value == null
-                                    ? Container()
-                                    : Obx(() {
-                                        return ListView.builder(
-                                            controller: walletScrollController,
+                          ),
+                        ),
+                        Obx(() {
+                          return Container(
+                            height: categoryController.cateByTypeList.length ==
+                                        0 ||
+                                    categoryController.cateByTypeList == null
+                                ? 40
+                                : 108,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                // add cate
+                                Container(
+                                  margin: EdgeInsets.only(right: 8),
+                                  child: FFilledButton.icon(
+                                      onPressed: () async {
+                                        FocusScope.of(context).unfocus();
+                                        final rs = await CoreRoutes.instance
+                                            .navigatorPushDownToUp(
+                                                CreateCategory(
+                                          idType: widget.idType,
+                                        ));
+                                        if (rs != null) {
+                                          await cateScrollController.animateTo(
+                                              0.0,
+                                              duration:
+                                                  Duration(milliseconds: 400),
+                                              curve: Curves.linear);
+                                        }
+                                      },
+                                      backgroundColor: FColorSkin.primaryColor,
+                                      child: FIcon(
+                                        icon: FOutlined.plus,
+                                        color: FColorSkin.grey1_background,
+                                        size: 25,
+                                      )),
+                                ),
+                                Expanded(
+                                    child: categoryController.cateByTypeList ==
+                                                null &&
+                                            categoryController.idCate.value ==
+                                                null
+                                        ? Container()
+                                        : ListView.builder(
+                                            controller: cateScrollController,
                                             scrollDirection: Axis.horizontal,
-                                            itemCount: walletController
-                                                .walletList.length,
+                                            itemCount: categoryController
+                                                .cateByTypeList.length,
                                             itemBuilder: (context, index) {
-                                              final item = walletController
-                                                  .walletList[index];
+                                              final item = categoryController
+                                                  .cateByTypeList[index];
                                               return Obx(() {
                                                 return Container(
+                                                  height: 108,
                                                   margin: EdgeInsets.only(
                                                       right: 8.0),
                                                   child: Ink(
                                                     decoration: BoxDecoration(
-                                                        color: walletController
-                                                                    .idWallet
+                                                        color: categoryController
+                                                                    .idCate
                                                                     .value ==
                                                                 index
                                                             ? FColorSkin
@@ -405,8 +304,8 @@ class _InputMoneyState extends State<InputMoney>
                                                             : FColorSkin
                                                                 .primaryColorTagBackground,
                                                         border: Border.all(
-                                                            color: walletController
-                                                                        .idWallet
+                                                            color: categoryController
+                                                                        .idCate
                                                                         .value ==
                                                                     index
                                                                 ? FColorSkin
@@ -418,438 +317,631 @@ class _InputMoneyState extends State<InputMoney>
                                                                 .circular(8.0)),
                                                     child: InkWell(
                                                       onTap: () {
-                                                        walletController
+                                                        categoryController
                                                             .getIndex(index);
                                                       },
                                                       child: Container(
                                                         height: 108,
+                                                        width: 84,
                                                         alignment:
                                                             Alignment.center,
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                                vertical: 12.0,
-                                                                horizontal:
-                                                                    9.0),
-                                                        child: Text(
-                                                          item.title,
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: FTypoSkin
-                                                              .buttonText3
-                                                              .copyWith(
-                                                                  color:
-                                                                      FColorSkin
-                                                                          .title),
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 10.0),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Image.asset(
+                                                              item.cateIcon,
+                                                              height: 55,
+                                                            ),
+                                                            Expanded(
+                                                              child: Text(
+                                                                item.cateName,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                maxLines: 3,
+                                                                style: FTypoSkin
+                                                                    .buttonText3
+                                                                    .copyWith(
+                                                                        color: FColorSkin
+                                                                            .title),
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ),
                                                     ),
                                                   ),
                                                 );
                                               });
-                                            });
-                                      })),
-                          ],
+                                            })),
+                              ],
+                            ),
+                          );
+                        }),
+                        Container(
+                          padding: EdgeInsets.only(top: 16, bottom: 5.0),
+                          child: FListTile(
+                            padding: EdgeInsets.zero,
+                            title: Row(
+                              children: [
+                                Text(
+                                  '${widget.idType == 0 ? 'Sử dụng' : 'Thêm vào'} ',
+                                  style: FTypoSkin.title3
+                                      .copyWith(color: FColorSkin.title),
+                                ),
+                                Obx(() {
+                                  return Text(
+                                    walletController.walletList.length == 0 ||
+                                            walletController.walletList == null
+                                        ? 'Ví nào ?'
+                                        : '${walletController.showNameWallet}',
+                                    style: FTypoSkin.title3.copyWith(
+                                        color: FColorSkin.primaryColor),
+                                  );
+                                }),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(top: 16, bottom: 16.0),
-                        child: FListTile(
-                          padding: EdgeInsets.zero,
-                          title: Row(
+                        // wallet list
+                        Container(
+                          height: 40,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                'Vào ngày ',
-                                style: FTypoSkin.title3
-                                    .copyWith(color: FColorSkin.title),
+                              // add cate
+                              Container(
+                                margin: EdgeInsets.only(right: 8),
+                                child: FFilledButton.icon(
+                                    onPressed: () {
+                                      FocusScope.of(context).unfocus();
+                                      CoreRoutes.instance.navigatorPushDownToUp(
+                                          CreateWallet());
+                                    },
+                                    backgroundColor: FColorSkin.primaryColor,
+                                    child: FIcon(
+                                      icon: FOutlined.plus,
+                                      color: FColorSkin.grey1_background,
+                                      size: 25,
+                                    )),
                               ),
-                              Text(
-                                '${FDate.dMy(moneyController.selectedValue.value)}',
-                                style: FTypoSkin.title3
-                                    .copyWith(color: FColorSkin.primaryColor),
-                              ),
+                              Expanded(
+                                  child: walletController.walletList == null &&
+                                          walletController.idWallet.value ==
+                                              null
+                                      ? Container()
+                                      : Obx(() {
+                                          return ListView.builder(
+                                              controller:
+                                                  walletScrollController,
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: walletController
+                                                  .walletList.length,
+                                              itemBuilder: (context, index) {
+                                                final item = walletController
+                                                    .walletList[index];
+                                                return Obx(() {
+                                                  return Container(
+                                                    margin: EdgeInsets.only(
+                                                        right: 8.0),
+                                                    child: Ink(
+                                                      decoration: BoxDecoration(
+                                                          color: walletController
+                                                                      .idWallet
+                                                                      .value ==
+                                                                  index
+                                                              ? FColorSkin
+                                                                  .grey1_background
+                                                              : FColorSkin
+                                                                  .primaryColorTagBackground,
+                                                          border: Border.all(
+                                                              color: walletController
+                                                                          .idWallet
+                                                                          .value ==
+                                                                      index
+                                                                  ? FColorSkin
+                                                                      .primaryColor
+                                                                  : FColorSkin
+                                                                      .transparent),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      8.0)),
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          walletController
+                                                              .getIndex(index);
+                                                        },
+                                                        child: Container(
+                                                          height: 108,
+                                                          alignment:
+                                                              Alignment.center,
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  vertical:
+                                                                      12.0,
+                                                                  horizontal:
+                                                                      9.0),
+                                                          child: Text(
+                                                            item.title,
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: FTypoSkin
+                                                                .buttonText3
+                                                                .copyWith(
+                                                                    color: FColorSkin
+                                                                        .title),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                });
+                                              });
+                                        })),
                             ],
                           ),
-                          action: Padding(
-                            padding: const EdgeInsets.only(right: 16.0),
-                            child: TextButton(
-                                onPressed: () {
-                                  Get.dialog(Scaffold(
-                                    backgroundColor: FColorSkin.transparent,
-                                    body: Center(
-                                      child: Container(
-                                        height: Get.height / 2,
-                                        width: Get.width - 32,
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                          child: Obx(() {
-                                            return SfDateRangePicker(
-                                              showActionButtons: true,
-                                              onSelectionChanged: (vl) {
-                                                print(vl);
-                                              },
-                                              onCancel: () {
-                                                CoreRoutes.instance.pop();
-                                              },
-                                              initialDisplayDate:
-                                                  moneyController
-                                                      .selectedValue.value,
-                                              initialSelectedDate:
-                                                  moneyController
-                                                      .selectedValue.value,
-                                              onSubmit: (vl) {
-                                                setState(() {
-                                                  moneyController.selectedValue
-                                                      .value = vl as DateTime;
-                                                });
-                                                CoreRoutes.instance.pop();
-                                                print(moneyController
-                                                    .selectedValue.value);
-                                                _controllerDatePicker
-                                                    .animateToDate(
-                                                        moneyController
-                                                            .selectedValue
-                                                            .value,
-                                                        duration: Duration(
-                                                            milliseconds: 300));
-                                                Future.delayed(
-                                                    Duration(milliseconds: 50),
-                                                    _controllerDatePicker
-                                                        .animateToSelection);
-                                              },
-                                              maxDate: DateTime.now().add(
-                                                  const Duration(days: 30)),
-                                              // minDate: DateTime.now()
-                                              //     .subtract(const Duration(days: 30)),
-                                              selectionMode:
-                                                  DateRangePickerSelectionMode
-                                                      .single,
-                                              backgroundColor:
-                                                  FColorSkin.grey1_background,
-                                              selectionColor: FColorSkin.title,
-                                              monthCellStyle:
-                                                  DateRangePickerMonthCellStyle(
-                                                      leadingDatesTextStyle:
-                                                          TextStyle(
-                                                        color: FColorSkin.title,
-                                                      ),
-                                                      todayTextStyle: TextStyle(
-                                                          color:
-                                                              FColorSkin.title),
-                                                      trailingDatesTextStyle:
-                                                          TextStyle(
-                                                        color: FColorSkin.title,
-                                                      ),
-                                                      weekendTextStyle:
-                                                          TextStyle(
-                                                        color: FColorSkin.title,
-                                                      ),
-                                                      textStyle: TextStyle(
-                                                        color: FColorSkin.title,
-                                                      )),
-                                              headerStyle:
-                                                  DateRangePickerHeaderStyle(
-                                                      textStyle: TextStyle(
-                                                // color choose year
-                                                color: FColorSkin.title,
-                                              )),
-                                              selectionTextStyle: TextStyle(
-                                                // change color range selected
-                                                color:
-                                                    FColorSkin.grey1_background,
-                                              ),
-                                              yearCellStyle:
-                                                  DateRangePickerYearCellStyle(
-                                                textStyle: TextStyle(
-                                                  color: FColorSkin.title,
-                                                ),
-                                              ),
-                                              monthViewSettings:
-                                                  DateRangePickerMonthViewSettings(
-                                                      viewHeaderStyle:
-                                                          DateRangePickerViewHeaderStyle(
-                                                              textStyle: TextStyle(
-                                                                  color: FColorSkin
-                                                                      .title)),
-                                                      firstDayOfWeek: 1),
-                                            );
-                                          }),
-                                        ),
-                                      ),
-                                    ),
-                                  ));
-                                },
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'More',
-                                      style: FTypoSkin.buttonText3.copyWith(
-                                          color: FColorSkin.primaryColor),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 4.0),
-                                      child: FIcon(
-                                        icon: FOutlined.right,
-                                        size: 16,
-                                        color: FColorSkin.primaryColor,
-                                      ),
-                                    )
-                                  ],
-                                )),
-                          ),
                         ),
-                      ),
-                      // date picker
-                      Obx(() {
-                        return DatePicker(
-                          DateTime.now().subtract(Duration(days: 365)),
-                          controller: _controllerDatePicker,
-                          initialSelectedDate:
-                              moneyController.selectedValue.value,
-                          selectionColor: FColorSkin.primaryColor,
-                          selectedTextColor: Colors.white,
-                          height: 113,
-                          width: 64,
-                          onDateChange: (date) {
-                            // New date selected
-                            setState(() {
-                              moneyController.selectedValue.value = date;
-                            });
-                          },
-                        );
-                      }),
-                      Container(
-                        padding: EdgeInsets.only(
-                          top: 16,
-                        ),
-                        child: FListTile(
-                          padding: EdgeInsets.zero,
-                          title: Text(
-                            'Nội dung ghi chú',
-                            style: FTypoSkin.title3
-                                .copyWith(color: FColorSkin.title),
-                          ),
-                        ),
-                      ),
-                      FListTile(
-                        padding: EdgeInsets.zero,
-                        size: getNote == '' || getNote.isEmpty
-                            ? FListTileSize.size48
-                            : FListTileSize.size80,
-                        avatar: FFilledButton.icon(
-                            onPressed: () async {
-                              var rs =
-                                  await takeNote(widget.idType, note: getNote);
-                              if (rs != null) {
-                                getNote = rs;
-                                setState(() {});
-                              }
-                            },
-                            backgroundColor: FColorSkin.primaryColor,
-                            child: FIcon(
-                              icon: getNote == '' || getNote.isEmpty
-                                  ? FOutlined.plus
-                                  : FFilled.edit,
-                              color: FColorSkin.grey1_background,
-                              size: 25,
-                            )),
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              getNote,
-                              maxLines: maxLines,
-                              overflow: TextOverflow.ellipsis,
+                        Container(
+                          padding: EdgeInsets.only(top: 16, bottom: 16.0),
+                          child: FListTile(
+                            padding: EdgeInsets.zero,
+                            title: Row(
+                              children: [
+                                Text(
+                                  'Vào ngày ',
+                                  style: FTypoSkin.title3
+                                      .copyWith(color: FColorSkin.title),
+                                ),
+                                Text(
+                                  '${FDate.dMy(moneyController.selectedValue.value)}',
+                                  style: FTypoSkin.title3
+                                      .copyWith(color: FColorSkin.primaryColor),
+                                ),
+                              ],
                             ),
-                            if (getNote != '' || getNote.isNotEmpty)
-                              if (getNote.length > 100)
-                                FTextButton(
-                                    size: FButtonSize.size32
-                                        .copyWith(padding: EdgeInsets.zero),
-                                    child: Text(
-                                      'Xem thêm',
-                                      style: FTypoSkin.bodyText2,
-                                    ),
-                                    onPressed: () {
-                                      takeNote(widget.idType,
-                                          note: getNote, readOnly: true);
-                                    })
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(top: 16, bottom: 5),
-                        child: FListTile(
-                          padding: EdgeInsets.zero,
-                          title: Text(
-                            'Tải ảnh đính kèm',
-                            style: FTypoSkin.title3
-                                .copyWith(color: FColorSkin.title),
+                            action: Padding(
+                              padding: const EdgeInsets.only(right: 16.0),
+                              child: TextButton(
+                                  onPressed: () {
+                                    Get.dialog(Scaffold(
+                                      backgroundColor: FColorSkin.transparent,
+                                      body: Center(
+                                        child: Container(
+                                          height: Get.height / 2,
+                                          width: Get.width - 32,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                            child: Obx(() {
+                                              return SfDateRangePicker(
+                                                showActionButtons: true,
+                                                onSelectionChanged: (vl) {
+                                                  print(vl);
+                                                },
+                                                onCancel: () {
+                                                  CoreRoutes.instance.pop();
+                                                },
+                                                initialDisplayDate:
+                                                    moneyController
+                                                        .selectedValue.value,
+                                                initialSelectedDate:
+                                                    moneyController
+                                                        .selectedValue.value,
+                                                onSubmit: (vl) {
+                                                  setState(() {
+                                                    moneyController
+                                                        .selectedValue
+                                                        .value = vl as DateTime;
+                                                  });
+                                                  CoreRoutes.instance.pop();
+                                                  print(moneyController
+                                                      .selectedValue.value);
+                                                  Future.delayed(
+                                                      Duration(
+                                                          milliseconds: 100),
+                                                      () {
+                                                    _controllerDatePicker
+                                                        .animateToDate(
+                                                            moneyController
+                                                                .selectedValue
+                                                                .value);
+                                                    _controllerDatePicker
+                                                        .jumpToSelection();
+                                                    setState(() {});
+                                                    print(1111);
+                                                  });
+                                                },
+                                                maxDate: DateTime.now().add(
+                                                    const Duration(days: 30)),
+                                                // minDate: DateTime.now()
+                                                //     .subtract(const Duration(days: 30)),
+                                                selectionMode:
+                                                    DateRangePickerSelectionMode
+                                                        .single,
+                                                backgroundColor:
+                                                    FColorSkin.grey1_background,
+                                                selectionColor:
+                                                    FColorSkin.title,
+                                                monthCellStyle:
+                                                    DateRangePickerMonthCellStyle(
+                                                        leadingDatesTextStyle:
+                                                            TextStyle(
+                                                          color:
+                                                              FColorSkin.title,
+                                                        ),
+                                                        todayTextStyle:
+                                                            TextStyle(
+                                                                color:
+                                                                    FColorSkin
+                                                                        .title),
+                                                        trailingDatesTextStyle:
+                                                            TextStyle(
+                                                          color:
+                                                              FColorSkin.title,
+                                                        ),
+                                                        weekendTextStyle:
+                                                            TextStyle(
+                                                          color:
+                                                              FColorSkin.title,
+                                                        ),
+                                                        textStyle: TextStyle(
+                                                          color:
+                                                              FColorSkin.title,
+                                                        )),
+                                                headerStyle:
+                                                    DateRangePickerHeaderStyle(
+                                                        textStyle: TextStyle(
+                                                  // color choose year
+                                                  color: FColorSkin.title,
+                                                )),
+                                                selectionTextStyle: TextStyle(
+                                                  // change color range selected
+                                                  color: FColorSkin
+                                                      .grey1_background,
+                                                ),
+                                                yearCellStyle:
+                                                    DateRangePickerYearCellStyle(
+                                                  textStyle: TextStyle(
+                                                    color: FColorSkin.title,
+                                                  ),
+                                                ),
+                                                monthViewSettings:
+                                                    DateRangePickerMonthViewSettings(
+                                                        viewHeaderStyle:
+                                                            DateRangePickerViewHeaderStyle(
+                                                                textStyle: TextStyle(
+                                                                    color: FColorSkin
+                                                                        .title)),
+                                                        firstDayOfWeek: 1),
+                                              );
+                                            }),
+                                          ),
+                                        ),
+                                      ),
+                                    ));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'More',
+                                        style: FTypoSkin.buttonText3.copyWith(
+                                            color: FColorSkin.primaryColor),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 4.0),
+                                        child: FIcon(
+                                          icon: FOutlined.right,
+                                          size: 16,
+                                          color: FColorSkin.primaryColor,
+                                        ),
+                                      )
+                                    ],
+                                  )),
+                            ),
                           ),
                         ),
-                      ),
-                      Row(
-                        children: [
-                          if (_imagesFile == null && isLoadImg == false)
-                            FFilledButton.icon(
-                                onPressed: () {
-                                  imagePicker.showDialog(context);
-                                },
-                                backgroundColor: FColorSkin.primaryColor,
-                                child: FIcon(
-                                  icon: FOutlined.plus,
-                                  color: FColorSkin.grey1_background,
-                                  size: 25,
-                                )),
-                          if (isLoadImg)
-                            SpinKitThreeBounce(
-                                size: 24, color: FColorSkin.primaryColor),
-                          if (_imagesFile != null)
-                            Container(
-                              padding: EdgeInsets.only(
-                                  left: _imagesFile == null ? 16 : 0),
-                              child: Stack(
-                                clipBehavior: Clip.none,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      print(1);
-                                      CoreRoutes.instance
-                                          .navigatorPushFade(ViewImg(
-                                        img: _imagesFile,
-                                        keyHero: 'imageViewer',
-                                      ));
-                                    },
-                                    child: Hero(
-                                      tag: 'imageViewer',
-                                      transitionOnUserGestures: true,
-                                      child: FBoundingBox(
-                                          size: FBoxSize.size72,
-                                          backgroundColor:
-                                              FColorSkin.transparent,
-                                          child: _imagesFile != null
-                                              ? Image.memory(
-                                                  _imagesFile,
-                                                  width: 72,
-                                                  height: 72,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : FIcon(
-                                                  icon: FFilled.image,
-                                                  color: FColorSkin
-                                                      .grey9_background,
-                                                  size: 20,
-                                                )),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: -17.0,
-                                    right: -17.0,
-                                    child: FFilledButton.icon(
-                                        size: FButtonSize.size24
-                                            .copyWith(padding: EdgeInsets.zero),
-                                        backgroundColor: FColorSkin.transparent,
-                                        child: FIcon(
-                                          icon: FFilled.minus_circle,
-                                          size: 16,
-                                          color: FColorSkin.errorPrimary,
-                                        ),
-                                        onPressed: () {
-                                          _imagesFile = null;
-                                          setState(() {});
-                                        }),
-                                  )
-                                ],
+                        // date picker
+                        Obx(() {
+                          return DatePicker(
+                            DateTime.now().subtract(Duration(days: 365)),
+                            controller: _controllerDatePicker,
+                            initialSelectedDate:
+                                moneyController.selectedValue.value,
+                            selectionColor: FColorSkin.primaryColor,
+                            selectedTextColor: Colors.white,
+                            height: 113,
+                            width: 64,
+                            onDateChange: (date) {
+                              // New date selected
+                              setState(() {
+                                moneyController.selectedValue.value = date;
+                              });
+                            },
+                          );
+                        }),
+                        Container(
+                          padding: EdgeInsets.only(
+                            top: 16,
+                          ),
+                          child: FListTile(
+                            padding: EdgeInsets.zero,
+                            title: Text(
+                              'Nội dung ghi chú',
+                              style: FTypoSkin.title3
+                                  .copyWith(color: FColorSkin.title),
+                            ),
+                          ),
+                        ),
+                        FListTile(
+                          padding: EdgeInsets.zero,
+                          size: getNote == '' || getNote.isEmpty
+                              ? FListTileSize.size48
+                              : FListTileSize.size80,
+                          avatar: FFilledButton.icon(
+                              onPressed: () async {
+                                var rs = await takeNote(widget.idType,
+                                    note: getNote);
+                                if (rs != null) {
+                                  getNote = rs;
+                                  setState(() {});
+                                }
+                              },
+                              backgroundColor: FColorSkin.primaryColor,
+                              child: FIcon(
+                                icon: getNote == '' || getNote.isEmpty
+                                    ? FOutlined.plus
+                                    : FFilled.edit,
+                                color: FColorSkin.grey1_background,
+                                size: 25,
+                              )),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                getNote,
+                                maxLines: maxLines,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            )
-                        ],
-                      ),
-                    ],
-                  ),
-                )),
-              ],
+                              if (getNote != '' || getNote.isNotEmpty)
+                                if (getNote.length > 100)
+                                  FTextButton(
+                                      size: FButtonSize.size32
+                                          .copyWith(padding: EdgeInsets.zero),
+                                      child: Text(
+                                        'Xem thêm',
+                                        style: FTypoSkin.bodyText2,
+                                      ),
+                                      onPressed: () {
+                                        takeNote(widget.idType,
+                                            note: getNote, readOnly: true);
+                                      })
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(top: 16, bottom: 5),
+                          child: FListTile(
+                            padding: EdgeInsets.zero,
+                            title: Text(
+                              'Tải ảnh đính kèm',
+                              style: FTypoSkin.title3
+                                  .copyWith(color: FColorSkin.title),
+                            ),
+                          ),
+                        ),
+                        Obx(() {
+                          if (moneyController.imgOCR != null &&
+                              moneyController.imgOCR.isNotEmpty) {
+                            _imagesFile = moneyController.imgOCR.first;
+                          }
+                          return Row(
+                            children: [
+                              if (_imagesFile == null && isLoadImg == false)
+                                FFilledButton.icon(
+                                    onPressed: () {
+                                      imagePicker.showDialog(context);
+                                    },
+                                    backgroundColor: FColorSkin.primaryColor,
+                                    child: FIcon(
+                                      icon: FOutlined.plus,
+                                      color: FColorSkin.grey1_background,
+                                      size: 25,
+                                    )),
+                              if (isLoadImg)
+                                SpinKitThreeBounce(
+                                    size: 24, color: FColorSkin.primaryColor),
+                              if (_imagesFile != null)
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      left: _imagesFile == null ? 16 : 0),
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          print(1);
+                                          CoreRoutes.instance
+                                              .navigatorPushFade(ViewImg(
+                                            img: _imagesFile,
+                                            keyHero: 'imageViewer',
+                                          ));
+                                        },
+                                        child: Hero(
+                                          tag: 'imageViewer',
+                                          transitionOnUserGestures: true,
+                                          child: FBoundingBox(
+                                              size: FBoxSize.size72,
+                                              backgroundColor:
+                                                  FColorSkin.transparent,
+                                              child: _imagesFile != null
+                                                  ? Image.memory(
+                                                      _imagesFile,
+                                                      width: 72,
+                                                      height: 72,
+                                                      fit: BoxFit.cover,
+                                                    )
+                                                  : FIcon(
+                                                      icon: FFilled.image,
+                                                      color: FColorSkin
+                                                          .grey9_background,
+                                                      size: 20,
+                                                    )),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: -17.0,
+                                        right: -17.0,
+                                        child: FFilledButton.icon(
+                                            size: FButtonSize.size24.copyWith(
+                                                padding: EdgeInsets.zero),
+                                            backgroundColor:
+                                                FColorSkin.grey1_background,
+                                            child: FIcon(
+                                              icon: FFilled.close_circle,
+                                              size: 24,
+                                              color: FColorSkin.errorPrimary,
+                                            ),
+                                            onPressed: () {
+                                              _imagesFile = null;
+                                              moneyController.imgOCR.clear();
+                                              setState(() {});
+                                            }),
+                                      )
+                                    ],
+                                  ),
+                                )
+                            ],
+                          );
+                        }),
+                      ],
+                    ),
+                  )),
+                ],
+              ),
             ),
-          ),
-          bottomNavigationBar: AnimatedCrossFade(
-            duration: Duration(milliseconds: 250),
-            secondChild: Container(
-              color: FColorSkin.transparent,
-              child: Keyboard(_onPressed),
-            ),
-            firstChild: Container(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-              alignment: Alignment.topCenter,
-              color: FColorSkin.grey1_background,
-              height: 69,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FFilledButton(
-                    size: FButtonSize.size40,
-                    borderRadius: BorderRadius.circular(20.0),
-                    onPressed: () async {
-                      // add
-                      double moneyValue =
-                          double.parse(memory.result.replaceAll('.', ''));
-                      if (!moneyHasSign) {
-                        moneyValue =
-                            double.parse(memory.equation.replaceAll('.', ''));
-                      }
+            bottomNavigationBar: AnimatedCrossFade(
+              duration: Duration(milliseconds: 250),
+              secondChild: Container(
+                color: FColorSkin.transparent,
+                child: Keyboard(_onPressed),
+              ),
+              firstChild: Container(
+                padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                alignment: Alignment.topCenter,
+                color: FColorSkin.grey1_background,
+                height: 69,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FFilledButton(
+                      size: FButtonSize.size40,
+                      borderRadius: BorderRadius.circular(20.0),
+                      onPressed: () async {
+                        // add
+                        if (memory.result.startsWith('-')) {
+                          await Get.dialog(
+                            CupertinoAlertDialog(
+                              content: Text(
+                                  'You need to enter the positive amount to continue'),
+                              actions: <Widget>[
+                                CupertinoDialogAction(
+                                  child: Text('Cancel'),
+                                  onPressed: () => CoreRoutes.instance.pop(),
+                                )
+                              ],
+                            ),
+                            barrierDismissible: false,
+                          );
+                          isCalculator = true;
+                          setState(() {});
+                          return;
+                        }
+                        if (walletController.walletList.isEmpty) {
+                          await Get.dialog(
+                            CupertinoAlertDialog(
+                              content: Text('You need to choose a wallet'),
+                              actions: <Widget>[
+                                CupertinoDialogAction(
+                                  child: Text('Cancel'),
+                                  onPressed: () => CoreRoutes.instance.pop(),
+                                )
+                              ],
+                            ),
+                            barrierDismissible: false,
+                          );
+                          isCalculator = true;
+                          setState(() {});
+                          return;
+                        }
+                        final moneyValue = double.parse(memory.result
+                            .replaceAll(RegExp(r'[^\d.]+'), '')
+                            .replaceAll('.', ''));
 
-                      MoneyItem moneyItem = MoneyItem(
-                          iD: uuid.v4(),
-                          moneyType: widget.idType.toString(),
-                          moneyValue: moneyValue,
-                          noteMoney: NoteItem(
-                              iD: uuid.v4(),
-                              noteValue: getNote ?? '',
-                              noteImg: [_imagesFile] ?? []),
-                          creMoneyDate: moneyController.selectedValue.value,
-                          moneyCateType: categoryController.cateChoose,
-                          wallet: walletController.walletChoose.value);
-                      if (widget.moneyItem != null) {
-                        //edit
-                        moneyItem = MoneyItem(
-                            iD: widget.moneyItem.iD,
+                        var moneyItem = MoneyItem(
+                            iD: uuid.v4(),
                             moneyType: widget.idType.toString(),
                             moneyValue: moneyValue,
                             noteMoney: NoteItem(
-                                iD: widget.moneyItem.noteMoney.iD,
+                                iD: uuid.v4(),
                                 noteValue: getNote ?? '',
                                 noteImg: [_imagesFile] ?? []),
                             creMoneyDate: moneyController.selectedValue.value,
                             moneyCateType: categoryController.cateChoose,
                             wallet: walletController.walletChoose.value);
-                      }
-                      await moneyController.addMoneyNote(moneyItem);
-                      if (moneyItem.moneyValue != 0.0 &&
-                          moneyItem.wallet.iD != null) {
-                        if (mounted) {
-                          setState(() {
-                            isCalculator = true;
-                            memory.allClearInputted();
-                          });
+                        if (widget.moneyItem != null) {
+                          //edit
+                          moneyItem = MoneyItem(
+                              iD: widget.moneyItem.iD,
+                              moneyType: widget.idType.toString(),
+                              moneyValue: moneyValue,
+                              noteMoney: NoteItem(
+                                  iD: widget.moneyItem.noteMoney.iD,
+                                  noteValue: getNote ?? '',
+                                  noteImg: [_imagesFile] ?? []),
+                              creMoneyDate: moneyController.selectedValue.value,
+                              moneyCateType: categoryController.cateChoose,
+                              wallet: walletController.walletChoose.value);
                         }
-                      }
-                    },
-                    backgroundColor: FColorSkin.title,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        '${widget.moneyItem != null ? 'Sửa' : 'Thêm'} khoản ${widget.idType == 0 ? 'chi' : 'thu'}',
-                        style: FTextStyle.regular14_22
-                            .copyWith(color: FColorSkin.grey1_background),
+                        await moneyController.addMoneyNote(moneyItem);
+                        if (moneyItem.moneyValue != 0.0 &&
+                            moneyItem.wallet.iD != null) {
+                          if (mounted) {
+                            setState(() {
+                              isCalculator = true;
+                              memory.allClearInputted();
+                            });
+                          }
+                        }
+                      },
+                      backgroundColor: FColorSkin.title,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          '${widget.moneyItem != null ? 'Sửa' : 'Thêm'} khoản ${widget.idType == 0 ? 'chi' : 'thu'}',
+                          style: FTextStyle.regular14_22
+                              .copyWith(color: FColorSkin.grey1_background),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            crossFadeState: isCalculator
-                ? CrossFadeState.showSecond
-                : CrossFadeState.showFirst,
-          )),
+              crossFadeState: isCalculator
+                  ? CrossFadeState.showSecond
+                  : CrossFadeState.showFirst,
+            )),
+      ),
     );
   }
 
@@ -1032,8 +1124,6 @@ class _InputMoneyState extends State<InputMoney>
       ),
     );
   }
-
-  bool get moneyHasSign => memory.equation.contains(RegExp(r'[÷|×|-|+]'));
 
   bool isLoadImg = false;
 

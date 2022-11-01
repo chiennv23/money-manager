@@ -53,18 +53,29 @@ class _WalletDetailState extends State<WalletDetail> {
                 size: 20,
                 color: FColorSkin.subtitle,
               ),
-              onPressed: () {
-                CoreRoutes.instance.navigatorPushRoutes(CreateWallet(
-                  walletItem: widget.walletItem,
+              onPressed: () async {
+                WalletItem rs =
+                    await CoreRoutes.instance.navigatorPushRoutes(CreateWallet(
+                  walletItem: moneyController.walletItemDetail,
                   indexHero: widget.itemIndex,
                 ));
+                if (rs != null) {
+                  moneyController.walletItemDetail = rs;
+                  setState(() {});
+                }
               },
             ),
-            if (moneyController.moneyListPageView.length != 0)
+            if (moneyController.allMoneyList
+                .where((element) => element.wallet.iD == widget.walletItem.iD)
+                .toList()
+                .isNotEmpty)
               SizedBox(
                 width: 16,
               ),
-            if (moneyController.moneyListPageView.length == 0)
+            if (moneyController.allMoneyList
+                .where((element) => element.wallet.iD == widget.walletItem.iD)
+                .toList()
+                .isEmpty)
               Padding(
                 padding: const EdgeInsets.only(left: 16.0, right: 16),
                 child: FFilledButton.icon(
@@ -107,7 +118,7 @@ class _WalletDetailState extends State<WalletDetail> {
                       padding: const EdgeInsets.only(
                           bottom: 16, left: 24, right: 24),
                       child: Text(
-                        widget.walletItem.title,
+                        moneyController.walletItemDetail.title,
                         style: FTypoSkin.title
                             .copyWith(color: FColorSkin.primaryColor),
                       ),
@@ -191,8 +202,8 @@ class _WalletDetailState extends State<WalletDetail> {
                                   alignment: AlignmentDirectional.center,
                                   children: [
                                     Image.asset(
-                                      widget.walletItem.avt ??
-                                          'lib/Assets/Images/wallet.png',
+                                      moneyController.walletItemDetail.avt ??
+                                          'lib/Assets/Images/walletTheme.png',
                                       width: double.infinity,
                                       fit: BoxFit.cover,
                                     ),
@@ -205,7 +216,8 @@ class _WalletDetailState extends State<WalletDetail> {
                                           color: listTypeCardWallet
                                                   .firstWhere((element) =>
                                                       element.img ==
-                                                      widget.walletItem.avt)
+                                                      moneyController
+                                                          .walletItemDetail.avt)
                                                   .tone
                                               ? FColorSkin.title
                                               : FColorSkin.grey1_background),
@@ -242,7 +254,7 @@ class _WalletDetailState extends State<WalletDetail> {
                                             child: Material(
                                               color: FColorSkin.transparent,
                                               child: Text(
-                                                '${FDate.dMy(widget.walletItem.creWalletDate)}',
+                                                '${FDate.dMy(moneyController.walletItemDetail.creWalletDate)}',
                                                 style: FTypoSkin.bodyText2.copyWith(
                                                     color: listTypeCardWallet
                                                             .firstWhere(
@@ -339,7 +351,11 @@ class _WalletDetailState extends State<WalletDetail> {
                         moneyItem: item,
                       ));
                     },
-                    avatar: FBoundingBox(size: FBoxSize.size24),
+                    avatar: FBoundingBox(
+                      size: FBoxSize.size24,
+                      backgroundColor: FColorSkin.grey1_background,
+                      child: Image.asset(item.moneyCateType.cateIcon),
+                    ),
                     title: Text(
                       item.moneyCateType.cateName ?? '',
                       style: FTypoSkin.title5.copyWith(color: FColorSkin.title),
