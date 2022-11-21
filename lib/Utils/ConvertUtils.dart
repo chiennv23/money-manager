@@ -26,6 +26,35 @@ class WConvert {
     return lastTwoDigits.padLeft(9, '•');
   }
 
+  static String month(int month) {
+    switch (month) {
+      case 1:
+        return 'January';
+      case 2:
+        return 'February';
+      case 3:
+        return 'March';
+      case 4:
+        return 'April';
+      case 5:
+        return 'May';
+      case 6:
+        return 'June';
+      case 7:
+        return 'July';
+      case 8:
+        return 'August';
+      case 9:
+        return 'September';
+      case 10:
+        return 'October';
+      case 11:
+        return 'November';
+      case 12:
+        return 'December';
+    }
+  }
+
   static String money(double value, int a) {
     var ze = '.00000000000000';
     if (a < 11) {
@@ -179,12 +208,14 @@ class FDate {
     }
   }
 
+  static const Map<int, String> weekdayName = {1: "Monday", 2: "Tuesday", 3: "Wednesday", 4: "Thursday", 5: "Friday", 6: "Saturday", 7: "Sunday"};
+
   static String onlyDayWeek(dynamic date) {
     if (date.runtimeType == String) {
       final tmp = DateTime.tryParse(date);
-      return DateFormat('EEE').format(tmp);
+      return DateFormat('EEEE').format(tmp);
     } else {
-      return DateFormat('EEE').format(date);
+      return DateFormat('EEEE').format(date);
     }
   }
 
@@ -222,7 +253,6 @@ class FDate {
       return '${h < 10 ? '0$h' : h}:${m < 10 ? '0$m' : m}';
     }
   }
-
 }
 
 extension FDateTimeExtension on DateTime {

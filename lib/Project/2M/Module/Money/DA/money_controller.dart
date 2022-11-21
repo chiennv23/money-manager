@@ -171,13 +171,15 @@ class MoneyController extends GetxController {
       if (type == '0') {
         return expenseAllMoneyWalletByDates == 0.0 || sum <= 0
             ? 0.0
-            : expenseAllMoneyWalletByDates / sum * totalHeightChart >= totalHeightChart
+            : expenseAllMoneyWalletByDates / sum * totalHeightChart >=
+                    totalHeightChart
                 ? totalHeightChart
                 : expenseAllMoneyWalletByDates / sum * totalHeightChart;
       } else if (type == '1') {
         return incomeAllMoneyWalletbyDates == 0.0 || sum <= 0
             ? 0.0
-            : incomeAllMoneyWalletbyDates / sum * totalHeightChart >= totalHeightChart
+            : incomeAllMoneyWalletbyDates / sum * totalHeightChart >=
+                    totalHeightChart
                 ? totalHeightChart
                 : incomeAllMoneyWalletbyDates / sum * totalHeightChart;
       } else {
@@ -399,7 +401,7 @@ class MoneyController extends GetxController {
       editObj.moneyCateType = moneyItem.moneyCateType;
       editObj.moneyValue = moneyItem.moneyValue;
       await CacheService.edit(moneyItem.iD, editObj);
-      CoreRoutes.instance.pop();
+      CoreRoutes.instance.pop(result: true);
     } else {
       // add money
       //add data to Hive

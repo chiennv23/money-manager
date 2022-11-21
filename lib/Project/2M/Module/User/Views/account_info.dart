@@ -3,7 +3,6 @@ import 'package:coresystem/Core/routes.dart';
 import 'package:coresystem/Project/2M/Contains/constants.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Contains/skin/typo_skin.dart';
-import 'package:coresystem/Project/2M/Module/User/Views/edit_account_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -27,19 +26,7 @@ class _AccountInfoState extends State<AccountInfo> {
               systemUiOverlayStyle: SystemUiOverlayStyle.dark,
               title: 'Thông tin tài khoản',
               iconBack: FOutlined.left,
-              action: [
-                FFilledButton(
-                    backgroundColor: FColorSkin.transparent,
-                    onPressed: () {
-                      CoreRoutes.instance
-                          .navigatorPushRoutes(EditAccountInfo());
-                    },
-                    child: Text(
-                      'Chỉnh sửa',
-                      style: FTypoSkin.buttonText2
-                          .copyWith(color: FColorSkin.infoPrimary),
-                    ))
-              ]),
+              ),
         ),
       ),
       body: SingleChildScrollView(

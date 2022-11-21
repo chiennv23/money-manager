@@ -3,7 +3,7 @@ import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Module/User/Views/account_info.dart';
 import 'package:coresystem/Project/2M/Screen/account_index.dart';
 import 'package:coresystem/Project/2M/Screen/transaction_index.dart';
-import 'package:coresystem/Project/2M/Screen/setting_index.dart';
+import 'package:coresystem/Project/2M/Screen/report_index.dart';
 import 'package:coresystem/Project/2M/Screen/wallet_index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

@@ -6,6 +6,8 @@ import 'package:coresystem/Project/2M/Module/Category/DA/category_controller.dar
 import 'package:coresystem/Project/2M/Module/Category/Views/category_list.dart';
 import 'package:coresystem/Project/2M/Module/ExportCSV/export_csv.dart';
 import 'package:coresystem/Project/2M/Module/Money/DA/money_controller.dart';
+import 'package:coresystem/Project/2M/Module/Report/View/report_category.dart';
+import 'package:coresystem/Project/2M/Module/User/Views/search_money.dart';
 import 'package:coresystem/Project/2M/Module/Wallet/DA/wallet_controller.dart';
 import 'package:coresystem/main.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,7 @@ import '../../../Utils/PickImage/imagePickerHandler.dart';
 import '../Contains/constants.dart';
 import '../Contains/skin/typo_skin.dart';
 import '../Module/User/DA/user_controller.dart';
+import '../Module/User/Views/report_money_date.dart';
 import 'transaction_index.dart';
 
 class AccountIndex extends StatefulWidget {
@@ -38,11 +41,26 @@ class _AccountIndexState extends State<AccountIndex>
   WalletController walletController = Get.find();
   final _mainMenu = [
     {
-      'title': 'Thông tin tài khoản',
+      'title': 'Account info',
       'icon': FFilled.ticket,
       'route': CoreRouteNames.ACCOUNT_INFO
     },
     {'title': 'Category List', 'icon': FFilled.book, 'route': CategoryList()},
+    {
+      'title': 'Report by date',
+      'icon': FFilled.money2,
+      'route': ViewMoneyWDate()
+    },
+    {
+      'title': 'Report by category',
+      'icon': FFilled.money,
+      'route': ReportWCategories()
+    },
+    {
+      'title': 'Search money',
+      'icon': FFilled.money_collect,
+      'route': SearchMoney()
+    },
     {'title': 'Export CSV', 'icon': FFilled.file_excel, 'route': ExportCSV()},
   ];
 

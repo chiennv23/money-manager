@@ -162,7 +162,7 @@ class _InputMoneyState extends State<InputMoney>
                         Container(
                           padding: EdgeInsets.only(bottom: 5, left: 24),
                           child: Text(
-                            widget.idType == 0 ? 'Chi tiêu' : 'Thu nhập',
+                            widget.idType == 0 ? 'Expense' : 'Income',
                             style: FTypoSkin.title
                                 .copyWith(color: FColorSkin.title),
                           ),
@@ -218,7 +218,7 @@ class _InputMoneyState extends State<InputMoney>
                             title: Row(
                               children: [
                                 Text(
-                                  '${widget.idType == 0 ? 'Chi tiêu' : 'Thu nhập'} cho ',
+                                  '${widget.idType == 0 ? 'Expense' : 'Income'} cho ',
                                   style: FTypoSkin.title3
                                       .copyWith(color: FColorSkin.title),
                                 ),
@@ -1037,8 +1037,8 @@ class _InputMoneyState extends State<InputMoney>
                               children: [
                                 Text(
                                   readOnly
-                                      ? 'Ghi chú cho ${idType == 0 ? 'chi tiêu' : 'thu nhập'} này'
-                                      : 'Thêm ghi chú cho ${idType == 0 ? 'chi tiêu' : 'thu nhập'} này',
+                                      ? 'Ghi chú cho ${idType == 0 ? 'Expense' : 'Income'} này'
+                                      : 'Thêm ghi chú cho ${idType == 0 ? 'Expense' : 'Income'} này',
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: FTypoSkin.title1

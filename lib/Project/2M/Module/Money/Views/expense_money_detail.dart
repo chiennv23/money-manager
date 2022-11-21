@@ -224,33 +224,3 @@ class _ExpenseMoneyDetailState extends State<ExpenseMoneyDetail> {
     );
   }
 }
-
-class CardMoney extends StatefulWidget {
-  final List<MoneyItem> moneyItemList;
-
-  const CardMoney({Key key, this.moneyItemList}) : super(key: key);
-
-  @override
-  State<CardMoney> createState() => _CardMoneyState();
-}
-
-class _CardMoneyState extends State<CardMoney> {
-  @override
-  Widget build(BuildContext context) {
-    var listMoneyItemDate = widget.moneyItemList.expand((element) => null);
-    return Container(
-      child: Column(
-        children: [
-          for (var elemetn in widget.moneyItemList)
-            Row(
-              children: [
-                // Text(widget.moneyItem.creMoneyDate.day.toString()),
-              ],
-            ),
-          // dU TU
-          // if(widget.moneyItem.moneyCateType.cateName)
-        ],
-      ),
-    );
-  }
-}

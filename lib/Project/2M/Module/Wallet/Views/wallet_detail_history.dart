@@ -120,7 +120,7 @@ class _WalletDetailHistoryState extends State<WalletDetailHistory> {
               final moneyDayList = lst
                   .where((e) => e.creMoneyDate.day == listFilter[index])
                   .toList();
-              print(moneyDayList);
+              print(moneyDayList.length);
               // tính tổng tiền trong ngày
               final totalMoneyADay = moneyDayList
                   .map((e) => e.moneyValue)
@@ -288,7 +288,7 @@ class _WalletDetailHistoryState extends State<WalletDetailHistory> {
                               : FColorSkin.transparent,
                           child: Center(
                             child: Text(
-                              'Thu nhập',
+                              'Income',
                               style: FTypoSkin.buttonText2.copyWith(
                                   color: indexType == 1
                                       ? FColorSkin.grey1_background
@@ -310,7 +310,7 @@ class _WalletDetailHistoryState extends State<WalletDetailHistory> {
                               : FColorSkin.transparent,
                           child: Center(
                             child: Text(
-                              'Chi tiêu',
+                              'Expense',
                               style: FTypoSkin.buttonText2.copyWith(
                                   color: indexType == 0
                                       ? FColorSkin.grey1_background

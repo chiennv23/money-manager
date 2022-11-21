@@ -174,7 +174,7 @@ final List<CategoryItem> _categories = [
   ),
   CategoryItem(
     cateType: '1',
-    cateName: 'Thu thập phụ',
+    cateName: 'Thu nhập phụ',
     cateIcon: StringImage.lock2,
   ),
   CategoryItem(
