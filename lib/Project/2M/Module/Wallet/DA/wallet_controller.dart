@@ -93,7 +93,7 @@ class WalletController extends GetxController {
         final indexOfWallet =
             _walletList.indexWhere((element) => element.iD == walletItem.iD);
         final obj = _walletList[indexOfWallet];
-        obj.moneyWallet = totalIncome - totalExpense;
+        obj.moneyWallet = (totalIncome - totalExpense).toDouble();
         _walletList[indexOfWallet] = obj;
       });
     }
@@ -219,7 +219,7 @@ class WalletController extends GetxController {
     }
 
     await CacheService.delete<WalletItem>(id);
-    await SnackBarCore.success();
+    await SnackBarCore.success(title: 'Deleted "$name" wallet successful!');
     _walletList.removeWhere((element) => element.iD == id);
     _walletList.refresh();
   }

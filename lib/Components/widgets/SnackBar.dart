@@ -198,7 +198,7 @@ class SnackBarCore {
   }
 
   static Future<void> success(
-      {String title = 'Thành công',
+      {String title = 'Successful',
       VoidCallback onTap,
       String iconSnackBar = FFilled.check_circle,
       bool isBottom = true,
@@ -214,7 +214,7 @@ class SnackBarCore {
   }
 
   static Future<void> fail(
-      {String title = 'Thất bại',
+      {String title = 'Failed',
       VoidCallback onTap,
       String iconSnackBar = FFilled.close_circle,
       Color colorSnackBar = FColors.red6,
@@ -231,7 +231,7 @@ class SnackBarCore {
   }
 
   static Future<void> warning(
-      {String title = 'Cảnh báo có lỗi',
+      {String title = 'Warning error',
       VoidCallback onTap,
       bool isBottom = true,
       Widget action}) {
@@ -247,7 +247,7 @@ class SnackBarCore {
 
   static Future<void> copyContent(
       {@required String content,
-      String title = 'Đã sao chép',
+      String title = 'Copied',
       VoidCallback onTap,
       bool isBottom = true,
       Widget action}) async {

@@ -356,7 +356,7 @@ class _SupportIndexState extends State<SupportIndex>
                                                                         ___) {
                                                                   return Image
                                                                       .asset(
-                                                                    'lib/Assets/Images/walletTheme.png',
+                                                                    item.avt,
                                                                     fit: BoxFit
                                                                         .cover,
                                                                   );

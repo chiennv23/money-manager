@@ -85,11 +85,9 @@ class _WalletDetailState extends State<WalletDetail> {
                     size: 20,
                     color: FColorSkin.subtitle,
                   ),
-                  onPressed: () {
-                    CoreRoutes.instance.navigatorPushFade(CreateWallet(
-                      walletItem: widget.walletItem,
-                      indexHero: widget.itemIndex,
-                    ));
+                  onPressed: () async {
+                    await walletController.deleteThisWallet(
+                        widget.walletItem.iD, widget.walletItem.title).whenComplete(() => CoreRoutes.instance.pop());
                   },
                 ),
               ),
