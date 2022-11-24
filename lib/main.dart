@@ -15,7 +15,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'Core/enum_core.dart';
 import 'generated/l10n.dart';
 
-String defaultImg ='lib/Assets/Images/walletTheme.png';
+String defaultImg = 'lib/Assets/Images/walletTheme.png';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,7 +61,6 @@ class _MyAppState extends State<MyApp> {
     return;
   }
 
-
   final botToastBuilder = BotToastInit();
 
   @override
@@ -87,7 +86,8 @@ class _MyAppState extends State<MyApp> {
       navigatorKey: CoreRoutes.instance.navigatorKey,
       onGenerateRoute: Routes.generateRoute,
       initialRoute: CoreRouteNames.SPLASH,
-      locale: defaultLanguage,
+      // locale: defaultLanguage,
+      locale: Locale('en'),
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,

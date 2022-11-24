@@ -40,11 +40,11 @@ class _AccountIndexState extends State<AccountIndex>
   CategoryController categoryController = Get.find();
   WalletController walletController = Get.find();
   final _mainMenu = [
-    {
-      'title': 'Account info',
-      'icon': FFilled.ticket,
-      'route': CoreRouteNames.ACCOUNT_INFO
-    },
+    // {
+    //   'title': 'Account info',
+    //   'icon': FFilled.ticket,
+    //   'route': CoreRouteNames.ACCOUNT_INFO
+    // },
     {'title': 'Category List', 'icon': FFilled.book, 'route': CategoryList()},
     {
       'title': 'Report by date',
@@ -115,18 +115,18 @@ class _AccountIndexState extends State<AccountIndex>
       context,
       backGroundAvatar: FColorSkin.transparent,
       typePopup: TypePopup.error,
-      textTitle: 'Bạn có chắc muốn xoá dữ liệu?',
+      textTitle: 'Are you sure you want to delete the data?',
       childSubtitle: Text(
-        'Nếu bạn xoá hết dữ liệu, mọi thông tin chi tiêu đã lưu sẽ không thể khôi phục.',
+        'If you delete all data, any saved spending information cannot be recovered.',
         style: FTextStyle.regular14_22.copyWith(color: FColorSkin.primaryText),
         textAlign: TextAlign.center,
       ),
-      textCancel: 'Huỷ',
+      textCancel: 'Cancel',
       actionCancel: () {
         CoreRoutes.instance.pop();
       },
       backGroundAction: FColorSkin.errorPrimary,
-      textAction: 'Xoá toàn bộ',
+      textAction: 'Delete all',
       action: () async {
         // await moneyController.deleteAllMoneyNote();
         await categoryController.deleteAllCategory();
@@ -198,12 +198,12 @@ class _AccountIndexState extends State<AccountIndex>
                   ),
                 ),
                 title: Text(
-                  'Nguyễn Văn Chien',
+                  'Owner',
                   style: FTypoSkin.title3.copyWith(
                     color: FColorSkin.title,
                   ),
                 ),
-                action: actionAppbar(context),
+                // action: actionAppbar(context),
               )),
             ],
           ),

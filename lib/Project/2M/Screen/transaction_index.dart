@@ -146,13 +146,13 @@ class _TransactionIndexState extends State<TransactionIndex>
                           : DateTime.now().hour >= 18 &&
                                   DateTime.now().hour <= 24
                               ? 'Good Evening'
-                              : 'Hello, Boss',
+                              : 'Hello, Owner',
                   style: FTypoSkin.title1.copyWith(
                       color: FColorSkin.title, fontWeight: FontWeight.w400),
                 ),
               ),
               Text(
-                'Nguyen Van Chien',
+                'Owner',
                 style: FTypoSkin.title1.copyWith(color: FColorSkin.title),
               ),
               FListTile(

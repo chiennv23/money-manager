@@ -1,13 +1,9 @@
-import 'dart:async';
-
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:coresystem/Components/base_component.dart';
 import 'package:coresystem/Core/routes.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Contains/skin/skin_route.dart';
 import 'package:coresystem/Project/2M/Module/TabIndex/Index.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class IntroduceApp extends StatefulWidget {
   const IntroduceApp({Key key}) : super(key: key);
@@ -126,21 +122,21 @@ class _IntroduceAppState extends State<IntroduceApp> {
 List<PageItem> IntroPageList = [
   PageItem(
       id: 0,
-      title: 'Quản lý tài chính cá nhân',
+      title: 'Personal expense management',
       subTitle:
-          'Theo dõi chi tiêu và hoạch định kế hoạch tích luỹ tài sản dành cho tương lai',
+          '',
       image: 'lib/Assets/Images/intro.png'),
   PageItem(
       id: 1,
-      title: 'Bảo mật thông tin',
+      title: 'Personal expense management',
       subTitle:
-          'Theo dõi chi tiêu và hoạch định kế hoạch tích luỹ tài sản dành cho tương lai',
+          '',
       image: 'lib/Assets/Images/intro.png'),
   PageItem(
       id: 2,
-      title: 'Lên kế hoạch tài chính',
+      title: 'Plan for expense management',
       subTitle:
-          'Theo dõi chi tiêu và hoạch định kế hoạch tích luỹ tài sản dành cho tương lai',
+          '',
       image: 'lib/Assets/Images/intro.png'),
 ];
 

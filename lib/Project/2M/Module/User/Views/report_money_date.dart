@@ -199,13 +199,17 @@ class _ViewMoneyState extends State<ViewMoneyWDate> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(StringIcon.empty),
-                    Padding(
-                      padding: const EdgeInsets.all(30.0),
-                      child: Text(
-                        'No money not found. Tap other days!',
-                        style: FTypoSkin.title5.copyWith(
-                            color: FColorSkin.subtitle),
+                    Expanded(
+                        flex: 2, child: SvgPicture.asset(StringIcon.empty)),
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: Text(
+                          'No money not found. Tap other days!',
+                          style: FTypoSkin.title5
+                              .copyWith(color: FColorSkin.subtitle),
+                        ),
                       ),
                     ),
                   ],

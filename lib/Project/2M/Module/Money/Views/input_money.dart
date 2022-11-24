@@ -76,7 +76,7 @@ class _InputMoneyState extends State<InputMoney>
         moneyController.selectedValue.value = widget.moneyItem.creMoneyDate;
         getNote = widget.moneyItem.noteMoney.noteValue;
         _imagesFile = widget.moneyItem.noteMoney.noteImg.first;
-      });
+      }).whenComplete(() => setState(() {}));
     } else {
       Future.delayed(Duration(milliseconds: 100), () {
         moneyController.selectedValue.value = DateTime.now();
@@ -218,7 +218,7 @@ class _InputMoneyState extends State<InputMoney>
                             title: Row(
                               children: [
                                 Text(
-                                  '${widget.idType == 0 ? 'Expense' : 'Income'} cho ',
+                                  '${widget.idType == 0 ? 'Expense' : 'Income'} for ',
                                   style: FTypoSkin.title3
                                       .copyWith(color: FColorSkin.title),
                                 ),
@@ -228,7 +228,7 @@ class _InputMoneyState extends State<InputMoney>
                                                 0 ||
                                             categoryController.cateByTypeList ==
                                                 null
-                                        ? 'Danh mục ?'
+                                        ? 'Category ?'
                                         : '${categoryController?.showNameCate}',
                                     style: FTypoSkin.title3.copyWith(
                                         color: FColorSkin.primaryColor),
@@ -373,7 +373,7 @@ class _InputMoneyState extends State<InputMoney>
                             title: Row(
                               children: [
                                 Text(
-                                  '${widget.idType == 0 ? 'Sử dụng' : 'Thêm vào'} ',
+                                  '${widget.idType == 0 ? 'Using' : 'Add'} ',
                                   style: FTypoSkin.title3
                                       .copyWith(color: FColorSkin.title),
                                 ),
@@ -381,7 +381,7 @@ class _InputMoneyState extends State<InputMoney>
                                   return Text(
                                     walletController.walletList.length == 0 ||
                                             walletController.walletList == null
-                                        ? 'Ví nào ?'
+                                        ? 'which wallet ?'
                                         : '${walletController.showNameWallet}',
                                     style: FTypoSkin.title3.copyWith(
                                         color: FColorSkin.primaryColor),
@@ -497,7 +497,7 @@ class _InputMoneyState extends State<InputMoney>
                             title: Row(
                               children: [
                                 Text(
-                                  'Vào ngày ',
+                                  'On ',
                                   style: FTypoSkin.title3
                                       .copyWith(color: FColorSkin.title),
                                 ),
@@ -676,7 +676,7 @@ class _InputMoneyState extends State<InputMoney>
                           child: FListTile(
                             padding: EdgeInsets.zero,
                             title: Text(
-                              'Nội dung ghi chú',
+                              'Content notes',
                               style: FTypoSkin.title3
                                   .copyWith(color: FColorSkin.title),
                             ),
@@ -719,7 +719,7 @@ class _InputMoneyState extends State<InputMoney>
                                       size: FButtonSize.size32
                                           .copyWith(padding: EdgeInsets.zero),
                                       child: Text(
-                                        'Xem thêm',
+                                        'Show more',
                                         style: FTypoSkin.bodyText2,
                                       ),
                                       onPressed: () {
@@ -734,7 +734,7 @@ class _InputMoneyState extends State<InputMoney>
                           child: FListTile(
                             padding: EdgeInsets.zero,
                             title: Text(
-                              'Tải ảnh đính kèm',
+                              'Post attached photos',
                               style: FTypoSkin.title3
                                   .copyWith(color: FColorSkin.title),
                             ),
@@ -928,7 +928,7 @@ class _InputMoneyState extends State<InputMoney>
                       child: Container(
                         alignment: Alignment.center,
                         child: Text(
-                          '${widget.moneyItem != null ? 'Sửa' : 'Thêm'} khoản ${widget.idType == 0 ? 'chi' : 'thu'}',
+                          '${widget.moneyItem != null ? 'Edit' : 'Add'} ${widget.idType == 0 ? 'Expense' : 'Income'}',
                           style: FTextStyle.regular14_22
                               .copyWith(color: FColorSkin.grey1_background),
                         ),
@@ -1037,8 +1037,8 @@ class _InputMoneyState extends State<InputMoney>
                               children: [
                                 Text(
                                   readOnly
-                                      ? 'Ghi chú cho ${idType == 0 ? 'Expense' : 'Income'} này'
-                                      : 'Thêm ghi chú cho ${idType == 0 ? 'Expense' : 'Income'} này',
+                                      ? 'Notes for this ${idType == 0 ? 'Expense' : 'Income'}'
+                                      : 'Add notes for this ${idType == 0 ? 'Expense' : 'Income'}',
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: FTypoSkin.title1
@@ -1047,7 +1047,7 @@ class _InputMoneyState extends State<InputMoney>
                                 Padding(
                                   padding: EdgeInsets.only(top: 5),
                                   child: Text(
-                                    '${noteController.text.length}/1000 ký tự',
+                                    '${noteController.text.length}/1000 words',
                                     maxLines: 1,
                                     style: FTypoSkin.subtitle1.copyWith(
                                         color: noteController.text.length > 1000
@@ -1060,7 +1060,7 @@ class _InputMoneyState extends State<InputMoney>
                           ),
                           FTextButton(
                               child: Text(
-                                'Huỷ bỏ',
+                                'Cancel',
                                 style: FTypoSkin.bodyText1
                                     .copyWith(color: FColorSkin.subtitle),
                               ),
@@ -1089,7 +1089,7 @@ class _InputMoneyState extends State<InputMoney>
                               onSubmitted: (vl) {
                                 if (noteController.text.length > 1000) {
                                   SnackBarCore.warning(
-                                      title: 'Quá ký tự cho phép !');
+                                      title: 'Exceeded characters allowed !');
                                   return;
                                 }
                                 CoreRoutes.instance
@@ -1101,7 +1101,7 @@ class _InputMoneyState extends State<InputMoney>
                               style: FTypoSkin.bodyText1
                                   .copyWith(color: FColorSkin.body),
                               decoration: InputDecoration(
-                                hintText: 'Nội dung ghi chú',
+                                hintText: 'Typing notes',
                                 isCollapsed: true,
                                 border: InputBorder.none,
                                 labelStyle: FTypoSkin.bodyText1

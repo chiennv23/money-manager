@@ -86,16 +86,16 @@ class ImagePickerDialog extends StatelessWidget {
                     topRight: Radius.circular(8.0)),
               ),
               child: Text(
-                'Lựa chọn thao tác',
+                'Choose actions',
                 style: FTextStyle.regular14_22.copyWith(color: FColors.grey5),
               ),
             ),
             roundedButton(
-              'Chọn ảnh từ thư viện',
+              'Select photo from gallery',
               onTap: () => _listener.openGallery(),
             ),
             roundedButton(
-              'Chụp ảnh',
+              'To take a photo',
               radius: BorderRadius.only(
                 bottomRight: Radius.circular(8.0),
                 bottomLeft: Radius.circular(8.0),
@@ -104,7 +104,7 @@ class ImagePickerDialog extends StatelessWidget {
             ),
             const SizedBox(height: 15.0),
             roundedButton(
-              'Huỷ',
+              'Cancel',
               radius: BorderRadius.all(
                 Radius.circular(8.0),
               ),

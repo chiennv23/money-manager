@@ -38,29 +38,47 @@ class _ExportCSVState extends State<ExportCSV> {
     return Scaffold(
       backgroundColor: FColorSkin.grey1_background,
       appBar: appbarOnlyTitle(
-          title: 'Export Excel',
-          iconBack: FOutlined.left,
-          systemUiOverlayStyle: SystemUiOverlayStyle.dark),
+        title: 'Export Excel',
+        iconBack: FOutlined.left,
+        systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+        action: [
+          FFilledButton(
+              isLoading: isLoading,
+              backgroundColor: FColorSkin.transparent,
+              child: Text(
+                'Export',
+                style: FTypoSkin.label4.copyWith(color: FColorSkin.title),
+              ),
+              onPressed: () {
+                getExcel();
+              })
+        ],
+      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(24),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              'Total data: ${moneyController.allMoneyList.length}',
+              style: FTypoSkin.buttonText2.copyWith(color: FColorSkin.title),
+            ),
             Text(
               'Time export: ${executionTime.inMilliseconds / 1000}s',
               style: FTypoSkin.buttonText2.copyWith(color: FColorSkin.title),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: FFilledButton(
-                      isLoading: isLoading,
-                      child: Text('Export Excel'),
-                      onPressed: () {
-                        getExcel();
-                      }),
-                ),
-              ],
-            ),
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       child: FFilledButton(
+            //           isLoading: isLoading,
+            //           child: Text('Export Excel'),
+            //           onPressed: () {
+            //             getExcel();
+            //           }),
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ),

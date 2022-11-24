@@ -113,73 +113,73 @@ final List<CategoryItem> _categories = [
   // 0: chi tieu
   CategoryItem(
     cateType: '0',
-    cateName: 'Ăn uống',
+    cateName: 'Eating',
     cateIcon: StringImage.water,
   ),
   CategoryItem(
     cateType: '0',
-    cateName: 'Chi tiêu hàng ngày',
+    cateName: 'Daily expenses',
     cateIcon: StringImage.friend,
   ),
   CategoryItem(
     cateType: '0',
-    cateName: 'Quần áo',
+    cateName: 'Clothes',
     cateIcon: StringImage.balo,
   ),
   CategoryItem(
     cateType: '0',
-    cateName: 'Siêu thị',
+    cateName: 'Market',
     cateIcon: StringImage.market,
   ),
   CategoryItem(
     cateType: '0',
-    cateName: 'Y tế',
+    cateName: 'Medical',
     cateIcon: StringImage.umbrella,
   ),
   CategoryItem(
     cateType: '0',
-    cateName: 'Đi lại',
+    cateName: 'Driver',
     cateIcon: StringImage.location,
   ),
   CategoryItem(
     cateType: '0',
-    cateName: 'Tiền điện',
+    cateName: 'Electricity bill',
     cateIcon: StringImage.wallet,
   ),
   CategoryItem(
     cateType: '0',
-    cateName: 'Tiền học',
+    cateName: 'Tuition fee',
     cateIcon: StringImage.learn,
   ),
   CategoryItem(
     cateType: '0',
-    cateName: 'Phí điện thoại',
+    cateName: 'Telephone charges',
     cateIcon: StringImage.phone,
   ),
   // 1: thu nhap
   CategoryItem(
     cateType: '1',
-    cateName: 'Tiền lương',
+    cateName: 'Salary',
     cateIcon: StringImage.wallet,
   ),
   CategoryItem(
     cateType: '1',
-    cateName: 'Tiền phụ cấp',
+    cateName: 'Allowance money',
     cateIcon: StringImage.mic,
   ),
   CategoryItem(
     cateType: '1',
-    cateName: 'Tiền thưởng',
+    cateName: 'Bonus money',
     cateIcon: StringImage.balo,
   ),
   CategoryItem(
     cateType: '1',
-    cateName: 'Thu nhập phụ',
+    cateName: 'Side income',
     cateIcon: StringImage.lock2,
   ),
   CategoryItem(
     cateType: '1',
-    cateName: 'Đầu tư',
+    cateName: 'Invest',
     cateIcon: StringImage.friend,
   ),
 ];
