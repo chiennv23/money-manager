@@ -46,51 +46,50 @@ class _WalletDetailState extends State<WalletDetail> {
           systemUiOverlayStyle: SystemUiOverlayStyle.dark,
           iconBack: FOutlined.left,
           action: [
-            FFilledButton.icon(
-              backgroundColor: FColorSkin.grey3_background,
-              child: FIcon(
-                icon: FFilled.edit,
-                size: 20,
-                color: FColorSkin.subtitle,
-              ),
-              onPressed: () async {
-                WalletItem rs =
-                    await CoreRoutes.instance.navigatorPushRoutes(CreateWallet(
-                  walletItem: moneyController.walletItemDetail,
-                  indexHero: widget.itemIndex,
-                ));
-                if (rs != null) {
-                  moneyController.walletItemDetail = rs;
-                  setState(() {});
-                }
-              },
-            ),
-            if (moneyController.allMoneyList
-                .where((element) => element.wallet.iD == widget.walletItem.iD)
-                .toList()
-                .isNotEmpty)
-              SizedBox(
-                width: 16,
-              ),
-            if (moneyController.allMoneyList
-                .where((element) => element.wallet.iD == widget.walletItem.iD)
-                .toList()
-                .isEmpty)
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16),
-                child: FFilledButton.icon(
-                  backgroundColor: FColorSkin.grey3_background,
-                  child: FIcon(
-                    icon: FFilled.delete,
-                    size: 20,
-                    color: FColorSkin.subtitle,
-                  ),
-                  onPressed: () async {
-                    await walletController.deleteThisWallet(
-                        widget.walletItem.iD, widget.walletItem.title).whenComplete(() => CoreRoutes.instance.pop());
-                  },
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: FFilledButton.icon(
+                backgroundColor: FColorSkin.grey3_background,
+                child: FIcon(
+                  icon: FFilled.edit,
+                  size: 20,
+                  color: FColorSkin.subtitle,
                 ),
+                onPressed: () async {
+                  WalletItem rs =
+                      await CoreRoutes.instance.navigatorPushRoutes(CreateWallet(
+                    walletItem: moneyController.walletItemDetail,
+                    indexHero: widget.itemIndex,
+                  ));
+                  if (rs != null) {
+                    moneyController.walletItemDetail = rs;
+                    setState(() {});
+                  }
+                },
               ),
+            ),
+            if (walletController.walletList.length != 1)
+              if (moneyController.allMoneyList
+                  .where((element) => element.wallet.iD == widget.walletItem.iD)
+                  .toList()
+                  .isEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16),
+                  child: FFilledButton.icon(
+                    backgroundColor: FColorSkin.grey3_background,
+                    child: FIcon(
+                      icon: FFilled.delete,
+                      size: 20,
+                      color: FColorSkin.subtitle,
+                    ),
+                    onPressed: () async {
+                      await walletController
+                          .deleteThisWallet(
+                              widget.walletItem.iD, widget.walletItem.title)
+                          .whenComplete(() => CoreRoutes.instance.pop());
+                    },
+                  ),
+                ),
           ]),
       body: Obx(() {
         return SingleChildScrollView(

@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 
 import '../../../../../Components/widgets/calender_date_picker.dart';
 import '../../../Contains/skin/typo_skin.dart';
+import '../../../Screen/transaction_index.dart';
 
 class ViewMoneyWDate extends StatefulWidget {
   const ViewMoneyWDate({Key key}) : super(key: key);
@@ -51,8 +52,9 @@ class _ViewMoneyState extends State<ViewMoneyWDate> {
       appBar: appbarOnlyTitle(
           title: 'Report by Date',
           iconBack: FOutlined.left,
+          action: [actionSearchAppbar()],
           systemUiOverlayStyle: SystemUiOverlayStyle.dark),
-      body: Column(
+      body: ListView(
         children: [
           Container(
             decoration: BoxDecoration(
@@ -125,7 +127,7 @@ class _ViewMoneyState extends State<ViewMoneyWDate> {
               ),
             ],
           ),
-          Expanded(child: Builder(builder: (context) {
+          Builder(builder: (context) {
             List<MapMoneyData> lst = [];
             int i = 0;
             moneyTypeListADay.forEach((item) {
@@ -199,98 +201,96 @@ class _ViewMoneyState extends State<ViewMoneyWDate> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                        flex: 2, child: SvgPicture.asset(StringIcon.empty)),
-                    Expanded(
-                      flex: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(30.0),
-                        child: Text(
-                          'No money not found. Tap other days!',
-                          style: FTypoSkin.title5
-                              .copyWith(color: FColorSkin.subtitle),
-                        ),
+                    SvgPicture.asset(StringIcon.empty),
+                    Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Text(
+                        'No money not found. Tap other days!',
+                        style: FTypoSkin.title5
+                            .copyWith(color: FColorSkin.subtitle),
                       ),
                     ),
                   ],
                 ),
               );
             }
-            return ListView(
-              padding: EdgeInsets.only(top: 20),
-              children: [
-                Container(
-                  height: 230,
-                  child: lst.isEmpty
-                      ? SimplePieChart.withSampleData()
-                      : SimplePieChart(_MoneyChartData()),
-                ),
-                ...List.generate(moneyTypeListADay.length, (index) {
-                  final item = moneyTypeListADay[index];
+            return Container(
+              padding: EdgeInsets.only(top: 20, bottom: 20),
+              child: Column(
+                children: [
+                  Container(
+                    height: 230,
+                    child: lst.isEmpty
+                        ? SimplePieChart.withSampleData()
+                        : SimplePieChart(_MoneyChartData()),
+                  ),
+                  ...List.generate(moneyTypeListADay.length, (index) {
+                    final item = moneyTypeListADay[index];
 
-                  if (item.moneyType == '0') {
-                    var listDayMoneyType = moneyListADay
-                        .where((element) => element.moneyType == '0')
-                        .toList();
-                    var listSameType = listDayMoneyType
-                        .where((e) =>
-                            e.moneyCateType.cateName ==
-                            item.moneyCateType.cateName)
-                        .toList();
-                    if (listSameType.first.moneyCateType.cateName ==
-                        item.moneyCateType.cateName) {
-                      moneyValue = listSameType
-                          .map((e) => e.moneyValue)
-                          .reduce((value, element) => value + element);
+                    if (item.moneyType == '0') {
+                      var listDayMoneyType = moneyListADay
+                          .where((element) => element.moneyType == '0')
+                          .toList();
+                      var listSameType = listDayMoneyType
+                          .where((e) =>
+                              e.moneyCateType.cateName ==
+                              item.moneyCateType.cateName)
+                          .toList();
+                      if (listSameType.first.moneyCateType.cateName ==
+                          item.moneyCateType.cateName) {
+                        moneyValue = listSameType
+                            .map((e) => e.moneyValue)
+                            .reduce((value, element) => value + element);
+                      } else {
+                        moneyValue = item.moneyValue;
+                      }
                     } else {
-                      moneyValue = item.moneyValue;
+                      var listDayMoneyType = moneyListADay
+                          .where((element) => element.moneyType == '1')
+                          .toList();
+                      var listSameType = listDayMoneyType
+                          .where((e) =>
+                              e.moneyCateType.cateName ==
+                              item.moneyCateType.cateName)
+                          .toList();
+                      if (listSameType.first.moneyCateType.cateName ==
+                          item.moneyCateType.cateName) {
+                        moneyValue = listSameType
+                            .map((e) => e.moneyValue)
+                            .reduce((value, element) => value + element);
+                      } else {
+                        moneyValue = item.moneyValue;
+                      }
                     }
-                  } else {
-                    var listDayMoneyType = moneyListADay
-                        .where((element) => element.moneyType == '1')
-                        .toList();
-                    var listSameType = listDayMoneyType
-                        .where((e) =>
-                            e.moneyCateType.cateName ==
-                            item.moneyCateType.cateName)
-                        .toList();
-                    if (listSameType.first.moneyCateType.cateName ==
-                        item.moneyCateType.cateName) {
-                      moneyValue = listSameType
-                          .map((e) => e.moneyValue)
-                          .reduce((value, element) => value + element);
-                    } else {
-                      moneyValue = item.moneyValue;
-                    }
-                  }
 
-                  return FListTile(
-                    size: FListTileSize.size32,
-                    backgroundColor: FColorSkin.transparent,
-                    padding: EdgeInsets.only(left: 24, right: 24),
-                    avatar: FBoundingBox(
-                      size: FBoxSize.size24,
-                      backgroundColor: FColorSkin.grey1_background,
-                      child: Image.asset(item.moneyCateType.cateIcon),
-                    ),
-                    title: Text(
-                      item.moneyCateType.cateName ?? '',
-                      style: FTypoSkin.title5
-                          .copyWith(color: lst[index].cateColor),
-                    ),
-                    action: Text(
-                      '${item.moneyType == '0' ? '-' : '+'}${moneyValue.wToMoney(0)}',
-                      style: FTypoSkin.title5.copyWith(
-                        color: item.moneyType == '0'
-                            ? FColorSkin.warningPrimary
-                            : FColorSkin.primaryColor,
+                    return FListTile(
+                      size: FListTileSize.size32,
+                      backgroundColor: FColorSkin.transparent,
+                      padding: EdgeInsets.only(left: 24, right: 24),
+                      avatar: FBoundingBox(
+                        size: FBoxSize.size24,
+                        backgroundColor: FColorSkin.grey1_background,
+                        child: Image.asset(item.moneyCateType.cateIcon),
                       ),
-                    ),
-                  );
-                })
-              ],
+                      title: Text(
+                        item.moneyCateType.cateName ?? '',
+                        style: FTypoSkin.title5
+                            .copyWith(color: lst[index].cateColor),
+                      ),
+                      action: Text(
+                        '${item.moneyType == '0' ? '-' : '+'}${moneyValue.wToMoney(0)}',
+                        style: FTypoSkin.title5.copyWith(
+                          color: item.moneyType == '0'
+                              ? FColorSkin.warningPrimary
+                              : FColorSkin.primaryColor,
+                        ),
+                      ),
+                    );
+                  })
+                ],
+              ),
             );
-          }))
+          })
         ],
       ),
     );

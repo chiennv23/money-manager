@@ -5,6 +5,7 @@ import 'package:coresystem/Core/routes.dart';
 import 'package:coresystem/Project/2M/Contains/constants.dart';
 import 'package:coresystem/Project/2M/Module/Money/DA/money_controller.dart';
 import 'package:coresystem/Project/2M/Module/Money/Views/expense_money_detail.dart';
+import 'package:coresystem/Project/2M/Module/User/Views/search_money.dart';
 import 'package:coresystem/Project/2M/Module/Wallet/DA/wallet_controller.dart';
 import 'package:coresystem/Utils/ConvertUtils.dart';
 import 'package:coresystem/generated/l10n.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:money_formatter/money_formatter.dart';
 import '../../../Core/enum_core.dart';
 import '../../../Core/userService.dart';
 import '../Contains/skin/color_skin.dart';
@@ -168,6 +170,7 @@ class _TransactionIndexState extends State<TransactionIndex>
           ),
         ),
         actions: [
+          actionSearchAppbar(sizeIcon: 32.0)
           // Padding(
           //   padding: const EdgeInsets.only(right: 16.0, top: 40),
           //   child: FFilledButton.icon(
@@ -235,11 +238,13 @@ class _TransactionIndexState extends State<TransactionIndex>
                   // overlay white
                   AnimatedOpacity(
                     duration: Duration(milliseconds: 450),
-                    opacity: (moneyController.incomeAllMoneyWalletbyDates != 0.0 &&
-                            moneyController.expenseAllMoneyWalletByDates != 0.0 &&
-                            moneyController.surplusMoneyWallet > 0.0)
-                        ? 1
-                        : 0,
+                    opacity:
+                        (moneyController.incomeAllMoneyWalletbyDates != 0.0 &&
+                                moneyController.expenseAllMoneyWalletByDates !=
+                                    0.0 &&
+                                moneyController.surplusMoneyWallet > 0.0)
+                            ? 1
+                            : 0,
                     child: Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -463,7 +468,8 @@ Widget ColumnChart({double value, double money, String title, Color color}) {
           style: FTypoSkin.subtitle3.copyWith(color: FColorSkin.subtitle),
         ),
         Text(
-          '${WConvert.moneyShort(money ?? 0.0)}',
+          // '${WConvert.moneyShort(money ?? 0.0)}',
+          '${MoneyFormatter(amount: money ?? 0.0).output.compactNonSymbol.contains('-') ? '-${MoneyFormatter(amount: money ?? 0.0).output.compactNonSymbol.replaceAll('-', '')}' : MoneyFormatter(amount: money ?? 0.0).output.compactNonSymbol}',
           style: FTypoSkin.title5.copyWith(color: FColorSkin.title),
         ),
         AnimatedContainer(
@@ -481,37 +487,58 @@ Widget ColumnChart({double value, double money, String title, Color color}) {
   );
 }
 
-Widget actionAppbar(BuildContext context, {bool isDark = true}) {
+// Widget actionAppbar(BuildContext context, {bool isDark = true}) {
+//   return Row(
+//     mainAxisAlignment: MainAxisAlignment.center,
+//     children: [
+//       FFilledButton.icon(
+//         backgroundColor: FColorSkin.transparent,
+//         child: Container(
+//             // ConfigApp.langApp = 'en'
+//             decoration: BoxDecoration(
+//                 color: FColorSkin.grey1_background,
+//                 border: Border.all(
+//                     color: langApp == 'en'
+//                         ? FColorSkin.grey9_background
+//                         : FColorSkin.grey4_background)),
+//             padding: EdgeInsets.fromLTRB(1, 1, 0, 0.7),
+//             child: SvgPicture.asset(StringIcon.eng_icon)),
+//         onPressed: () => EnumCore.loadingCustom(loadingEN(context)),
+//       ),
+//       FFilledButton.icon(
+//         backgroundColor: FColorSkin.transparent,
+//         child: Container(
+//           decoration: BoxDecoration(
+//               color: FColorSkin.grey1_background,
+//               border: Border.all(
+//                   color: langApp != 'en'
+//                       ? FColorSkin.grey9_background
+//                       : FColorSkin.grey4_background)),
+//           padding: EdgeInsets.all(1),
+//           child: SvgPicture.asset(StringIcon.vietnam_icon),
+//         ),
+//         onPressed: () => EnumCore.loadingCustom(loadingVI(context)),
+//       ),
+//     ],
+//   );
+// }
+
+Widget actionSearchAppbar({double sizeIcon}) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      FFilledButton.icon(
-        backgroundColor: FColorSkin.transparent,
-        child: Container(
-            // ConfigApp.langApp = 'en'
-            decoration: BoxDecoration(
-                color: FColorSkin.grey1_background,
-                border: Border.all(
-                    color: langApp == 'en'
-                        ? FColorSkin.grey9_background
-                        : FColorSkin.grey4_background)),
-            padding: EdgeInsets.fromLTRB(1, 1, 0, 0.7),
-            child: SvgPicture.asset(StringIcon.eng_icon)),
-        onPressed: () => EnumCore.loadingCustom(loadingEN(context)),
-      ),
-      FFilledButton.icon(
-        backgroundColor: FColorSkin.transparent,
-        child: Container(
-          decoration: BoxDecoration(
-              color: FColorSkin.grey1_background,
-              border: Border.all(
-                  color: langApp != 'en'
-                      ? FColorSkin.grey9_background
-                      : FColorSkin.grey4_background)),
-          padding: EdgeInsets.all(1),
-          child: SvgPicture.asset(StringIcon.vietnam_icon),
-        ),
-        onPressed: () => EnumCore.loadingCustom(loadingVI(context)),
+      Padding(
+        padding: const EdgeInsets.only(right: 16.0),
+        child: FFilledButton.icon(
+            backgroundColor: FColorSkin.transparent,
+            child: FIcon(
+              icon: FOutlined.search,
+              size: sizeIcon ?? 24,
+              color: FColorSkin.title,
+            ),
+            onPressed: () {
+              CoreRoutes.instance.navigatorPushDownToUp(SearchMoney());
+            }),
       ),
     ],
   );

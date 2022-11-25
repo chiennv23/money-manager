@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:clickable_list_wheel_view/clickable_list_wheel_widget.dart';
+import 'package:coresystem/Components/widgets/SnackBar.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Module/Money/DA/money_controller.dart';
 import 'package:coresystem/Project/2M/Module/Wallet/DA/wallet_controller.dart';
@@ -374,32 +376,26 @@ class _SupportIndexState extends State<SupportIndex>
                                                                     deleteMode
                                                                         ? FCheckbox(
                                                                             size: FCheckboxSize
-                                                                                .size24,
+                                                                                .size20,
                                                                             borderColor: listTypeCardWallet.firstWhere((element) => element.img == item.avt).tone
-                                                                                ? FColorSkin
-                                                                                    .title
-                                                                                : FColorSkin
-                                                                                    .grey1_background,
-                                                                            activeColor: FColorSkin
-                                                                                .primaryColor,
-                                                                            value: indexCardWalletList.any((element) =>
-                                                                                element ==
-                                                                                itemIndex),
-                                                                            onChanged:
-                                                                                (vl) {})
-                                                                        : FIcon(
-                                                                            icon: FFilled
-                                                                                .gold_coin,
-                                                                            size:
-                                                                                20,
-                                                                            color: listTypeCardWallet.firstWhere((element) => element.img == item.avt).tone
                                                                                 ? FColorSkin.title
-                                                                                : FColorSkin.grey1_background),
+                                                                                : FColorSkin.grey1_background,
+                                                                            activeColor: FColorSkin.primaryColor,
+                                                                            value: indexCardWalletList.any((element) => element == itemIndex),
+                                                                            onChanged: (vl) {})
+                                                                        : Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.only(top: 2.0),
+                                                                            child: FIcon(
+                                                                                icon: FFilled.gold_coin,
+                                                                                size: 20,
+                                                                                color: listTypeCardWallet.firstWhere((element) => element.img == item.avt).tone ? FColorSkin.title : FColorSkin.grey1_background),
+                                                                          ),
                                                                     Padding(
-                                                                      padding: const EdgeInsets
-                                                                              .only(
-                                                                          top:
-                                                                              10.0,
+                                                                      padding: EdgeInsets.only(
+                                                                          top: deleteMode
+                                                                              ? 0.0
+                                                                              : 10.0,
                                                                           bottom:
                                                                               5),
                                                                       child:
@@ -420,7 +416,7 @@ class _SupportIndexState extends State<SupportIndex>
                                                                           .transparent,
                                                                       child:
                                                                           Text(
-                                                                        '${WConvert.money(double.parse(item.moneyWallet.toString()), 0).replaceAll('.', ',')} VND',
+                                                                        '${WConvert.money(double.parse(item.moneyWallet.toString()), 0).replaceAll('.', ',')}',
                                                                         style: FTypoSkin
                                                                             .title2
                                                                             .copyWith(color: listTypeCardWallet.firstWhere((element) => element.img == item.avt).tone ? FColorSkin.title : FColorSkin.grey1_background),

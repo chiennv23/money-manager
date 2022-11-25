@@ -418,6 +418,11 @@ class MoneyController extends GetxController {
 
   Future<void> deleteMoneyNote(MoneyItem moneyItem) async {
     await CacheService.delete<MoneyItem>(moneyItem.iD);
+    _moneyList.removeWhere((element) => element.iD == moneyItem.iD);
+    _moneyList.refresh();
+    await walletController.initTotalMoneyEachWallet(moneyList: _moneyList);
+    await SnackBarCore.success(title: 'Deleted ${moneyItem.moneyCateType.cateName} on ${FDate.dMy(moneyItem.creMoneyDate)}');
+
   }
 
   Future<void> deleteAllMoneyNote() async {

@@ -1,4 +1,5 @@
 import 'package:coresystem/Components/base_component.dart';
+import 'package:coresystem/Components/widgets/SnackBar.dart';
 import 'package:coresystem/Core/routes.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Contains/skin/skin_route.dart';
@@ -43,7 +44,7 @@ class _WalletDetailHistoryState extends State<WalletDetailHistory> {
 
         return Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(170.0),
+            preferredSize: Size.fromHeight(175.0),
             child: Container(
               padding: EdgeInsets.only(top: 50),
               color: Colors.indigo[900],
@@ -87,8 +88,8 @@ class _WalletDetailHistoryState extends State<WalletDetailHistory> {
                             Obx(() {
                               return Text(
                                 indexType == 1
-                                    ? '${moneyController.incomeAllMoneyWalletDetail.wToMoney(0).replaceAll('.', ',')} VND'
-                                    : '${moneyController.expenseAllMoneyWalletDetail.wToMoney(0).replaceAll('.', ',')} VND',
+                                    ? '${moneyController.incomeAllMoneyWalletDetail.wToMoney(0).replaceAll('.', ',')}'
+                                    : '${moneyController.expenseAllMoneyWalletDetail.wToMoney(0).replaceAll('.', ',')}',
                                 style: FTypoSkin.title1.copyWith(
                                   color: FColorSkin.grey1_background,
                                 ),
@@ -172,36 +173,71 @@ class _WalletDetailHistoryState extends State<WalletDetailHistory> {
                     ),
                     ...List.generate(moneyDayList.length, (indexDay) {
                       final item = moneyDayList[indexDay];
-                      return Container(
-                        padding: EdgeInsets.all(12.0),
-                        color: FColorSkin.grey1_background,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                FBoundingBox(
-                                  size: FBoxSize.size24,
-                                  backgroundColor: FColorSkin.grey1_background,
-                                  child:
-                                      Image.asset(item.moneyCateType.cateIcon),
+                      return Dismissible(
+                        key: UniqueKey(),
+                        background: Container(
+                          color: FColorSkin.errorPrimary,
+                          alignment: Alignment.centerRight,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 16.0),
+                                child: FIcon(
+                                  icon: FFilled.delete,
+                                  size: 16,
+                                  color: FColorSkin.grey1_background,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 12.0),
-                                  child: Text(
-                                    '${item.moneyCateType.cateName}' ?? '',
-                                    style: FTypoSkin.title6
-                                        .copyWith(color: FColorSkin.subtitle),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 16.0),
+                                child: FIcon(
+                                  icon: FFilled.delete,
+                                  size: 16,
+                                  color: FColorSkin.grey1_background,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        onDismissed: (direction) {
+                          setState(() {
+                            moneyController.deleteMoneyNote(item);
+                            moneyDayList.removeAt(index);
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(12.0),
+                          color: FColorSkin.grey1_background,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  FBoundingBox(
+                                    size: FBoxSize.size24,
+                                    backgroundColor:
+                                        FColorSkin.grey1_background,
+                                    child: Image.asset(
+                                        item.moneyCateType.cateIcon),
                                   ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              '${item.moneyType == '0' ? '-' : '+'}${item.moneyValue.wToMoney(0)}',
-                              style: FTypoSkin.bodyText2
-                                  .copyWith(color: FColorSkin.subtitle),
-                            ),
-                          ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 12.0),
+                                    child: Text(
+                                      '${item.moneyCateType.cateName}' ?? '',
+                                      style: FTypoSkin.title6
+                                          .copyWith(color: FColorSkin.subtitle),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                '${item.moneyType == '0' ? '-' : '+'}${item.moneyValue.wToMoney(0)}',
+                                style: FTypoSkin.bodyText2
+                                    .copyWith(color: FColorSkin.subtitle),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     })

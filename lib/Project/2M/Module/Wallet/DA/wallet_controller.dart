@@ -169,7 +169,7 @@ class WalletController extends GetxController {
         _walletList.any((element) =>
             element.title.toLowerCase() == name.toLowerCase() &&
             element.iD != id)) {
-      await SnackBarCore.warning(title: 'Tên Wallet đã tồn tại, hãy thử lại');
+      await SnackBarCore.warning(title: 'Wallet name already exists, try again');
       return;
     }
 
@@ -212,6 +212,10 @@ class WalletController extends GetxController {
   }
 
   Future<void> deleteThisWallet(String id, String name) async {
+    if (walletList.length == 1) {
+      await SnackBarCore.warning(title: 'Cannot delete when have one wallet');
+      return;
+    }
     if (moneyController.allMoneyList.any(
         (element) => element.wallet.iD == id && element.wallet.title == name)) {
       await SnackBarCore.warning(title: 'Cannot delete this wallet');

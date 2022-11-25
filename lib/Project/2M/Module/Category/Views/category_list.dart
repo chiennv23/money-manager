@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:coresystem/Components/base_component.dart';
+import 'package:coresystem/Components/widgets/SnackBar.dart';
 import 'package:coresystem/Core/routes.dart';
 import 'package:coresystem/Project/2M/Contains/constants.dart';
 import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
@@ -22,6 +23,8 @@ class CategoryList extends StatefulWidget {
 
 class _CategoryListState extends State<CategoryList>
     with SingleTickerProviderStateMixin {
+  int indexType = 1;
+
   CategoryController categoryController = Get.find();
   bool isEdit = false;
   AnimationController _animationController;
@@ -73,6 +76,65 @@ class _CategoryListState extends State<CategoryList>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                height: 48,
+                margin: EdgeInsets.only(bottom: 16, top: 0.0),
+                padding: EdgeInsets.symmetric(horizontal: 4),
+                decoration: BoxDecoration(
+                    color: FColorSkin.grey3_background,
+                    borderRadius: BorderRadius.circular(16.0)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: FFilledButton(
+                        size: FButtonSize.size40
+                            .copyWith(borderRadius: Radius.circular(16.0)),
+                        backgroundColor: indexType == 1
+                            ? FColorSkin.title
+                            : FColorSkin.transparent,
+                        child: Center(
+                          child: Text(
+                            'Income',
+                            style: FTypoSkin.buttonText2.copyWith(
+                                color: indexType == 1
+                                    ? FColorSkin.grey1_background
+                                    : FColorSkin.subtitle),
+                          ),
+                        ),
+                        onPressed: () {
+                          indexType = 1;
+
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: FFilledButton(
+                        size: FButtonSize.size40
+                            .copyWith(borderRadius: Radius.circular(16.0)),
+                        backgroundColor: indexType == 0
+                            ? FColorSkin.title
+                            : FColorSkin.transparent,
+                        child: Center(
+                          child: Text(
+                            'Expense',
+                            style: FTypoSkin.buttonText2.copyWith(
+                                color: indexType == 0
+                                    ? FColorSkin.grey1_background
+                                    : FColorSkin.subtitle),
+                          ),
+                        ),
+                        onPressed: () {
+                          indexType = 0;
+
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Padding(
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 24),
                 child: Text(
@@ -83,9 +145,16 @@ class _CategoryListState extends State<CategoryList>
               Obx(() {
                 return Expanded(
                     child: GridView.builder(
-                  itemCount: categoryController.allCateList.length,
+                  itemCount: categoryController.allCateList
+                      .where(
+                          (element) => element.cateType == indexType.toString())
+                      .toList()
+                      .length,
                   itemBuilder: (context, index) {
-                    final item = categoryController.allCateList[index];
+                    final item = categoryController.allCateList
+                        .where((element) =>
+                            element.cateType == indexType.toString())
+                        .toList()[index];
                     return AnimatedBuilder(
                       animation: _animationController,
                       builder: (BuildContext context, Widget child) {
@@ -142,6 +211,19 @@ class _CategoryListState extends State<CategoryList>
                                     color: FColorSkin.errorPrimary,
                                   ),
                                   onPressed: () {
+                                    if (categoryController.allCateList
+                                            .where((element) =>
+                                                element.cateType ==
+                                                indexType.toString())
+                                            .toList()
+                                            .length ==
+                                        1) {
+                                      SnackBarCore.warning(
+                                          isBottom: true,
+                                          title:
+                                              'Can not delete all categories');
+                                      return;
+                                    }
                                     categoryController.deleteCategory(item);
                                   }),
                             )
@@ -155,7 +237,7 @@ class _CategoryListState extends State<CategoryList>
                       crossAxisCount: 4,
                       mainAxisSpacing: 16),
                 ));
-              })
+              }),
             ],
           ),
         ),

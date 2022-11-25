@@ -122,22 +122,22 @@ class _IntroduceAppState extends State<IntroduceApp> {
 List<PageItem> IntroPageList = [
   PageItem(
       id: 0,
-      title: 'Personal expense management',
+      title: 'Welcome to Expense management',
       subTitle:
           '',
       image: 'lib/Assets/Images/intro.png'),
-  PageItem(
-      id: 1,
-      title: 'Personal expense management',
-      subTitle:
-          '',
-      image: 'lib/Assets/Images/intro.png'),
-  PageItem(
-      id: 2,
-      title: 'Plan for expense management',
-      subTitle:
-          '',
-      image: 'lib/Assets/Images/intro.png'),
+  // PageItem(
+  //     id: 1,
+  //     title: 'Personal expense management',
+  //     subTitle:
+  //         '',
+  //     image: 'lib/Assets/Images/intro.png'),
+  // PageItem(
+  //     id: 2,
+  //     title: 'Plan for expense management',
+  //     subTitle:
+  //         '',
+  //     image: 'lib/Assets/Images/intro.png'),
 ];
 
 class PageItem {

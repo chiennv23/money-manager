@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 import '../../../../../Components/base_component.dart';
 import '../../../../../Core/routes.dart';
 import '../../../Contains/skin/typo_skin.dart';
+import '../../../Screen/transaction_index.dart';
 import '../../User/Views/report_money_date.dart';
 import '../Widget/pie_chart.dart';
 
@@ -57,6 +58,7 @@ class _ReportWCategoriesState extends State<ReportWCategories> {
       appBar: appbarWithBottom(
         title: 'Report with Category',
         iconBack: FOutlined.left,
+        actions: [actionSearchAppbar()],
         systemUiOverlayStyle: SystemUiOverlayStyle.dark,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(40),

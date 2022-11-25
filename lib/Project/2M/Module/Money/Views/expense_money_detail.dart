@@ -39,7 +39,7 @@ class _ExpenseMoneyDetailState extends State<ExpenseMoneyDetail> {
 
         return Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(170.0),
+            preferredSize: Size.fromHeight(175.0),
             child: Container(
               padding: EdgeInsets.only(top: 50),
               color: Colors.indigo[900],

@@ -508,146 +508,146 @@ class _InputMoneyState extends State<InputMoney>
                                 ),
                               ],
                             ),
-                            action: Padding(
-                              padding: const EdgeInsets.only(right: 16.0),
-                              child: TextButton(
-                                  onPressed: () {
-                                    Get.dialog(Scaffold(
-                                      backgroundColor: FColorSkin.transparent,
-                                      body: Center(
-                                        child: Container(
-                                          height: Get.height / 2,
-                                          width: Get.width - 32,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                            child: Obx(() {
-                                              return SfDateRangePicker(
-                                                showActionButtons: true,
-                                                onSelectionChanged: (vl) {
-                                                  print(vl);
-                                                },
-                                                onCancel: () {
-                                                  CoreRoutes.instance.pop();
-                                                },
-                                                initialDisplayDate:
-                                                    moneyController
-                                                        .selectedValue.value,
-                                                initialSelectedDate:
-                                                    moneyController
-                                                        .selectedValue.value,
-                                                onSubmit: (vl) {
-                                                  setState(() {
-                                                    moneyController
-                                                        .selectedValue
-                                                        .value = vl as DateTime;
-                                                  });
-                                                  CoreRoutes.instance.pop();
-                                                  print(moneyController
-                                                      .selectedValue.value);
-                                                  Future.delayed(
-                                                      Duration(
-                                                          milliseconds: 100),
-                                                      () {
-                                                    _controllerDatePicker
-                                                        .animateToDate(
-                                                            moneyController
-                                                                .selectedValue
-                                                                .value);
-                                                    _controllerDatePicker
-                                                        .jumpToSelection();
-                                                    setState(() {});
-                                                    print(1111);
-                                                  });
-                                                },
-                                                maxDate: DateTime.now().add(
-                                                    const Duration(days: 30)),
-                                                // minDate: DateTime.now()
-                                                //     .subtract(const Duration(days: 30)),
-                                                selectionMode:
-                                                    DateRangePickerSelectionMode
-                                                        .single,
-                                                backgroundColor:
-                                                    FColorSkin.grey1_background,
-                                                selectionColor:
-                                                    FColorSkin.title,
-                                                monthCellStyle:
-                                                    DateRangePickerMonthCellStyle(
-                                                        leadingDatesTextStyle:
-                                                            TextStyle(
-                                                          color:
-                                                              FColorSkin.title,
-                                                        ),
-                                                        todayTextStyle:
-                                                            TextStyle(
-                                                                color:
-                                                                    FColorSkin
-                                                                        .title),
-                                                        trailingDatesTextStyle:
-                                                            TextStyle(
-                                                          color:
-                                                              FColorSkin.title,
-                                                        ),
-                                                        weekendTextStyle:
-                                                            TextStyle(
-                                                          color:
-                                                              FColorSkin.title,
-                                                        ),
-                                                        textStyle: TextStyle(
-                                                          color:
-                                                              FColorSkin.title,
-                                                        )),
-                                                headerStyle:
-                                                    DateRangePickerHeaderStyle(
-                                                        textStyle: TextStyle(
-                                                  // color choose year
-                                                  color: FColorSkin.title,
-                                                )),
-                                                selectionTextStyle: TextStyle(
-                                                  // change color range selected
-                                                  color: FColorSkin
-                                                      .grey1_background,
-                                                ),
-                                                yearCellStyle:
-                                                    DateRangePickerYearCellStyle(
-                                                  textStyle: TextStyle(
-                                                    color: FColorSkin.title,
-                                                  ),
-                                                ),
-                                                monthViewSettings:
-                                                    DateRangePickerMonthViewSettings(
-                                                        viewHeaderStyle:
-                                                            DateRangePickerViewHeaderStyle(
-                                                                textStyle: TextStyle(
-                                                                    color: FColorSkin
-                                                                        .title)),
-                                                        firstDayOfWeek: 1),
-                                              );
-                                            }),
-                                          ),
-                                        ),
-                                      ),
-                                    ));
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        'More',
-                                        style: FTypoSkin.buttonText3.copyWith(
-                                            color: FColorSkin.primaryColor),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 4.0),
-                                        child: FIcon(
-                                          icon: FOutlined.right,
-                                          size: 16,
-                                          color: FColorSkin.primaryColor,
-                                        ),
-                                      )
-                                    ],
-                                  )),
-                            ),
+                            // action: Padding(
+                            //   padding: const EdgeInsets.only(right: 16.0),
+                            //   child: TextButton(
+                            //       onPressed: () {
+                            //         Get.dialog(Scaffold(
+                            //           backgroundColor: FColorSkin.transparent,
+                            //           body: Center(
+                            //             child: Container(
+                            //               height: Get.height / 2,
+                            //               width: Get.width - 32,
+                            //               child: ClipRRect(
+                            //                 borderRadius:
+                            //                     BorderRadius.circular(8.0),
+                            //                 child: Obx(() {
+                            //                   return SfDateRangePicker(
+                            //                     showActionButtons: true,
+                            //                     onSelectionChanged: (vl) {
+                            //                       print(vl);
+                            //                     },
+                            //                     onCancel: () {
+                            //                       CoreRoutes.instance.pop();
+                            //                     },
+                            //                     initialDisplayDate:
+                            //                         moneyController
+                            //                             .selectedValue.value,
+                            //                     initialSelectedDate:
+                            //                         moneyController
+                            //                             .selectedValue.value,
+                            //                     onSubmit: (vl) {
+                            //                       setState(() {
+                            //                         moneyController
+                            //                             .selectedValue
+                            //                             .value = vl as DateTime;
+                            //                       });
+                            //                       CoreRoutes.instance.pop();
+                            //                       print(moneyController
+                            //                           .selectedValue.value);
+                            //                       Future.delayed(
+                            //                           Duration(
+                            //                               milliseconds: 100),
+                            //                           () {
+                            //                         _controllerDatePicker
+                            //                             .animateToDate(
+                            //                                 moneyController
+                            //                                     .selectedValue
+                            //                                     .value);
+                            //                         _controllerDatePicker
+                            //                             .jumpToSelection();
+                            //                         setState(() {});
+                            //                         print(1111);
+                            //                       });
+                            //                     },
+                            //                     maxDate: DateTime.now().add(
+                            //                         const Duration(days: 30)),
+                            //                     // minDate: DateTime.now()
+                            //                     //     .subtract(const Duration(days: 30)),
+                            //                     selectionMode:
+                            //                         DateRangePickerSelectionMode
+                            //                             .single,
+                            //                     backgroundColor:
+                            //                         FColorSkin.grey1_background,
+                            //                     selectionColor:
+                            //                         FColorSkin.title,
+                            //                     monthCellStyle:
+                            //                         DateRangePickerMonthCellStyle(
+                            //                             leadingDatesTextStyle:
+                            //                                 TextStyle(
+                            //                               color:
+                            //                                   FColorSkin.title,
+                            //                             ),
+                            //                             todayTextStyle:
+                            //                                 TextStyle(
+                            //                                     color:
+                            //                                         FColorSkin
+                            //                                             .title),
+                            //                             trailingDatesTextStyle:
+                            //                                 TextStyle(
+                            //                               color:
+                            //                                   FColorSkin.title,
+                            //                             ),
+                            //                             weekendTextStyle:
+                            //                                 TextStyle(
+                            //                               color:
+                            //                                   FColorSkin.title,
+                            //                             ),
+                            //                             textStyle: TextStyle(
+                            //                               color:
+                            //                                   FColorSkin.title,
+                            //                             )),
+                            //                     headerStyle:
+                            //                         DateRangePickerHeaderStyle(
+                            //                             textStyle: TextStyle(
+                            //                       // color choose year
+                            //                       color: FColorSkin.title,
+                            //                     )),
+                            //                     selectionTextStyle: TextStyle(
+                            //                       // change color range selected
+                            //                       color: FColorSkin
+                            //                           .grey1_background,
+                            //                     ),
+                            //                     yearCellStyle:
+                            //                         DateRangePickerYearCellStyle(
+                            //                       textStyle: TextStyle(
+                            //                         color: FColorSkin.title,
+                            //                       ),
+                            //                     ),
+                            //                     monthViewSettings:
+                            //                         DateRangePickerMonthViewSettings(
+                            //                             viewHeaderStyle:
+                            //                                 DateRangePickerViewHeaderStyle(
+                            //                                     textStyle: TextStyle(
+                            //                                         color: FColorSkin
+                            //                                             .title)),
+                            //                             firstDayOfWeek: 1),
+                            //                   );
+                            //                 }),
+                            //               ),
+                            //             ),
+                            //           ),
+                            //         ));
+                            //       },
+                            //       child: Row(
+                            //         children: [
+                            //           Text(
+                            //             'More',
+                            //             style: FTypoSkin.buttonText3.copyWith(
+                            //                 color: FColorSkin.primaryColor),
+                            //           ),
+                            //           Padding(
+                            //             padding:
+                            //                 const EdgeInsets.only(left: 4.0),
+                            //             child: FIcon(
+                            //               icon: FOutlined.right,
+                            //               size: 16,
+                            //               color: FColorSkin.primaryColor,
+                            //             ),
+                            //           )
+                            //         ],
+                            //       )),
+                            // ),
                           ),
                         ),
                         // date picker
@@ -919,6 +919,8 @@ class _InputMoneyState extends State<InputMoney>
                           if (mounted) {
                             setState(() {
                               isCalculator = true;
+                              _imagesFile = null;
+                              moneyController.imgOCR.clear();
                               memory.allClearInputted();
                             });
                           }

@@ -12,6 +12,7 @@ import '../../../../../Contains/constants.dart';
 import '../../../../../Contains/skin/color_skin.dart';
 import '../../../../../Contains/skin/typo_skin.dart';
 import '../../../../../LocalDatabase/Models/money_item.dart';
+import '../../../../../Screen/transaction_index.dart';
 import '../../../../Money/DA/money_controller.dart';
 import '../../../../User/Views/report_money_date.dart';
 
@@ -46,6 +47,7 @@ class _ReportByChartState extends State<ReportByChart> {
       appBar: appbarWithBottom(
         title: 'Report with Category',
         iconBack: FOutlined.left,
+        actions: [actionSearchAppbar()],
         systemUiOverlayStyle: SystemUiOverlayStyle.dark,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(40),
@@ -212,8 +214,9 @@ class _ReportByChartState extends State<ReportByChart> {
                           children: [
                             Text(
                               '$selectedYear',
-                              style: FTypoSkin.title2
-                                  .copyWith(color: FColorSkin.primaryColor),
+                              style: FTypoSkin.title4.copyWith(
+                                  color: FColorSkin.primaryColor,
+                                  fontWeight: FontWeight.bold),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 4.0),
@@ -229,7 +232,7 @@ class _ReportByChartState extends State<ReportByChart> {
                 ],
               ),
               Container(
-                height: 250,
+                height: Get.height / 3.5,
                 child: moneyListAYear.isNotEmpty
                     ? SimpleBarChart(_MoneyChartData())
                     : SimpleBarChart.withSampleData(),

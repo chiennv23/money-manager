@@ -2,6 +2,7 @@ import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Module/Report/View/report_category.dart';
 
 import 'package:coresystem/Project/2M/Module/User/Views/report_money_date.dart';
+import 'package:coresystem/Project/2M/Screen/transaction_index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -32,6 +33,7 @@ class _SettingIndexState extends State<SettingIndex> {
             child: appbarOnlyTitle(
                 title: 'Report',
                 systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+                action: [actionSearchAppbar()],
                 noBack: true),
           ),
         ),
