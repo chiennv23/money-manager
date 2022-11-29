@@ -79,7 +79,7 @@ class _SettingIndexState extends State<SettingIndex> {
                 color: FColorSkin.subtitle,
               ),
               title: Text(
-                'Report by chart',
+                'Report by year',
                 style: FTypoSkin.title4.copyWith(color: FColorSkin.title),
               ),
               action: Container(

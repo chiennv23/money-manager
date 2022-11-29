@@ -45,7 +45,7 @@ class _ReportByChartState extends State<ReportByChart> {
     return Scaffold(
       backgroundColor: FColorSkin.grey1_background,
       appBar: appbarWithBottom(
-        title: 'Report with Category',
+        title: 'Report by Year',
         iconBack: FOutlined.left,
         actions: [actionSearchAppbar()],
         systemUiOverlayStyle: SystemUiOverlayStyle.dark,

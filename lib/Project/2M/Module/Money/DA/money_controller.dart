@@ -359,23 +359,6 @@ class MoneyController extends GetxController {
   List<MoneyItem> get allMoneyList => _moneyList;
 
   Future<void> addMoneyNote(MoneyItem moneyItem) async {
-    if (moneyItem.moneyValue == 0.0 || moneyItem.wallet.iD == null) {
-      await Get.dialog(
-        CupertinoAlertDialog(
-          content: Text(moneyItem.wallet.iD == null
-              ? 'You need to add wallet to continue'
-              : 'You need to enter the amount to continue'),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text('Cancel'),
-              onPressed: () => CoreRoutes.instance.pop(),
-            )
-          ],
-        ),
-        barrierDismissible: false,
-      );
-      return;
-    }
     // if same data no edit anything
     if (_moneyList.any((element) => element.iD == moneyItem.iD)) {
       final editObj =
@@ -383,6 +366,7 @@ class MoneyController extends GetxController {
       if (editObj.moneyValue == moneyItem.moneyValue &&
           editObj.creMoneyDate.isSameDate(moneyItem.creMoneyDate) &&
           editObj.noteMoney.iD == moneyItem.noteMoney.iD &&
+          editObj.noteMoney.noteValue == moneyItem.noteMoney.noteValue &&
           editObj.wallet.iD == moneyItem.wallet.iD &&
           editObj.moneyCateType.iD == moneyItem.moneyCateType.iD) {
         CoreRoutes.instance.pop();
@@ -393,6 +377,7 @@ class MoneyController extends GetxController {
     // 1: thu nhap
     if (_moneyList.any((element) => element.iD == moneyItem.iD)) {
       // edit money
+      print(moneyItem.noteMoney);
       final editObj =
           _moneyList.firstWhere((element) => element.iD == moneyItem.iD);
       editObj.creMoneyDate = moneyItem.creMoneyDate;
@@ -421,8 +406,9 @@ class MoneyController extends GetxController {
     _moneyList.removeWhere((element) => element.iD == moneyItem.iD);
     _moneyList.refresh();
     await walletController.initTotalMoneyEachWallet(moneyList: _moneyList);
-    await SnackBarCore.success(title: 'Deleted ${moneyItem.moneyCateType.cateName} on ${FDate.dMy(moneyItem.creMoneyDate)}');
-
+    await SnackBarCore.success(
+        title:
+            'Deleted ${moneyItem.moneyCateType.cateName} on ${FDate.dMy(moneyItem.creMoneyDate)}');
   }
 
   Future<void> deleteAllMoneyNote() async {

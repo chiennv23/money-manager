@@ -4,14 +4,11 @@ import 'package:coresystem/Components/base_component.dart';
 import 'package:coresystem/Components/widgets/SnackBar.dart';
 import 'package:coresystem/Core/routes.dart';
 import 'package:coresystem/Project/2M/Contains/constants.dart';
-import 'package:coresystem/Project/2M/Contains/skin/color_skin.dart';
 import 'package:coresystem/Project/2M/Contains/skin/skin_route.dart';
-import 'package:coresystem/Project/2M/LocalDatabase/model_lib.dart';
 import 'package:coresystem/Project/2M/Module/Category/DA/category_controller.dart';
 import 'package:coresystem/Project/2M/Module/Category/Views/create_category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class CategoryList extends StatefulWidget {
@@ -50,15 +47,16 @@ class _CategoryListState extends State<CategoryList>
       },
       child: Scaffold(
         backgroundColor: FColorSkin.grey1_background,
-        appBar: appbarNoTitle(
+        appBar: appbarOnlyTitle(
             noBack: isEdit,
             systemUiOverlayStyle: SystemUiOverlayStyle.dark,
             iconBack: FOutlined.left,
+            title: 'Category list',
             action: [
               FFilledButton(
                   backgroundColor: FColorSkin.transparent,
                   child: Text(
-                    isEdit ? 'Done' : 'Edit',
+                    isEdit ? 'Done' : 'Delete',
                     style: FTypoSkin.title3.copyWith(color: FColorSkin.title),
                   ),
                   onPressed: () {
@@ -170,7 +168,22 @@ class _CategoryListState extends State<CategoryList>
                         children: [
                           InkWell(
                             onTap: isEdit
-                                ? null
+                                ? () {
+                                    if (categoryController.allCateList
+                                            .where((element) =>
+                                                element.cateType ==
+                                                indexType.toString())
+                                            .toList()
+                                            .length ==
+                                        1) {
+                                      SnackBarCore.warning(
+                                          isBottom: true,
+                                          title:
+                                              'Can not delete all categories');
+                                      return;
+                                    }
+                                    categoryController.deleteCategory(item);
+                                  }
                                 : () {
                                     CoreRoutes.instance
                                         .navigatorPushDownToUp(CreateCategory(

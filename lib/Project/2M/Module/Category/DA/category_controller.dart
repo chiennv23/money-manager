@@ -96,6 +96,9 @@ class CategoryController extends GetxController {
 
   Future<void> deleteCategory(CategoryItem categoryItem) async {
     await CacheService.delete<CategoryItem>(categoryItem.iD);
+    await SnackBarCore.success(
+        title:
+            'Delete success ${categoryItem.cateName} in ${categoryItem.cateType == '0' ? 'Expense' : 'Income'}');
     _cateList.removeWhere((element) => element.iD == categoryItem.iD);
     _cateList.refresh();
   }

@@ -7,6 +7,7 @@ import 'package:coresystem/Project/2M/Contains/skin/skin_route.dart';
 import 'package:coresystem/Project/2M/Module/Money/DA/money_controller.dart';
 import 'package:coresystem/Utils/ConvertUtils.dart';
 import 'package:excel/excel.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -42,43 +43,65 @@ class _ExportCSVState extends State<ExportCSV> {
         iconBack: FOutlined.left,
         systemUiOverlayStyle: SystemUiOverlayStyle.dark,
         action: [
-          FFilledButton(
-              isLoading: isLoading,
-              backgroundColor: FColorSkin.transparent,
-              child: Text(
-                'Export',
-                style: FTypoSkin.label4.copyWith(color: FColorSkin.title),
-              ),
-              onPressed: () {
-                getExcel();
-              })
+          isLoading
+              ? Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: CupertinoActivityIndicator(
+                    color: FColorSkin.title,
+                  ),
+              )
+              : FFilledButton(
+                  isLoading: isLoading,
+                  backgroundColor: FColorSkin.transparent,
+                  child: Text(
+                    'Export',
+                    style: FTypoSkin.label4.copyWith(color: FColorSkin.title),
+                  ),
+                  onPressed: () {
+                    getExcel();
+                  })
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Total data: ${moneyController.allMoneyList.length}',
-              style: FTypoSkin.buttonText2.copyWith(color: FColorSkin.title),
+            FListTile(
+              title: Text(
+                'Total data:',
+                style:
+                    FTypoSkin.buttonText2.copyWith(color: FColorSkin.subtitle),
+              ),
+              action: Text(
+                '${moneyController.allMoneyList.length}',
+                style: FTypoSkin.buttonText2.copyWith(
+                    color: FColorSkin.title, fontWeight: FontWeight.w600),
+              ),
             ),
-            Text(
-              'Time export: ${executionTime.inMilliseconds / 1000}s',
-              style: FTypoSkin.buttonText2.copyWith(color: FColorSkin.title),
+            FListTile(
+              title: Text(
+                'Time export:',
+                style:
+                    FTypoSkin.buttonText2.copyWith(color: FColorSkin.subtitle),
+              ),
+              action: Text(
+                '${executionTime.inMilliseconds / 1000}s',
+                style: FTypoSkin.buttonText2.copyWith(
+                    color: FColorSkin.title, fontWeight: FontWeight.w600),
+              ),
             ),
-            // Row(
-            //   children: [
-            //     Expanded(
-            //       child: FFilledButton(
-            //           isLoading: isLoading,
-            //           child: Text('Export Excel'),
-            //           onPressed: () {
-            //             getExcel();
-            //           }),
-            //     ),
-            //   ],
-            // ),
+            FListTile(
+              title: Text(
+                'Format:',
+                style:
+                    FTypoSkin.buttonText2.copyWith(color: FColorSkin.subtitle),
+              ),
+              action: Text(
+                'xlsx',
+                style: FTypoSkin.buttonText2.copyWith(
+                    color: FColorSkin.title, fontWeight: FontWeight.w600),
+              ),
+            ),
           ],
         ),
       ),
@@ -99,6 +122,10 @@ class _ExportCSVState extends State<ExportCSV> {
     sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: 0)).value =
         'Date';
     sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: 0)).value =
+        'Note';
+    sheet.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: 0)).value =
+        'Wallet';
+    sheet.cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: 0)).value =
         'Type';
     for (var row = 0; row < moneyController.allMoneyList.length; row++) {
       sheet
@@ -115,6 +142,12 @@ class _ExportCSVState extends State<ExportCSV> {
           .value = moneyController.allMoneyList[row].creMoneyDate.toString();
       sheet
           .cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row + 1))
+          .value = moneyController.allMoneyList[row].noteMoney.noteValue;
+      sheet
+          .cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row + 1))
+          .value = moneyController.allMoneyList[row].wallet.title;
+      sheet
+          .cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: row + 1))
           .value = moneyController.allMoneyList[row].moneyType ==
               '0'
           ? 'Expense'

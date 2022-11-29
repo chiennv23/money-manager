@@ -75,6 +75,7 @@ class _InputMoneyState extends State<InputMoney>
         walletScrollController.jumpTo(indexCateType * 50.0);
         moneyController.selectedValue.value = widget.moneyItem.creMoneyDate;
         getNote = widget.moneyItem.noteMoney.noteValue;
+        noteController.text = widget.moneyItem.noteMoney.noteValue;
         _imagesFile = widget.moneyItem.noteMoney.noteImg.first;
       }).whenComplete(() => setState(() {}));
     } else {
@@ -722,9 +723,13 @@ class _InputMoneyState extends State<InputMoney>
                                         'Show more',
                                         style: FTypoSkin.bodyText2,
                                       ),
-                                      onPressed: () {
-                                        takeNote(widget.idType,
+                                      onPressed: () async {
+                                        var rs = await takeNote(widget.idType,
                                             note: getNote, readOnly: true);
+                                        if (rs != null) {
+                                          getNote = rs;
+                                          setState(() {});
+                                        }
                                       })
                             ],
                           ),
@@ -884,9 +889,14 @@ class _InputMoneyState extends State<InputMoney>
                           setState(() {});
                           return;
                         }
-                        final moneyValue = double.parse(memory.result
-                            .replaceAll(RegExp(r'[^\d.]+'), '')
-                            .replaceAll('.', ''));
+                        final moneyValue = double.parse(cmd != '='
+                            // check if having a calculation [moneyHasSign]
+                            ? memory.equation
+                                .replaceAll(RegExp(r'[^\d.]+'), '')
+                                .replaceAll('.', '')
+                            : memory.result
+                                .replaceAll(RegExp(r'[^\d.]+'), '')
+                                .replaceAll('.', ''));
 
                         var moneyItem = MoneyItem(
                             iD: uuid.v4(),
@@ -912,6 +922,25 @@ class _InputMoneyState extends State<InputMoney>
                               creMoneyDate: moneyController.selectedValue.value,
                               moneyCateType: categoryController.cateChoose,
                               wallet: walletController.walletChoose.value);
+                        }
+                        // print(moneyValue);
+                        // print(noteController.text);
+                        if (moneyValue == 0.0 || moneyItem.wallet.iD == null) {
+                          await Get.dialog(
+                            CupertinoAlertDialog(
+                              content: Text(moneyItem.wallet.iD == null
+                                  ? 'You need to add wallet to continue'
+                                  : 'You need to enter the amount to continue'),
+                              actions: <Widget>[
+                                CupertinoDialogAction(
+                                  child: Text('Cancel'),
+                                  onPressed: () => CoreRoutes.instance.pop(),
+                                )
+                              ],
+                            ),
+                            barrierDismissible: false,
+                          );
+                          return;
                         }
                         await moneyController.addMoneyNote(moneyItem);
                         if (moneyItem.moneyValue != 0.0 &&
@@ -1096,9 +1125,13 @@ class _InputMoneyState extends State<InputMoney>
                                 }
                                 CoreRoutes.instance
                                     .pop(result: noteController.text);
+                                print(noteController.text);
+                                setStatefulBuilder(() {});
+                                setState(() {});
                               },
                               onChanged: (v) {
                                 setStatefulBuilder(() {});
+                                setState(() {});
                               },
                               style: FTypoSkin.bodyText1
                                   .copyWith(color: FColorSkin.body),

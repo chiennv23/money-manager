@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:coresystem/Core/routes.dart';
 import 'package:coresystem/Core/storageKeys_helper.dart';
@@ -38,21 +36,18 @@ class MyApp extends StatefulWidget {
     final state = context.findAncestorStateOfType<_MyAppState>();
     await state.changeLanguage(newLocale);
   }
-
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   Locale defaultLanguage;
-
   void takeLanguage() {
     final localeCode =
         SharedPreferencesHelper.instance.getString(key: 'languageApp');
     langApp = localeCode ?? 'vi';
     defaultLanguage = Locale(localeCode ?? 'vi');
   }
-
   Future<void> changeLanguage(Locale locale) async {
     setState(() {
       S.load(locale);
@@ -60,15 +55,12 @@ class _MyAppState extends State<MyApp> {
     });
     return;
   }
-
   final botToastBuilder = BotToastInit();
-
   @override
   void initState() {
     takeLanguage();
     super.initState();
   }
-
   @override
   void dispose() {
     print('Dispose Hive');

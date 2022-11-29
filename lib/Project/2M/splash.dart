@@ -27,7 +27,6 @@ class _SplashState extends State<Splash> {
     initView();
     super.initState();
   }
-
   void deleteAllDataFirstInstall() {
     if (_isfirst) {
       print('first run app......');
