@@ -164,12 +164,14 @@ class WalletController extends GetxController {
     String id,
     String name,
     String img,
+    DateTime date,
   ) async {
     if (_walletList.isNotEmpty &&
         _walletList.any((element) =>
             element.title.toLowerCase() == name.toLowerCase() &&
             element.iD != id)) {
-      await SnackBarCore.warning(title: 'Wallet name already exists, try again');
+      await SnackBarCore.warning(
+          title: 'Wallet name already exists, try again');
       return;
     }
 
@@ -182,6 +184,7 @@ class WalletController extends GetxController {
           .firstWhere((element) => element.iD == id && element.title == name);
       editWalletObj.title = name;
       editWalletObj.avt = img;
+      editWalletObj.creWalletDate = date;
       await CacheService.edit<WalletItem>(editWalletObj.iD, editWalletObj);
       _walletList[indexEditWallet] = editWalletObj;
       CoreRoutes.instance.pop(result: editWalletObj);
@@ -192,7 +195,7 @@ class WalletController extends GetxController {
         title: name,
         avt: img,
         moneyWallet: 0.0,
-        creWalletDate: DateTime.now(),
+        creWalletDate: date,
       );
       await CacheService.add<WalletItem>(id, obj);
       _walletList.add(obj);

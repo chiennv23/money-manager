@@ -241,13 +241,15 @@ class _CreateWalletState extends State<CreateWallet> {
                         ? widget.walletItem.iD
                         : uuid.v4();
                     walletController.addWallet(
-                      id,
-                      nameWalletController.text.trim(),
-                      listTypeCardWallet
-                          .firstWhere(
-                              (element) => element.id == indexWalletColor)
-                          .img,
-                    );
+                        id,
+                        nameWalletController.text.trim(),
+                        listTypeCardWallet
+                            .firstWhere(
+                                (element) => element.id == indexWalletColor)
+                            .img,
+                        widget.walletItem != null
+                            ? widget.walletItem.creWalletDate
+                            : DateTime.now());
                   },
             backgroundColor:
                 checkEmpty ? FColorSkin.disableBackground : FColorSkin.title,

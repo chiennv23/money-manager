@@ -22,6 +22,7 @@ import '../../../Core/userService.dart';
 import '../../../Utils/PickImage/imagePickerHandler.dart';
 import '../Contains/constants.dart';
 import '../Contains/skin/typo_skin.dart';
+import '../Module/Report/View/ReportByChart/View/report_by_chart.dart';
 import '../Module/User/DA/user_controller.dart';
 import '../Module/User/Views/report_money_date.dart';
 import 'transaction_index.dart';
@@ -52,6 +53,11 @@ class _AccountIndexState extends State<AccountIndex>
       'route': ViewMoneyWDate()
     },
     {
+      'title': 'Report by year',
+      'icon': FFilled.pie_chart,
+      'route': ReportByChart()
+    },
+    {
       'title': 'Report by category',
       'icon': FFilled.money,
       'route': ReportWCategories()
@@ -61,7 +67,7 @@ class _AccountIndexState extends State<AccountIndex>
       'icon': FFilled.money_collect,
       'route': SearchMoney()
     },
-    {'title': 'Export CSV', 'icon': FFilled.file_excel, 'route': ExportCSV()},
+    {'title': 'Export Excel', 'icon': FFilled.file_excel, 'route': ExportCSV()},
   ];
 
   AnimationController _controller;
@@ -155,7 +161,7 @@ class _AccountIndexState extends State<AccountIndex>
               ),
               SafeArea(
                   child: FListTile(
-                padding: EdgeInsets.fromLTRB(16, 10, 8, 16),
+                padding: EdgeInsets.fromLTRB(16, 10, 8, 10),
                 size: FListTileSize.size72,
                 avatar: GestureDetector(
                   onTap: () {
